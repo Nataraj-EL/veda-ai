@@ -1,0 +1,194 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand/Theme Primary Colors */
+  --color-brand-primary: #4f46e5;
+  --color-brand-hover: #4338ca;
+  --color-brand-light: #eef2ff;
+  
+  /* Neutrals */
+  --color-neutral-primary: #303030;
+  --color-neutral-secondary: #5e5e5e;
+  --color-neutral-border: #e2e8f0;
+  --color-neutral-border-active: #cbd5e1;
+  
+  /* Feedback Colors */
+  --color-feedback-success: #10b981;
+  --color-feedback-warning: #f59e0b;
+  --color-feedback-error: #ef4444;
+  
+  /* Layout Surfaces */
+  --color-surface-fill: #ffffff;
+  --color-page-fill: #ebebeb;
+
+  /* Figma typography — Bricolage Grotesque */
+  --font-sans: var(--font-bricolage), "Bricolage Grotesque", system-ui, sans-serif;
+  
+  /* Border Radius overrides */
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+
+  /* Elevational Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Base style resets and layout standards */
+html,
+body {
+  background-color: var(--color-page-fill);
+  color: var(--color-neutral-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom minimal scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-page-fill);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-neutral-border);
+  border-radius: var(--radius-lg);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-neutral-border-active);
+}
+
+/* Form Accessibility outlines */
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-brand-primary);
+  outline-offset: 1px;
+}
+
+/* Micro-animations for buttons and dynamic tags */
+.transition-standard {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Premium CTA Gradient Border class */
+.btn-gradient-border {
+  background: linear-gradient(#222222, #222222) padding-box, linear-gradient(to bottom, #FA643C, #A7280F) border-box;
+  border: 3px solid transparent;
+}
+
+.btn-gradient-border:hover {
+  background: linear-gradient(#18181B, #18181B) padding-box, linear-gradient(to bottom, #FF7A5A, #BE3318) border-box;
+}
+
+/* Strict academic/productivity print style rules */
+@media print {
+  /* Hide all buttons, navbars, sidebars, and call-to-actions */
+  button,
+  nav,
+  aside,
+  header,
+  .no-print,
+  .file-upload-drag,
+  a[href^="http"]::after {
+    display: none !important;
+  }
+
+  /* Force white background and correct font contrast */
+  html,
+  body,
+  .print-container {
+    height: auto !important;
+    overflow: visible !important;
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    color: #303030 !important;
+    font-size: 11pt !important;
+    font-family: var(--font-sans), "Inter", system-ui, sans-serif;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Override fixed screen wrappers to flow naturally across pages */
+  .flex.h-screen {
+    height: auto !important;
+    overflow: visible !important;
+    display: block !important;
+  }
+
+  .flex-1.flex.flex-col.min-w-0.overflow-y-auto {
+    height: auto !important;
+    overflow: visible !important;
+    display: block !important;
+  }
+
+  /* Full-bleed print sheet surface */
+  .print-surface,
+  .print-container {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: #ffffff !important;
+    width: 100% !important;
+  }
+
+  /* Prevent page breaks inside heading titles */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+    break-after: avoid;
+    color: #000000 !important;
+  }
+
+  /* Preserve full visibility of answer keys and structural options */
+  .print-question,
+  .question-item,
+  .question-card {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+}
+
+/* Page dimension styling */
+@page {
+  size: A4;
+  margin: 0 !important;
+}
+
+@media print {
+  body {
+    margin: 15mm !important;
+  }
+}
+
+/* Prevent page breaks inside question blocks */
+.question-card {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+/* Mobile background tone and layout refinement */
+@media (max-width: 767px) {
+  html,
+  body {
+    background-color: #E2E2E2 !important; /* Slightly darker cool grey background for mobile reference */
+  }
+}
+
+/* Ensure KaTeX display equations wrap or scroll nicely on mobile viewports */
+@media (max-width: 767px) {
+  .katex-display {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    max-width: 100% !important;
+    padding: 4px 0 !important;
+  }
+  .katex {
+    font-size: 0.95em !important; /* Slightly scale down on mobile to prevent squishing */
+  }
+}
