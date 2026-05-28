@@ -56,8 +56,9 @@ function DashboardContent() {
       useUserPreferencesStore.getState().loadPreferences();
       const userId = useUserPreferencesStore.getState().userId || localStorage.getItem("veda_user_id") || "";
 
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
       try {
-        const response = await fetch(`http://localhost:5000/api/assignments?userId=${encodeURIComponent(userId)}`);
+        const response = await fetch(`${apiBase}/api/assignments?userId=${encodeURIComponent(userId)}`);
         if (response.ok) {
           const data = await response.json();
           const assignmentsList = data.data?.assignments || data.assignments || [];
@@ -103,8 +104,9 @@ function DashboardContent() {
     }
 
     const userId = useUserPreferencesStore.getState().userId || localStorage.getItem("veda_user_id") || "";
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
     try {
-      const response = await fetch(`http://localhost:5000/api/assignments/${id}?userId=${encodeURIComponent(userId)}`, {
+      const response = await fetch(`${apiBase}/api/assignments/${id}?userId=${encodeURIComponent(userId)}`, {
         method: 'DELETE',
       });
       if (response.ok) {
