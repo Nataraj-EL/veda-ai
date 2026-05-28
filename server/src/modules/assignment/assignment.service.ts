@@ -1,4 +1,4 @@
-import { NotFoundError } from "../../utils/app-error.js";
+import { NotFoundError, AppError } from "../../utils/app-error.js";
 import {
   Assignment,
   GeneratedAssessment,
@@ -142,6 +142,14 @@ export class AssignmentService {
     const assignment = await Assignment.findById(id);
     if (!assignment || assignment.userId !== userId) {
       throw new NotFoundError("Assignment", id);
+    }
+
+    if (assignment.generationStatus === "failed") {
+      throw new AppError(
+        assignment.generationError || "Assignment generation failed",
+        400,
+        "GENERATION_FAILED"
+      );
     }
 
     const result = await GeneratedAssessment.findOne({ assignmentId: id });
