@@ -1,4 +1,3 @@
-import puppeteer from "puppeteer";
 import path from "path";
 import fs from "fs";
 
@@ -58,6 +57,7 @@ const HISTORY_HTML = `
 `;
 
 async function generatePdf(html: string, filename: string) {
+  const puppeteer = (await import("puppeteer")).default;
   const browser = await puppeteer.launch({
     headless: true,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],

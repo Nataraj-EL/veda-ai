@@ -1,4 +1,3 @@
-import puppeteer from "puppeteer";
 import { env } from "../../config/env.js";
 import { logger } from "../../utils/logger.js";
 
@@ -11,6 +10,7 @@ export class PdfService {
     const url = `${env.CLIENT_ORIGIN}/output?id=${assignmentId}`;
     logger.info({ url, assignmentId }, "Launching Puppeteer to generate PDF");
 
+    const puppeteer = (await import("puppeteer")).default;
     const browser = await puppeteer.launch({
       headless: true,
       args: [
