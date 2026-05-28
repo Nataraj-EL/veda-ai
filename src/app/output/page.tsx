@@ -166,8 +166,15 @@ function AssessmentOutputInner() {
 
   useEffect(() => {
     if (!assignmentId) return;
-    const apiBase =
-      process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+    const apiBase = process.env.NEXT_PUBLIC_API_URL;
+    if (!apiBase) {
+      console.error("NEXT_PUBLIC_API_URL environment variable is not defined.");
+      const timer = setTimeout(() => {
+        setFetchError("API Configuration missing. Please set NEXT_PUBLIC_API_URL.");
+        setIsFetching(false);
+      }, 0);
+      return () => clearTimeout(timer);
+    }
 
     const load = async (): Promise<void> => {
       setIsFetching(true);
@@ -283,7 +290,11 @@ function AssessmentOutputInner() {
     if (!assignmentId) return;
     if (!isWaitingForResult) return;
 
-    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+    const apiBase = process.env.NEXT_PUBLIC_API_URL;
+    if (!apiBase) {
+      console.error("NEXT_PUBLIC_API_URL environment variable is not defined.");
+      return;
+    }
     const userId =
       useUserPreferencesStore.getState().userId ||
       localStorage.getItem("veda_user_id") ||
