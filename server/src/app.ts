@@ -24,7 +24,12 @@ export function createApp(): express.Application {
   app.use(helmet());
   app.use(
     cors({
-      origin: [env.CLIENT_ORIGIN, "http://localhost:3000", "http://127.0.0.1:3000"],
+      origin: [
+        env.CLIENT_ORIGIN,
+        "https://veda-ai-hub.vercel.app",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+      ],
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
       credentials: true,
     })

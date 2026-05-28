@@ -34,8 +34,15 @@ export const createAssignment = asyncHandler(
 
 export const listAssignments = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
-    const userId = getRequestUserId(req);
-    const assignments = await assignmentService.listAssignments(userId);
+    const { userId } = req.query;
+    if (!userId) {
+      res.status(400).json({
+        success: false,
+        error: "userId is required",
+      });
+      return;
+    }
+    const assignments = await assignmentService.listAssignments(userId as string);
     sendSuccess(res, { assignments });
   }
 );
