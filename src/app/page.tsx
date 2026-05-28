@@ -440,12 +440,6 @@ function DashboardContent() {
           )}
         </div>
 
-        {/* Mobile floating plus trigger sitting above the footer */}
-        <Link href="/create" passHref className="md:hidden fixed bottom-[104px] right-[24px] z-40">
-          <span className="flex h-[52px] w-[52px] items-center justify-center rounded-full bg-white border border-black/5 shadow-[0_6px_20px_rgba(0,0,0,0.15)] text-[#FF5623] hover:bg-slate-50 cursor-pointer transition-standard hover:scale-105 active:scale-95">
-            <Plus className="w-[20px] h-[20px]" strokeWidth={3} />
-          </span>
-        </Link>
 
         <MobileBottomNav />
         </div>

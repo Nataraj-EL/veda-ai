@@ -85,7 +85,7 @@ function MobileCounterControl({
         className="flex h-6 w-6 cursor-pointer items-center justify-center text-[#a9a9a9] hover:text-black font-normal text-sm select-none"
         aria-label="Decrease"
       >
-        —
+        −
       </button>
       <span className="text-[15px] font-normal tracking-[-0.6px] text-[#5e5e5e]">
         {value}
@@ -714,29 +714,33 @@ export default function CreateAssignmentPage() {
                           </div>
 
                           {/* Inner grey panel with side-by-side counters */}
-                          <div className="rounded-[20px] bg-[#F1F1F3] p-4 flex gap-4">
+                          <div className="rounded-[20px] bg-[#F1F1F3] p-4 flex gap-4 items-stretch">
                             {/* Column 1: No. of Questions */}
                             <div className="flex-1 flex flex-col items-center gap-2">
-                              <span className="text-[14px] font-normal tracking-[-0.56px] text-[#5e5e5e]/80">
+                              <span className="text-[14px] font-normal tracking-[-0.56px] text-[#5e5e5e]/80 text-center">
                                 No. of Questions
                               </span>
-                              <MobileCounterControl
-                                value={Number(watchedRows?.[index]?.numQuestions) || 0}
-                                onDecrement={() => handleDecrement(index, "numQuestions")}
-                                onIncrement={() => handleIncrement(index, "numQuestions")}
-                              />
+                              <div className="mt-auto w-full flex justify-center">
+                                <MobileCounterControl
+                                  value={Number(watchedRows?.[index]?.numQuestions) || 0}
+                                  onDecrement={() => handleDecrement(index, "numQuestions")}
+                                  onIncrement={() => handleIncrement(index, "numQuestions")}
+                                />
+                              </div>
                             </div>
 
                             {/* Column 2: Marks */}
                             <div className="flex-1 flex flex-col items-center gap-2">
-                              <span className="text-[14px] font-normal tracking-[-0.56px] text-[#5e5e5e]/80">
+                              <span className="text-[14px] font-normal tracking-[-0.56px] text-[#5e5e5e]/80 text-center">
                                 Marks
                               </span>
-                              <MobileCounterControl
-                                value={Number(watchedRows?.[index]?.marksPerQuestion) || 0}
-                                onDecrement={() => handleDecrement(index, "marksPerQuestion")}
-                                onIncrement={() => handleIncrement(index, "marksPerQuestion")}
-                              />
+                              <div className="mt-auto w-full flex justify-center">
+                                <MobileCounterControl
+                                  value={Number(watchedRows?.[index]?.marksPerQuestion) || 0}
+                                  onDecrement={() => handleDecrement(index, "marksPerQuestion")}
+                                  onIncrement={() => handleIncrement(index, "marksPerQuestion")}
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -900,12 +904,12 @@ export default function CreateAssignmentPage() {
               </Button>
             </div>
 
-            {/* Mobile Sticky Actions Container: floating in close proximity directly above the bottom nav footer (Figma 19-756) */}
-            <div className="md:hidden fixed bottom-[92px] left-4 right-4 flex items-center justify-center gap-3 z-30 pointer-events-none no-print">
+            {/* Mobile Actions Container: static flow at the bottom of the page, scrolling with content */}
+            <div className="md:hidden flex items-center justify-center gap-3 mt-8 mb-32 z-30 no-print">
               <button
                 type="button"
                 onClick={() => router.push("/")}
-                className="pointer-events-auto inline-flex items-center justify-center gap-1 h-[46px] w-[106px] rounded-full border border-black/10 bg-white text-[#303030] text-[14px] font-semibold shadow-sm transition-standard hover:bg-slate-50 cursor-pointer px-0"
+                className="inline-flex items-center justify-center gap-1 h-[46px] w-[106px] rounded-full border border-black/10 bg-white text-[#303030] text-[14px] font-semibold shadow-sm transition-standard hover:bg-slate-50 cursor-pointer px-0"
               >
                 <ArrowLeft className="w-4 h-4 shrink-0" />
                 <span>Previous</span>
@@ -913,7 +917,7 @@ export default function CreateAssignmentPage() {
 
               <button
                 type="submit"
-                className="pointer-events-auto inline-flex h-[46px] w-[106px] cursor-pointer items-center justify-center gap-1 rounded-full bg-[#272727] text-[14px] font-semibold tracking-[-0.64px] text-white transition-standard hover:bg-[#1c1c1c] shadow-sm px-0"
+                className="inline-flex h-[46px] w-[106px] cursor-pointer items-center justify-center gap-1 rounded-full bg-[#272727] text-[14px] font-semibold tracking-[-0.64px] text-white transition-standard hover:bg-[#1c1c1c] shadow-sm px-0"
               >
                 <span>Next</span>
                 <ArrowRight className="w-4 h-4 shrink-0" />
