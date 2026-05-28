@@ -56,7 +56,12 @@ function DashboardContent() {
       useUserPreferencesStore.getState().loadPreferences();
       const userId = useUserPreferencesStore.getState().userId || localStorage.getItem("veda_user_id") || "";
 
-      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+      const apiBase = process.env.NEXT_PUBLIC_API_URL;
+      if (!apiBase) {
+        console.error("NEXT_PUBLIC_API_URL environment variable is not defined.");
+        setIsLoading(false);
+        return;
+      }
       try {
         const response = await fetch(`${apiBase}/api/assignments?userId=${encodeURIComponent(userId)}`);
         if (response.ok) {
@@ -104,7 +109,12 @@ function DashboardContent() {
     }
 
     const userId = useUserPreferencesStore.getState().userId || localStorage.getItem("veda_user_id") || "";
-    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+    const apiBase = process.env.NEXT_PUBLIC_API_URL;
+    if (!apiBase) {
+      console.error("NEXT_PUBLIC_API_URL environment variable is not defined.");
+      setActiveMenuId(null);
+      return;
+    }
     try {
       const response = await fetch(`${apiBase}/api/assignments/${id}?userId=${encodeURIComponent(userId)}`, {
         method: 'DELETE',
