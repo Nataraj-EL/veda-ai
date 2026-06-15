@@ -10,7 +10,7 @@ const bricolage = Bricolage_Grotesque({
 });
 
 export const metadata: Metadata = {
-  title: "Vedam AI - AI Assessment & Creator Platform",
+  title: "VedaAI - AI Assessment & Creator Platform",
   description: "Create, calibrate, and print professional high-quality academic assessments and question papers powered by intelligent parameters.",
 };
 

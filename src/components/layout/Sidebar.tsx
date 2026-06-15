@@ -290,19 +290,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
             )}
             onClick={() => setIsSettingsOpen(true)}
           >
-            <div
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/school-avatar.png"
+              alt=""
               className={cn(
-                "flex items-center justify-center shrink-0 rounded-xl font-extrabold text-neutral-800 bg-[#E2E2E2] border border-neutral-300/80 select-none shadow-sm",
-                isAssignments ? "h-12 w-12 text-sm" : "h-10 w-10 text-xs"
+                "object-contain shrink-0",
+                isAssignments ? "h-14 w-[59px]" : "h-10 w-10"
               )}
-            >
-              {(() => {
-                const school = preferences?.schoolName || "Delhi Public School";
-                const parts = school.trim().split(/\s+/);
-                if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-                return parts.slice(0, 3).map(p => p[0]).join("").toUpperCase();
-              })()}
-            </div>
+            />
             <div className="min-w-0 text-left">
               <p
                 className={cn(
