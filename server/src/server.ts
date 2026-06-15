@@ -40,7 +40,7 @@ async function bootstrap(): Promise<void> {
   httpServer.listen(env.PORT, "0.0.0.0", () => {
     logger.info(
       { port: env.PORT, clientOrigin: env.CLIENT_ORIGIN },
-      "VedaAI API server listening on 0.0.0.0"
+      "Vedam AI API server listening on 0.0.0.0"
     );
   });
 

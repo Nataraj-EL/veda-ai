@@ -31,7 +31,7 @@ export function initSocketServer(httpServer: HttpServer): typeof io {
     cors: {
       origin: [
         env.CLIENT_ORIGIN,
-        "https://veda-ai-hub.vercel.app",
+        "https://vedam-ai-hub.vercel.app",
         "http://localhost:3000",
         "http://127.0.0.1:3000",
       ],

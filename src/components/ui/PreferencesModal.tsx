@@ -73,7 +73,7 @@ export const PreferencesModal: React.FC = () => {
         <div className="space-y-4">
           <div>
             <h2 className="text-[20px] font-bold tracking-tight text-[#303030]">
-              {showOnboarding ? "Welcome to VedaAI" : "Teacher Profile Settings"}
+              {showOnboarding ? "Welcome to Vedam AI" : "Teacher Profile Settings"}
             </h2>
             <p className="text-[14px] text-[#5e5e5e]/80 mt-1">
               {showOnboarding 

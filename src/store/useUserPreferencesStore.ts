@@ -19,8 +19,8 @@ interface UserPreferencesState {
   setIsSettingsOpen: (val: boolean) => void;
 }
 
-const LOCAL_STORAGE_KEY = "veda_user_preferences";
-const USER_ID_KEY = "veda_user_id";
+const LOCAL_STORAGE_KEY = "vedam_user_preferences";
+const USER_ID_KEY = "vedam_user_id";
 
 function getOrCreateUserId(): string {
   if (typeof window === "undefined") return "";

@@ -1,12 +1,12 @@
-# VedaAI: High-Fidelity Academic Assessment Generation Engine
+# Vedam AI: High-Fidelity Academic Assessment Generation Engine
 
-VedaAI is a full-stack, event-driven academic content generation platform. It transforms unstructured study materials and text into structured, print-ready exam papers and answer keys with KaTeX-powered mathematical rendering and production-grade A4 PDF formatting.
+Vedam AI is a full-stack, event-driven academic content generation platform. It transforms unstructured study materials and text into structured, print-ready exam papers and answer keys with KaTeX-powered mathematical rendering and production-grade A4 PDF formatting.
 
 ---
 
 ## 1. Project Overview
 
-VedaAI solves the problem of generating typographically perfect, structured academic assessments from unstructured text or study guidelines. To deliver a sub-second response loop to clients during intensive AI workloads, the platform decouples the generation lifecycle from the HTTP request-response cycle.
+Vedam AI solves the problem of generating typographically perfect, structured academic assessments from unstructured text or study guidelines. To deliver a sub-second response loop to clients during intensive AI workloads, the platform decouples the generation lifecycle from the HTTP request-response cycle.
 
 ### High-Level System Architecture
 
@@ -135,7 +135,7 @@ graph LR
 
 ## 5. Queue System & Real-Time Sync Engine
 
-To handle intensive operations without hanging client HTTP sockets, VedaAI leverages a robust asynchronous task queue.
+To handle intensive operations without hanging client HTTP sockets, Vedam AI leverages a robust asynchronous task queue.
 
 ### Background Queue Design
 * **BullMQ Integration**: The background worker process utilizes BullMQ to manage tasks. It is configured with exponential backoff retries (`GENERATION_JOB_BACKOFF_MS = 5000`) and automatic job cleanup to optimize Redis storage.
@@ -162,4 +162,4 @@ The frontend is a React-based Next.js application designed to render complex typ
 
 * **Asynchronous PDF Printing**: PDFs are generated using headless Puppeteer with `--no-sandbox`, `--disable-setuid-sandbox`, and `--disable-dev-shm-usage` arguments. It loads the compiled assessment page, waits for React hydration and font rendering via `document.fonts.ready`, and exports A4 sheets with exact margins and custom running footers.
 * **Dependency Hygiene**: TypeScript definition files (`@types/express`, `@types/compression`, `@types/multer`) are stored in standard `dependencies` rather than `devDependencies` inside the backend. This ensures that they are installed inside strict production containers on Render where `NODE_ENV=production` is enforced.
-* **Cross-Origin Security (CORS)**: Strict CORS policies are applied to both the Express router and Socket.IO middleware, restricting handshakes exclusively to authorized domains (`veda-ai-hub.vercel.app`, `localhost:3000`).
+* **Cross-Origin Security (CORS)**: Strict CORS policies are applied to both the Express router and Socket.IO middleware, restricting handshakes exclusively to authorized domains (`vedam-ai-hub.vercel.app`, `localhost:3000`).

@@ -1,39 +1,38 @@
 import Link from "next/link";
 import { cn } from "@/utils/cn";
 
-type BrandVariant = "gradient" | "mono";
-
-const LOGO_SRC = {
-  gradient: "/images/vedaai-logo-gradient.png",
-  mono: "/images/vedaai-logo-mono.png",
-} as const;
-
-/** Figma 2:10590 (gradient) / 2:10644 (mono) — full mark + VedaAI wordmark */
 export function SidebarBrand({
   className,
   variant = "gradient",
 }: {
   className?: string;
-  variant?: BrandVariant;
+  variant?: "gradient" | "mono";
 }) {
-  const src = LOGO_SRC[variant];
-
   return (
     <Link
       href="/"
       className={cn(
-        "inline-flex cursor-pointer select-none items-center h-10 w-[136px]",
+        "inline-flex cursor-pointer select-none items-center gap-2.5 h-10 font-sans",
         className
       )}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={src}
-        alt="VedaAI"
-        width={136}
-        height={40}
-        className="object-contain object-left h-10 w-[136px]"
-      />
+      {/* Dynamic Geometric Gradient Icon */}
+      <div className={cn(
+        "flex h-9 w-9 items-center justify-center rounded-xl font-extrabold text-white shadow-sm transition-all",
+        variant === "mono" 
+          ? "bg-neutral-800" 
+          : "bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500"
+      )}>
+        <span className="text-lg tracking-tighter">V</span>
+      </div>
+      <span className={cn(
+        "text-lg font-bold tracking-tight",
+        variant === "mono" 
+          ? "text-neutral-850" 
+          : "bg-gradient-to-r from-neutral-900 via-indigo-950 to-neutral-900 bg-clip-text text-transparent"
+      )}>
+        Vedam <span className={cn(variant === "mono" ? "text-neutral-500" : "text-indigo-600 font-bold")}>AI</span>
+      </span>
     </Link>
   );
 }

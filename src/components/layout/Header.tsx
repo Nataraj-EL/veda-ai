@@ -130,15 +130,20 @@ export const Header: React.FC<HeaderProps> = ({
                 : "space-x-2.5 rounded-lg p-1.5 hover:bg-page-fill"
             )}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/monkey-avatar.png"
-              alt={preferences?.teacherName || "John Doe"}
+            <div
               className={cn(
-                "shrink-0 rounded-full object-cover",
-                isAssignments ? "h-8 w-8" : "h-7 w-7"
+                "flex items-center justify-center shrink-0 rounded-full font-bold text-white bg-gradient-to-br from-indigo-500 to-purple-600 shadow-sm border border-indigo-200 select-none",
+                isAssignments ? "h-8 w-8 text-xs" : "h-7 w-7 text-[10px]"
               )}
-            />
+            >
+              {(() => {
+                const name = preferences?.teacherName || "Nataraj EL";
+                const parts = name.trim().split(/\s+/);
+                return parts.length === 1 
+                  ? parts[0].slice(0, 2).toUpperCase() 
+                  : (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+              })()}
+            </div>
             <span
               className={cn(
                 "hidden font-semibold tracking-[-0.04em] text-[#303030] sm:inline",
@@ -182,13 +187,18 @@ export const Header: React.FC<HeaderProps> = ({
               <HeaderBellIcon className="h-5 w-5" />
               <span className="absolute right-2 top-2 h-2 w-2 rounded-full border border-white bg-[#ff5623]" />
             </button>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/user-avatar.png"
-              alt={preferences?.teacherName || "John Doe"}
+            <div
               onClick={() => setIsSettingsOpen(true)}
-              className="h-8 w-8 rounded-full border border-slate-200 object-cover cursor-pointer hover:opacity-85"
-            />
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-indigo-200 bg-gradient-to-br from-indigo-500 to-purple-600 font-bold text-white text-xs cursor-pointer hover:opacity-85 select-none shrink-0"
+            >
+              {(() => {
+                const name = preferences?.teacherName || "Nataraj EL";
+                const parts = name.trim().split(/\s+/);
+                return parts.length === 1 
+                  ? parts[0].slice(0, 2).toUpperCase() 
+                  : (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+              })()}
+            </div>
             {/* Hamburger menu */}
             <button
               type="button"

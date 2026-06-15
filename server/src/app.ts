@@ -26,7 +26,7 @@ export function createApp(): express.Application {
     cors({
       origin: [
         env.CLIENT_ORIGIN,
-        "https://veda-ai-hub.vercel.app",
+        "https://vedam-ai-hub.vercel.app",
         "http://localhost:3000",
         "http://127.0.0.1:3000",
       ],
@@ -41,7 +41,7 @@ export function createApp(): express.Application {
   app.get("/", (_req: Request, res: Response) => {
     res.status(200).json({
       success: true,
-      message: "VedaAI Backend Running",
+      message: "Vedam AI Backend Running",
     });
   });
 

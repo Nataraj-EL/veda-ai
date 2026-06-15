@@ -232,7 +232,7 @@ export default function CreateAssignmentPage() {
       : data.dueDate;
 
     // Load user preferences dynamically
-    const userId = useUserPreferencesStore.getState().userId || localStorage.getItem("veda_user_id") || "";
+    const userId = useUserPreferencesStore.getState().userId || localStorage.getItem("vedam_user_id") || "";
 
     const formData = new FormData();
     formData.append("title", data.title?.trim() || ""); // Backend will generate dynamic title if empty
