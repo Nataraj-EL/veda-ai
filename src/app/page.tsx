@@ -14,6 +14,7 @@ import { Header } from "@/components/layout/Header";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { FilterByIcon } from "@/components/icons/figma-icons";
 import { useUserPreferencesStore } from "@/store/useUserPreferencesStore";
+import { Footer } from "@/components/layout/Footer";
 
 interface Assignment {
   id: string;
@@ -440,7 +441,7 @@ function DashboardContent() {
           )}
         </div>
 
-
+        <Footer />
         <MobileBottomNav />
         </div>
       </div>

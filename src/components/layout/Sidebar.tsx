@@ -11,6 +11,7 @@ import { cn } from "@/utils/cn";
 import { SidebarBrand } from "@/components/brand/SidebarBrand";
 import { useUserPreferencesStore } from "@/store/useUserPreferencesStore";
 import { PreferencesModal } from "@/components/ui/PreferencesModal";
+import { InitialsAvatar } from "@/components/ui/InitialsAvatar";
 
 /** Figma sidebar icons: 20×20, lightweight outline stroke */
 const NAV_ICON_SIZE = 20;
@@ -290,12 +291,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
             )}
             onClick={() => setIsSettingsOpen(true)}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/school-avatar.png"
-              alt=""
+            <InitialsAvatar
+              name={preferences?.schoolName || "Delhi Public School"}
               className={cn(
-                "object-contain shrink-0",
+                "shrink-0",
                 isAssignments ? "h-14 w-[59px]" : "h-10 w-10"
               )}
             />

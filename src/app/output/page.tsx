@@ -11,6 +11,7 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
 import { useUserPreferencesStore } from "@/store/useUserPreferencesStore";
 import { MathRenderer } from "@/components/MathRenderer";
+import { Footer } from "@/components/layout/Footer";
 
 type ApiSuccess<T> = { success: true; data: T };
 type ApiError = { success: false; error?: { message?: string } };
@@ -589,6 +590,7 @@ function AssessmentOutputInner() {
           </article>
         </div>
 
+        <Footer />
         </div>
       </div>
     </div>

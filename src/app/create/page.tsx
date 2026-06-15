@@ -15,6 +15,7 @@ import { AddQuestionTypeIcon } from "@/components/icons/figma-icons";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
+import { Footer } from "@/components/layout/Footer";
 import { cn } from "@/utils/cn";
 import {
   ddMmYyyyToIsoDate,
@@ -927,6 +928,7 @@ export default function CreateAssignmentPage() {
           </form>
         </div>
         
+        <Footer />
         <MobileBottomNav />
         </div>
       </div>

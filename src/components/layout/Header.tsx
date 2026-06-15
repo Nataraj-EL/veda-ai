@@ -6,6 +6,7 @@ import { cn } from "@/utils/cn";
 import { HeaderBackArrowIcon, HeaderBellIcon } from "@/components/icons/figma-icons";
 import { SidebarBrand } from "@/components/brand/SidebarBrand";
 import { useUserPreferencesStore } from "@/store/useUserPreferencesStore";
+import { InitialsAvatar } from "@/components/ui/InitialsAvatar";
 
 export interface HeaderProps {
   title: string;
@@ -130,12 +131,10 @@ export const Header: React.FC<HeaderProps> = ({
                 : "space-x-2.5 rounded-lg p-1.5 hover:bg-page-fill"
             )}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/monkey-avatar.png"
-              alt={preferences?.teacherName || "John Doe"}
+            <InitialsAvatar
+              name={preferences?.teacherName || "John Doe"}
               className={cn(
-                "shrink-0 rounded-full object-cover",
+                "shrink-0",
                 isAssignments ? "h-8 w-8" : "h-7 w-7"
               )}
             />
@@ -182,12 +181,10 @@ export const Header: React.FC<HeaderProps> = ({
               <HeaderBellIcon className="h-5 w-5" />
               <span className="absolute right-2 top-2 h-2 w-2 rounded-full border border-white bg-[#ff5623]" />
             </button>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/user-avatar.png"
-              alt={preferences?.teacherName || "John Doe"}
+            <InitialsAvatar
+              name={preferences?.teacherName || "John Doe"}
               onClick={() => setIsSettingsOpen(true)}
-              className="h-8 w-8 rounded-full border border-slate-200 object-cover cursor-pointer hover:opacity-85"
+              className="h-8 w-8 border border-slate-200 cursor-pointer hover:opacity-85"
             />
             {/* Hamburger menu */}
             <button
