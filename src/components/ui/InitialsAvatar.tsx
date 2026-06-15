@@ -23,9 +23,9 @@ export const InitialsAvatar: React.FC<InitialsAvatarProps> = ({ name, className,
         "bg-gradient-to-br from-orange-50 to-orange-100 text-[#ff5623] border border-orange-200/40 font-sans shadow-inner",
         className
       )}
-      style={{ containerType: "size", fontSize: "clamp(9px, 36cqmin, 22px)" }}
+      style={{ containerType: "size" }}
     >
-      <span>{getInitials(name)}</span>
+      <span style={{ fontSize: "clamp(9px, 36cqmin, 22px)" }}>{getInitials(name)}</span>
     </div>
   );
 };

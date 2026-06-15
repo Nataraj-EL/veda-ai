@@ -147,7 +147,7 @@ function DashboardContent() {
       <div className="flex min-w-0 flex-1 flex-col min-h-0 overflow-hidden md:px-3 md:pt-3">
         <Header title="Assignment" variant="assignments" />
 
-        <div className="min-h-0 flex-1 overflow-y-auto">
+        <div className="min-h-0 flex-1 overflow-y-auto flex flex-col">
         {/* 3. Developer States Switcher - Visual floating pill only for review utility */}
         {isDev && (
           <div className="mx-6 mt-4 p-2 bg-white border border-neutral-border rounded-lg flex items-center justify-between no-print">
@@ -178,7 +178,7 @@ function DashboardContent() {
         )}
 
         {/* Main Content Area */}
-        <div className="mx-auto w-full max-w-[1100px] px-4 pt-3 pb-24 md:px-0 md:pb-20">
+        <div className="mx-auto w-full max-w-[1100px] px-4 pt-3 pb-24 md:px-0 md:pb-20 flex-1 flex flex-col">
           {isLoading ? (
             <div className="flex flex-col items-center justify-center min-h-[60vh] max-w-lg mx-auto text-center space-y-4">
               <div className="relative w-10 h-10">

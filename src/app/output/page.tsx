@@ -383,7 +383,7 @@ function AssessmentOutputInner() {
         {/* Header bar */}
         <Header title="Create New" onBack={handleBack} brandVariant={brandVariant} />
 
-        <div className="min-h-0 flex-1 overflow-y-auto">
+        <div className="min-h-0 flex-1 overflow-y-auto flex flex-col">
         {isWaitingForResult && !fetchError && (
           <div className="px-6 pt-4">
             <div className="mx-auto w-full max-w-[820px] rounded-2xl border border-neutral-border bg-white/70 px-4 py-3">
@@ -405,7 +405,7 @@ function AssessmentOutputInner() {
           </div>
         )}
 
-        <div className="px-6 pt-4 pb-6 max-w-[820px] mx-auto w-full space-y-4">
+        <div className="px-6 pt-4 pb-6 max-w-[820px] mx-auto w-full space-y-4 flex-1 flex flex-col">
           
           {/* ===============================================================
              FIGMA REPLICATION: TOP DARK CARD WITH "Download as PDF"
