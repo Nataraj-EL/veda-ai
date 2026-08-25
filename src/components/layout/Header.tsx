@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ChevronDown, X, LayoutGrid } from "lucide-react";
+import { ChevronDown, X, LayoutGrid, GraduationCap } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { HeaderBackArrowIcon, HeaderBellIcon } from "@/components/icons/figma-icons";
 import { SidebarBrand } from "@/components/brand/SidebarBrand";
@@ -88,7 +88,11 @@ export const Header: React.FC<HeaderProps> = ({
           {isAssignments ? (
             <div className="flex items-center gap-2.5 min-w-0 flex-1">
               {title !== "Create Assignment" && (
-                <LayoutGrid className="h-[18px] w-[18px] text-[#a9a9a9] shrink-0" strokeWidth={2.2} />
+                title === "Exams" || title === "Upload Exam" ? (
+                  <GraduationCap className="h-[18px] w-[18px] text-[#a9a9a9] shrink-0" strokeWidth={2.2} />
+                ) : (
+                  <LayoutGrid className="h-[18px] w-[18px] text-[#a9a9a9] shrink-0" strokeWidth={2.2} />
+                )
               )}
               <h1 className="min-w-0 flex-1 truncate text-[16px] font-semibold leading-normal tracking-[-0.64px] text-[#a9a9a9]">
                 {assignmentsTitle}

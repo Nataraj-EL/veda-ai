@@ -161,10 +161,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
     active?: boolean;
   }> = [
     { label: "Home", href: "/", icon: LayoutGrid },
-    { label: "My Groups", href: "#", customIcon: MyGroupsIcon },
+    { label: "My Classroom", href: "#", customIcon: MyGroupsIcon },
     { label: "Assignments", href: "/", icon: FileText },
     { label: "Exams", href: "/exams", icon: GraduationCap },
-    { label: "AI Teacher's Toolkit", href: "#", customIcon: AiToolkitIcon },
     { label: "My Library", href: "#", customIcon: MyLibraryIcon },
   ];
 
