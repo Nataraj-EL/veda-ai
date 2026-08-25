@@ -5,6 +5,7 @@ import {
   LayoutGrid,
   FileText,
   Settings,
+  GraduationCap,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/utils/cn";
@@ -161,7 +162,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   }> = [
     { label: "Home", href: "/", icon: LayoutGrid },
     { label: "My Groups", href: "#", customIcon: MyGroupsIcon },
-    { label: "Assignments", href: "/", icon: FileText, active: true },
+    { label: "Assignments", href: "/", icon: FileText },
+    { label: "Exams", href: "/exams", icon: GraduationCap },
     { label: "AI Teacher's Toolkit", href: "#", customIcon: AiToolkitIcon },
     { label: "My Library", href: "#", customIcon: MyLibraryIcon },
   ];
@@ -215,7 +217,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
         >
           {navItems.map((item) => {
             // Highlight active page based on matching route path
-            const isActive = item.active || (pathname === "/" && item.label === "Assignments");
+            const isActive =
+              (item.label === "Exams" && (pathname === "/exams" || pathname.startsWith("/exams/"))) ||
+              (item.label === "Assignments" && (pathname === "/" || pathname.startsWith("/create") || pathname.startsWith("/output"))) ||
+              (item.label !== "Exams" && item.label !== "Assignments" && item.active);
             const iconColor = isActive
               ? "text-[#303030]"
               : isAssignments

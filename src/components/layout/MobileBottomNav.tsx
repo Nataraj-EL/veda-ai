@@ -58,6 +58,21 @@ const LibraryIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+const ExamsIcon = ({ className }: { className?: string }) => (
+  <svg
+    className={cn("w-[22px] h-[22px] shrink-0", className)}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+    <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
+  </svg>
+);
+
 const ToolkitIcon = ({ className }: { className?: string }) => (
   <svg
     className={cn("w-[22px] h-[22px] shrink-0", className)}
@@ -76,11 +91,12 @@ const ToolkitIcon = ({ className }: { className?: string }) => (
 
 export const MobileBottomNav: React.FC = () => {
   const pathname = usePathname();
-
+  
+  // Floating white circular + button with thin premium orange accent
   const items = [
     { label: "Home", href: "#", icon: HomeIcon },
     { label: "Assignments", href: "/", icon: AssignmentsIcon },
-    { label: "Library", href: "#", icon: LibraryIcon },
+    { label: "Exams", href: "/exams", icon: ExamsIcon },
     { label: "AI Toolkit", href: "/create", icon: ToolkitIcon },
   ];
 
@@ -111,8 +127,9 @@ export const MobileBottomNav: React.FC = () => {
         {items.map((item) => {
           // Dynamic tab highlighting matching active route
           const isCurrent = 
-            (item.label === "Assignments" && pathname === "/") ||
-            (item.label === "AI Toolkit" && (pathname === "/create" || pathname === "/output"));
+            (item.label === "Assignments" && pathname === "/" && !pathname.startsWith("/exams")) ||
+            (item.label === "Exams" && (pathname === "/exams" || pathname.startsWith("/exams/"))) ||
+            (item.label === "AI Toolkit" && (pathname === "/create" || pathname === "/output") && !pathname.startsWith("/exams"));
           
           return (
             <Link 

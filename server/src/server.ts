@@ -1,4 +1,5 @@
 import http from "http";
+import fs from "fs";
 import { createApp } from "./app.js";
 import { connectDatabase, disconnectDatabase } from "./config/db.js";
 import { env } from "./config/env.js";
@@ -15,6 +16,10 @@ import { initSocketServer } from "./websocket/socket.js";
 import { logger } from "./utils/logger.js";
 
 async function bootstrap(): Promise<void> {
+  // Ensure uploads directory exists
+  if (!fs.existsSync("uploads")) {
+    fs.mkdirSync("uploads");
+  }
   try {
     await connectDatabase();
   } catch (error) {
