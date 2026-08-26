@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ChevronDown, X, LayoutGrid, ClipboardList } from "lucide-react";
+import { ChevronDown, X, LayoutGrid, ClipboardList, HelpCircle, Sparkles } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { HeaderBackArrowIcon, HeaderBellIcon } from "@/components/icons/figma-icons";
 import { SidebarBrand } from "@/components/brand/SidebarBrand";
@@ -106,12 +106,22 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         <div className="flex shrink-0 items-center gap-[10px]">
+          {isAssignments && (
+            <button
+              type="button"
+              className="flex h-9 w-9 shrink-0 items-center justify-center text-[#303030] transition-standard cursor-pointer hover:opacity-75"
+              aria-label="Help"
+            >
+              <HelpCircle className="h-[20px] w-[20px] text-[#303030]" strokeWidth={1.8} />
+            </button>
+          )}
+
           <button
             type="button"
             className={cn(
               "relative flex shrink-0 items-center justify-center text-[#303030] transition-standard cursor-pointer",
               isAssignments
-                ? "h-9 w-9 rounded-full bg-[#f6f6f6]"
+                ? "h-9 w-9 hover:opacity-75"
                 : "rounded-full p-1.5 text-neutral-secondary hover:bg-page-fill hover:text-neutral-primary"
             )}
             aria-label="View notifications"
@@ -119,12 +129,22 @@ export const Header: React.FC<HeaderProps> = ({
             {isAssignments ? (
               <>
                 <HeaderBellIcon />
-                <span className="absolute left-[27px] top-px h-2 w-2 rounded-full bg-[#ff5623] border border-white" />
+                <span className="absolute right-[3px] top-[3px] h-2 w-2 rounded-full bg-[#ff5623] border border-white" />
               </>
             ) : (
               <HeaderBellIcon className="h-5 w-5" />
             )}
           </button>
+
+          {isAssignments && (
+            <button
+              type="button"
+              className="flex h-9 w-9 shrink-0 items-center justify-center text-[#303030] transition-standard cursor-pointer hover:opacity-75"
+              aria-label="AI Toolkit"
+            >
+              <Sparkles className="h-[20px] w-[20px] text-[#303030]" strokeWidth={1.8} />
+            </button>
+          )}
 
           <div
             onClick={() => setIsSettingsOpen(true)}
