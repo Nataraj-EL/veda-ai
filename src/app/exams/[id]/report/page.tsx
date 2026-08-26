@@ -262,7 +262,7 @@ export default function GradedExamReportPage() {
                   {Array.from({ length: totalPages }).map((_, idx) => {
                     const pageNum = idx + 1;
                     return (
-                      <div key={pageNum} className="space-y-2 break-inside-avoid">
+                      <div key={pageNum} className={cn("space-y-2 break-inside-avoid", pageNum > 1 && "print:break-before-page")}>
                         <p className="text-xs font-extrabold text-[#303030]">
                           Answer Sheet Page {pageNum}
                         </p>
@@ -284,7 +284,7 @@ export default function GradedExamReportPage() {
                                 return (
                                   <div
                                     key={`${aIdx}-${rIdx}`}
-                                    className="absolute border-[2.5px] border-[#ff5623] bg-[#ff5623]/8 rounded-xl transition-all duration-300 pointer-events-none"
+                                    className="absolute border-[2.5px] border-[#ff5623] bg-[#ff5623]/8 rounded-xl transition-all duration-300 pointer-events-none flex flex-col justify-start overflow-hidden"
                                     style={{
                                       left: `${x}%`,
                                       top: `${y}%`,
@@ -292,7 +292,7 @@ export default function GradedExamReportPage() {
                                       height: `${height}%`,
                                     }}
                                   >
-                                    <div className="absolute -top-5 left-0 bg-[#ff5623] text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm select-none">
+                                    <div className="bg-[#ff5623] text-white text-[8px] font-extrabold px-1.5 py-0.5 rounded-br shadow-sm self-start select-none leading-none">
                                       Q{answer.questionNumber} ({mapping?.score ?? 0} M)
                                     </div>
                                   </div>
