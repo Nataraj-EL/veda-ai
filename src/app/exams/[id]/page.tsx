@@ -258,6 +258,14 @@ export default function ExamAssessmentPage() {
                   AI Assessment &amp; Answer Mapping • Score: {totalScore} / {maxMarks} ({percent}%)
                 </p>
               </div>
+              <button
+                type="button"
+                onClick={() => router.push(`/exams/${currentExam.id}/report`)}
+                className="inline-flex h-9 items-center gap-1.5 rounded-full bg-white border border-black/10 px-4 text-xs font-extrabold tracking-tight text-[#303030] hover:bg-slate-50 cursor-pointer transition-standard"
+              >
+                <FileText className="w-4 h-4 text-[#ff5623]" />
+                <span>Print / Save as PDF</span>
+              </button>
             </div>
 
             {/* Split panels - side-by-side on desktop */}
