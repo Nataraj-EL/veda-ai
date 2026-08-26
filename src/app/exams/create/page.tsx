@@ -354,16 +354,16 @@ export default function CreateExamPage() {
                     type="submit"
                     disabled={!questionPaper || !answerSheet}
                     className={cn(
-                      "inline-flex h-12 cursor-pointer select-none items-center justify-center gap-1.5 rounded-full border-none px-8 text-[16px] font-semibold tracking-[-0.64px] transition-standard",
+                      "inline-flex h-11 cursor-pointer select-none items-center justify-center gap-1.5 rounded-full px-6 text-[14px] font-semibold tracking-[-0.56px] transition-standard border",
                       questionPaper && answerSheet
-                        ? "bg-[#181818] text-white shadow-none hover:bg-[#272727]"
-                        : "cursor-not-allowed bg-[#c5c5c5] text-white/70 shadow-none"
+                        ? "bg-[#303030] text-white border-white/15 hover:bg-[#3d3d3d]"
+                        : "cursor-not-allowed bg-[#c5c5c5] text-white/70 border-transparent"
                     )}
                   >
                     <span>Start Mapping</span>
-                    <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
+                    <ArrowRight className="h-4 w-4" strokeWidth={2.2} />
                   </button>
-                  <p className="mt-3 max-w-[360px] text-center text-[12px] leading-relaxed tracking-[-0.48px] text-[#5e5e5e]/50">
+                  <p className="mt-3 max-w-[410px] text-center text-[14px] leading-[22px] tracking-[-0.8px] text-[#5e5e5e]/80">
                     Once both files are uploaded, you&apos;ll be able to map answers with questions
                   </p>
                 </div>

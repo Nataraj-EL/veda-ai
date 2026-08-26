@@ -95,8 +95,8 @@ export default function ExamsDashboard() {
                 </div>
 
                 <Link href="/exams/create" passHref>
-                  <span className="inline-flex h-12 cursor-pointer select-none items-center justify-center gap-2 rounded-full border border-white/50 bg-[#181818] px-6 text-[16px] font-medium tracking-[-0.64px] text-white shadow-none transition-standard hover:bg-[#272727]">
-                    <Plus className="w-5 h-5" />
+                  <span className="inline-flex h-11 cursor-pointer select-none items-center justify-center gap-1.5 rounded-full border border-white/15 bg-[#303030] px-5 text-[14px] font-semibold tracking-[-0.56px] text-white transition-standard hover:bg-[#3d3d3d]">
+                    <Plus className="w-4 h-4" />
                     <span>Upload Exam Files</span>
                   </span>
                 </Link>
@@ -115,7 +115,7 @@ export default function ExamsDashboard() {
                     </p>
                   </div>
                   <Link href="/exams/create" passHref>
-                    <span className="hidden md:inline-flex h-10 cursor-pointer select-none items-center justify-center gap-1 rounded-full border border-white/50 bg-[#181818] px-5 text-[14px] font-semibold tracking-[-0.56px] text-white shadow-none transition-standard hover:bg-[#272727]">
+                    <span className="hidden md:inline-flex h-10 cursor-pointer select-none items-center justify-center gap-1 rounded-full border border-white/15 bg-[#303030] px-5 text-[14px] font-semibold tracking-[-0.56px] text-white transition-standard hover:bg-[#3d3d3d]">
                       <Plus className="w-4 h-4" />
                       <span>Upload Exam</span>
                     </span>
@@ -228,15 +228,15 @@ export default function ExamsDashboard() {
                   ))}
                 </div>
 
-                {/* Mobile Create Button */}
-                <div className="md:hidden flex justify-center pb-2 pt-2">
-                  <Link href="/exams/create" passHref>
-                    <span className="inline-flex h-12 cursor-pointer select-none items-center justify-center gap-1 rounded-full border border-white/50 bg-[#181818] px-6 text-[16px] font-medium tracking-[-0.64px] text-white shadow-none transition-standard hover:bg-[#272727]">
-                      <Plus className="h-5 w-5" strokeWidth={2} />
-                      <span>Upload Exam Paper</span>
-                    </span>
-                  </Link>
-                </div>
+                 {/* Mobile Create Button */}
+                 <div className="md:hidden flex justify-center pb-2 pt-2">
+                   <Link href="/exams/create" passHref>
+                     <span className="inline-flex h-11 cursor-pointer select-none items-center justify-center gap-1.5 rounded-full border border-white/15 bg-[#303030] px-5 text-[14px] font-semibold tracking-[-0.56px] text-white transition-standard hover:bg-[#3d3d3d]">
+                       <Plus className="h-4 w-4" />
+                       <span>Upload Exam Paper</span>
+                     </span>
+                   </Link>
+                 </div>
               </div>
             )}
           </div>
