@@ -204,14 +204,21 @@ export default function CreateExamPage() {
                 
                 {/* Header Title block — Figma Extraction flow */}
                 <div className="w-full text-center flex flex-col items-center justify-center mb-6 md:mb-8">
-                  <h2 className="flex flex-col items-center justify-center gap-2 text-[#303030] sm:flex-row sm:gap-3 leading-none select-none">
-                    {/* Upload - 130 Hug x 48 Hug */}
-                    <span className="flex h-12 items-center justify-center text-[28px] font-extrabold tracking-[-1.12px] md:text-[36px]">
-                      Upload
+                  <h2 className="text-[#303030] select-none text-center">
+                    {/* Desktop layout: Upload + Badge side-by-side */}
+                    <span className="hidden sm:flex flex-row items-center justify-center gap-3 leading-none">
+                      {/* Upload - 130 Hug x 48 Hug */}
+                      <span className="flex h-12 items-center justify-center text-[28px] font-extrabold tracking-[-1.12px] md:text-[36px]">
+                        Upload
+                      </span>
+                      {/* Question Paper & Answer Sheets - 613 Hug x 56 Hug */}
+                      <span className="inline-flex h-[56px] items-center justify-center rounded-[12px] bg-[#ff5623]/10 px-4 text-[22px] font-extrabold tracking-[-0.88px] text-[#ff5623] md:text-[30px] whitespace-nowrap">
+                        Question Paper &amp; Answer Sheets
+                      </span>
                     </span>
-                    {/* Question Paper & Answer Sheets - 613 Hug x 56 Hug */}
-                    <span className="inline-flex h-[56px] items-center justify-center rounded-[12px] bg-[#ff5623]/10 px-4 text-[22px] font-extrabold tracking-[-0.88px] text-[#ff5623] md:text-[30px] whitespace-nowrap">
-                      Question Paper &amp; Answer Sheets
+                    {/* Mobile layout: Plain centered text wrapping naturally */}
+                    <span className="block sm:hidden text-[22px] font-extrabold tracking-[-0.88px] leading-tight px-4">
+                      Upload Question Paper &amp; Answer Sheets
                     </span>
                   </h2>
                   <p className="text-[14px] font-normal tracking-[-0.56px] text-[#5e5e5e]/55 md:text-[16px] mt-2">
