@@ -263,15 +263,36 @@ export default function ExamAssessmentPage() {
         <Sidebar variant="assignments" assignmentCount={0} />
         <div className="flex min-w-0 flex-1 flex-col min-h-0 overflow-hidden md:px-3 md:pt-3">
           <Header title="Exams" variant="assignments" backHref="/exams" />
-          <div className="flex flex-grow items-center justify-center">
-            <div className="flex flex-col items-center space-y-3">
-              <div className="relative h-12 w-12">
-                <div className="absolute inset-0 rounded-full border-4 border-slate-100" />
-                <div className="absolute inset-0 animate-spin rounded-full border-4 border-t-[#ff5623]" />
+          <div className="flex-1 min-h-0 flex flex-col p-4 md:p-6 overflow-hidden">
+            <div className="flex-1 w-full bg-white rounded-[24px] border border-black/5 shadow-[0_1px_2px_rgba(0,0,0,0.02)] flex flex-col items-center justify-center">
+              <div className="flex flex-col items-center justify-center gap-6 px-6 text-center">
+                {/* Custom Sparkles SVG */}
+                <div className="relative flex h-28 w-28 items-center justify-center">
+                  <svg
+                    className="h-24 w-24 text-[#ff5623]"
+                    viewBox="0 0 100 100"
+                    fill="currentColor"
+                    aria-hidden
+                  >
+                    {/* Large Sparkle */}
+                    <path d="M70 20 Q70 35 85 35 Q70 35 70 50 Q70 35 55 35 Q70 35 70 20 Z" />
+                    {/* Medium Sparkle */}
+                    <path d="M35 45 Q35 55 45 55 Q35 55 35 65 Q35 55 25 55 Q35 55 35 45 Z" />
+                    {/* Small Sparkle */}
+                    <path d="M62 60 Q62 64 66 64 Q62 64 62 68 Q62 64 58 64 Q62 64 62 60 Z" />
+                    {/* Tiny Dot */}
+                    <circle cx="28" cy="32" r="2.5" />
+                  </svg>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-[28px] md:text-[32px] font-extrabold tracking-[-1.04px] text-[#303030] leading-tight">
+                    Loading exam...
+                  </h3>
+                  <p className="text-[14px] md:text-[16px] font-normal tracking-[-0.56px] text-[#5e5e5e]/70">
+                    Retrieving grading details
+                  </p>
+                </div>
               </div>
-              <p className="text-sm font-semibold text-[#5e5e5e]/80">
-                Loading exam assessment...
-              </p>
             </div>
           </div>
         </div>
