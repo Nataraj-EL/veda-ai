@@ -72,7 +72,7 @@ export default function GradedExamReportPage() {
             {/* Top dark action banner (hidden in print) */}
             <div className="bg-[#27272A] text-white border border-neutral-border rounded-[28px] p-6 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4 no-print select-none mb-6">
               <div className="min-w-0 text-left space-y-1">
-                <p className="text-xs font-semibold text-brand-light/95 leading-relaxed">
+                <p className="text-xs font-semibold text-white/90 leading-relaxed">
                   Certainly, {preferences?.teacherName || "Teacher"}! Here is the printable report card containing grading metrics and coordinate overlays.
                 </p>
               </div>
@@ -80,14 +80,14 @@ export default function GradedExamReportPage() {
               <div className="flex gap-3 shrink-0">
                 <button
                   onClick={() => router.push(`/exams/${examId}`)}
-                  className="inline-flex items-center justify-center gap-1.5 h-11 px-4 rounded-[12px] bg-zinc-800 hover:bg-zinc-700 text-white transition-standard cursor-pointer border border-zinc-700 font-medium text-sm"
+                  className="inline-flex items-center justify-center gap-1.5 h-11 px-4 rounded-full bg-zinc-800 hover:bg-zinc-700 text-white transition-standard cursor-pointer border border-zinc-700 font-medium text-sm"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   <span>Back to Details</span>
                 </button>
                 <button
                   onClick={() => window.print()}
-                  className="inline-flex items-center justify-center gap-1.5 h-11 px-5 rounded-[12px] bg-white hover:bg-slate-100 text-neutral-primary transition-standard cursor-pointer font-bold text-sm"
+                  className="inline-flex items-center justify-center gap-1.5 h-11 px-5 rounded-full bg-white hover:bg-slate-100 text-neutral-primary transition-standard cursor-pointer font-bold text-sm"
                 >
                   <FileText className="w-4 h-4 text-[#ff5623]" />
                   <span>Print / Save as PDF</span>
