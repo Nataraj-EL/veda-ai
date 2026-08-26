@@ -210,14 +210,18 @@ export default function CreateExamPage() {
               >
                 
                 {/* Header Title block — Figma Extraction flow */}
-                <div className="w-full space-y-2 text-center">
-                  <h2 className="text-[26px] font-extrabold leading-[1.2] tracking-[-1.04px] text-[#303030] md:text-[36px]">
-                    Upload{" "}
-                    <span className="inline-block rounded-full bg-[#ff5623]/12 px-3.5 py-1 text-[#ff5623]">
+                <div className="w-full space-y-2 text-center flex flex-col items-center justify-center">
+                  <h2 className="flex flex-col items-center justify-center gap-2 text-[#303030] sm:flex-row sm:gap-3 leading-none select-none">
+                    {/* Upload - 130 Hug x 48 Hug */}
+                    <span className="flex h-12 items-center justify-center text-[28px] font-extrabold tracking-[-1.12px] md:text-[36px]">
+                      Upload
+                    </span>
+                    {/* Question Paper & Answer Sheets - 613 Hug x 56 Hug */}
+                    <span className="inline-flex h-[56px] items-center justify-center rounded-[12px] bg-[#ff5623]/10 px-4 text-[22px] font-extrabold tracking-[-0.88px] text-[#ff5623] md:text-[30px] whitespace-nowrap">
                       Question Paper &amp; Answer Sheets
                     </span>
                   </h2>
-                  <p className="text-[14px] font-normal tracking-[-0.56px] text-[#5e5e5e]/55 md:text-[16px]">
+                  <p className="text-[14px] font-normal tracking-[-0.56px] text-[#5e5e5e]/55 md:text-[16px] mt-2">
                     Upload both files to get started
                   </p>
                 </div>
