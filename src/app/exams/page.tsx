@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { Plus, Search, MoreVertical, FileText, GraduationCap } from "lucide-react";
+import { Plus, Search, MoreVertical, FileText, ClipboardList } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
@@ -83,7 +83,7 @@ export default function ExamsDashboard() {
               /* Empty state screen */
               <div className="flex flex-col items-center justify-center min-h-[60vh] max-w-lg mx-auto text-center space-y-5">
                 <div className="bg-white/40 p-6 rounded-full border border-black/5 shadow-inner">
-                  <GraduationCap className="w-16 h-16 text-[#ff5623]" strokeWidth={1.5} />
+                  <ClipboardList className="w-16 h-16 text-[#ff5623]" strokeWidth={1.5} />
                 </div>
                 <div className="space-y-2">
                   <h2 className="text-[20px] font-bold tracking-[-0.8px] text-[#303030]">
