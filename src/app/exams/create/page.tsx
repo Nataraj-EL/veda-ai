@@ -226,7 +226,7 @@ export default function CreateExamPage() {
                 <div className="relative my-2 h-[180px] w-[180px] flex items-center justify-center">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src="/images/monkey-avatar.png"
+                    src="/images/teacher-avatar.png"
                     alt="Teacher Illustration"
                     width={180}
                     height={180}
