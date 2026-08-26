@@ -206,11 +206,11 @@ export default function CreateExamPage() {
 
               <form
                 onSubmit={handleSubmit}
-                className="w-full max-w-[820px] flex flex-col items-center gap-6 rounded-[28px] bg-white/90 px-5 py-8 shadow-[0_1px_0_rgba(0,0,0,0.04)] md:px-10 md:py-10"
+                className="w-full max-w-[820px] flex flex-col items-center"
               >
                 
                 {/* Header Title block — Figma Extraction flow */}
-                <div className="w-full space-y-2 text-center flex flex-col items-center justify-center">
+                <div className="w-full text-center flex flex-col items-center justify-center mb-6 md:mb-8">
                   <h2 className="flex flex-col items-center justify-center gap-2 text-[#303030] sm:flex-row sm:gap-3 leading-none select-none">
                     {/* Upload - 130 Hug x 48 Hug */}
                     <span className="flex h-12 items-center justify-center text-[28px] font-extrabold tracking-[-1.12px] md:text-[36px]">
@@ -227,7 +227,7 @@ export default function CreateExamPage() {
                 </div>
 
                 {/* Figma teacher avatar illustration */}
-                <div className="relative my-2 h-[180px] w-[180px] flex items-center justify-center">
+                <div className="relative mb-6 md:mb-8 h-[180px] w-[180px] flex items-center justify-center">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src="/images/teacher-avatar.png"
@@ -239,7 +239,7 @@ export default function CreateExamPage() {
                 </div>
 
                 {/* Upload boxes container card — Figma border, radius, spacing and padding */}
-                <div className="w-full rounded-[24px] border border-black/[0.08] bg-[#f9f9f9] p-4 md:p-6">
+                <div className="w-full rounded-[24px] border border-black/[0.08] bg-[#f9f9f9] p-4 md:p-6 mb-8 md:mb-10">
                   <div className="flex w-full flex-col gap-4 md:flex-row md:gap-5">
                     
                     {/* 1. Question Paper Card */}
