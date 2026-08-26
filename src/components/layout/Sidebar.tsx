@@ -5,7 +5,7 @@ import {
   LayoutGrid,
   FileText,
   Settings,
-  GraduationCap,
+  ClipboardList,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/utils/cn";
@@ -163,7 +163,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { label: "Home", href: "/", icon: LayoutGrid },
     { label: "My Classroom", href: "#", customIcon: MyGroupsIcon },
     { label: "Assignments", href: "/", icon: FileText },
-    { label: "Exams", href: "/exams", icon: GraduationCap },
+    { label: "Exams", href: "/exams", icon: ClipboardList },
     { label: "My Library", href: "#", customIcon: MyLibraryIcon },
   ];
 

@@ -222,131 +222,133 @@ export default function CreateExamPage() {
                   </p>
                 </div>
 
-                {/* Concentric circle illustration */}
-                <div className="relative my-2 flex items-center justify-center">
-                  <div className="absolute h-36 w-36 rounded-full border border-dashed border-[#ff5623]/30 animate-[spin_60s_linear_infinite]" />
-                  <div className="absolute h-44 w-44 rounded-full border border-dashed border-black/5" />
-                  <div className="relative flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border border-orange-200/50 bg-gradient-to-br from-orange-50 to-orange-100 shadow-inner">
-                    <svg className="h-14 w-14 text-[#ff5623]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
-                      <path d="M12 14c3.31 0 6-2.69 6-6s-2.69-6-6-6-6 2.69-6 6 2.69 6 6 6z" strokeLinecap="round" strokeLinejoin="round" />
-                      <path d="M12 16c-4.42 0-8 2.58-8 6h16c0-3.42-3.58-6-8-6z" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </div>
+                {/* Figma teacher avatar illustration */}
+                <div className="relative my-2 h-[180px] w-[180px] flex items-center justify-center">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/images/monkey-avatar.png"
+                    alt="Teacher Illustration"
+                    width={180}
+                    height={180}
+                    className="h-full w-full object-contain"
+                  />
                 </div>
 
-                {/* Upload boxes — stacked mobile, side-by-side desktop */}
-                <div className="flex w-full flex-col gap-4 md:flex-row md:gap-5">
-                  
-                  {/* 1. Question Paper Card */}
-                  <div className="flex-1">
-                    <input
-                      type="file"
-                      id="question-paper-input"
-                      accept=".pdf,.png,.jpg,.jpeg,.webp"
-                      onChange={handleQuestionPaperChange}
-                      className="hidden"
-                    />
-                    {!questionPaper ? (
-                      <div
-                        onClick={() => document.getElementById("question-paper-input")?.click()}
-                        className={cn(
-                          "flex h-44 cursor-pointer flex-col items-center justify-center rounded-[20px] border-2 border-dashed border-black/10 bg-[#fafafa] p-6 text-center transition-standard hover:border-[#ff5623]/50",
-                          questionPaperError && "border-feedback-error bg-feedback-error/5"
-                        )}
-                      >
-                        <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-white">
-                          <Upload className="h-5 w-5 text-[#303030]" strokeWidth={2} />
-                        </div>
-                        <p className="text-sm font-semibold text-[#303030]">
-                          Upload <span className="text-[#ff5623]">Question Paper</span>
-                        </p>
-                        <p className="mt-1 text-[11px] text-neutral-secondary/50">Max 10MB</p>
-                      </div>
-                    ) : (
-                      <div className="relative flex min-h-[88px] items-center gap-3 rounded-[16px] border border-black/10 bg-[#f7f7f7] px-4 py-3 md:min-h-[100px]">
-                        <button
-                          type="button"
-                          onClick={() => setQuestionPaper(null)}
-                          className="absolute right-2.5 top-2.5 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border-none bg-transparent text-[#5e5e5e] hover:bg-black/5"
-                          aria-label="Remove question paper"
+                {/* Upload boxes container card — Figma border, radius, spacing and padding */}
+                <div className="w-full rounded-[24px] border border-black/[0.08] bg-[#f9f9f9] p-4 md:p-6">
+                  <div className="flex w-full flex-col gap-4 md:flex-row md:gap-5">
+                    
+                    {/* 1. Question Paper Card */}
+                    <div className="flex-1">
+                      <input
+                        type="file"
+                        id="question-paper-input"
+                        accept=".pdf,.png,.jpg,.jpeg,.webp"
+                        onChange={handleQuestionPaperChange}
+                        className="hidden"
+                      />
+                      {!questionPaper ? (
+                        <div
+                          onClick={() => document.getElementById("question-paper-input")?.click()}
+                          className={cn(
+                            "flex h-44 cursor-pointer flex-col items-center justify-center rounded-[20px] border-2 border-dashed border-black/10 bg-white p-6 text-center transition-standard hover:border-[#ff5623]/50",
+                            questionPaperError && "border-feedback-error bg-feedback-error/5"
+                          )}
                         >
-                          <span className="text-[16px] leading-none">×</span>
-                        </button>
-                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#ff5623]/10 text-[#ff5623]">
-                          <FileText className="h-5 w-5" strokeWidth={1.75} />
-                        </div>
-                        <div className="min-w-0 flex-1 pr-6">
-                          <p className="truncate text-[14px] font-semibold tracking-[-0.56px] text-[#303030]">
-                            {questionPaper.name}
+                          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-white">
+                            <Upload className="h-5 w-5 text-[#303030]" strokeWidth={2} />
+                          </div>
+                          <p className="text-sm font-semibold text-[#303030]">
+                            Upload <span className="text-[#ff5623]">Question Paper</span>
                           </p>
-                          <p className="mt-0.5 text-[12px] text-[#5e5e5e]/70">
-                            {(questionPaper.size / 1024 / 1024).toFixed(1)} MB
-                            <span className="mx-1.5 text-[#5e5e5e]/40">•</span>
-                            <span className="font-semibold text-[#10b981]">100%</span>
-                          </p>
+                          <p className="mt-1 text-[11px] text-[#5e5e5e]/50">Max 10MB</p>
                         </div>
-                      </div>
-                    )}
-                    {questionPaperError && (
-                      <p className="mt-2 text-center text-xs font-medium text-feedback-error">{questionPaperError}</p>
-                    )}
-                  </div>
+                      ) : (
+                        <div className="relative flex min-h-[88px] items-center gap-3 rounded-[16px] border border-black/10 bg-[#f7f7f7] px-4 py-3 md:min-h-[100px]">
+                          <button
+                            type="button"
+                            onClick={() => setQuestionPaper(null)}
+                            className="absolute right-2.5 top-2.5 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border-none bg-transparent text-[#5e5e5e] hover:bg-black/5"
+                            aria-label="Remove question paper"
+                          >
+                            <span className="text-[16px] leading-none">×</span>
+                          </button>
+                          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#ff5623]/10 text-[#ff5623]">
+                            <FileText className="h-5 w-5" strokeWidth={1.75} />
+                          </div>
+                          <div className="min-w-0 flex-1 pr-6">
+                            <p className="truncate text-[14px] font-semibold tracking-[-0.56px] text-[#303030]">
+                              {questionPaper.name}
+                            </p>
+                            <p className="mt-0.5 text-[12px] text-[#5e5e5e]/70">
+                              {(questionPaper.size / 1024 / 1024).toFixed(1)} MB
+                              <span className="mx-1.5 text-[#5e5e5e]/40">•</span>
+                              <span className="font-semibold text-[#10b981]">100%</span>
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                      {questionPaperError && (
+                        <p className="mt-2 text-center text-xs font-medium text-feedback-error">{questionPaperError}</p>
+                      )}
+                    </div>
 
-                  {/* 2. Answer Sheet Card */}
-                  <div className="flex-1">
-                    <input
-                      type="file"
-                      id="answer-sheet-input"
-                      accept=".pdf,.png,.jpg,.jpeg,.webp"
-                      onChange={handleAnswerSheetChange}
-                      className="hidden"
-                    />
-                    {!answerSheet ? (
-                      <div
-                        onClick={() => document.getElementById("answer-sheet-input")?.click()}
-                        className={cn(
-                          "flex h-44 cursor-pointer flex-col items-center justify-center rounded-[20px] border-2 border-dashed border-black/10 bg-[#fafafa] p-6 text-center transition-standard hover:border-[#ff5623]/50",
-                          answerSheetError && "border-feedback-error bg-feedback-error/5"
-                        )}
-                      >
-                        <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-white">
-                          <Upload className="h-5 w-5 text-[#303030]" strokeWidth={2} />
-                        </div>
-                        <p className="text-sm font-semibold text-[#303030]">
-                          Upload <span className="text-[#ff5623]">Answer Sheet</span>
-                        </p>
-                        <p className="mt-1 text-[11px] text-neutral-secondary/50">Max 10MB</p>
-                      </div>
-                    ) : (
-                      <div className="relative flex min-h-[88px] items-center gap-3 rounded-[16px] border border-black/10 bg-[#f7f7f7] px-4 py-3 md:min-h-[100px]">
-                        <button
-                          type="button"
-                          onClick={() => setAnswerSheet(null)}
-                          className="absolute right-2.5 top-2.5 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border-none bg-transparent text-[#5e5e5e] hover:bg-black/5"
-                          aria-label="Remove answer sheet"
+                    {/* 2. Answer Sheet Card */}
+                    <div className="flex-1">
+                      <input
+                        type="file"
+                        id="answer-sheet-input"
+                        accept=".pdf,.png,.jpg,.jpeg,.webp"
+                        onChange={handleAnswerSheetChange}
+                        className="hidden"
+                      />
+                      {!answerSheet ? (
+                        <div
+                          onClick={() => document.getElementById("answer-sheet-input")?.click()}
+                          className={cn(
+                            "flex h-44 cursor-pointer flex-col items-center justify-center rounded-[20px] border-2 border-dashed border-black/10 bg-white p-6 text-center transition-standard hover:border-[#ff5623]/50",
+                            answerSheetError && "border-feedback-error bg-feedback-error/5"
+                          )}
                         >
-                          <span className="text-[16px] leading-none">×</span>
-                        </button>
-                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#ff5623]/10 text-[#ff5623]">
-                          <FileText className="h-5 w-5" strokeWidth={1.75} />
-                        </div>
-                        <div className="min-w-0 flex-1 pr-6">
-                          <p className="truncate text-[14px] font-semibold tracking-[-0.56px] text-[#303030]">
-                            {answerSheet.name}
+                          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-white">
+                            <Upload className="h-5 w-5 text-[#303030]" strokeWidth={2} />
+                          </div>
+                          <p className="text-sm font-semibold text-[#303030]">
+                            Upload <span className="text-[#ff5623]">Answer Sheet</span>
                           </p>
-                          <p className="mt-0.5 text-[12px] text-[#5e5e5e]/70">
-                            {(answerSheet.size / 1024 / 1024).toFixed(1)} MB
-                            <span className="mx-1.5 text-[#5e5e5e]/40">•</span>
-                            <span className="font-semibold text-[#10b981]">100%</span>
-                          </p>
+                          <p className="mt-1 text-[11px] text-[#5e5e5e]/50">Max 10MB</p>
                         </div>
-                      </div>
-                    )}
-                    {answerSheetError && (
-                      <p className="mt-2 text-center text-xs font-medium text-feedback-error">{answerSheetError}</p>
-                    )}
-                  </div>
+                      ) : (
+                        <div className="relative flex min-h-[88px] items-center gap-3 rounded-[16px] border border-black/10 bg-[#f7f7f7] px-4 py-3 md:min-h-[100px]">
+                          <button
+                            type="button"
+                            onClick={() => setAnswerSheet(null)}
+                            className="absolute right-2.5 top-2.5 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border-none bg-transparent text-[#5e5e5e] hover:bg-black/5"
+                            aria-label="Remove answer sheet"
+                          >
+                            <span className="text-[16px] leading-none">×</span>
+                          </button>
+                          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#ff5623]/10 text-[#ff5623]">
+                            <FileText className="h-5 w-5" strokeWidth={1.75} />
+                          </div>
+                          <div className="min-w-0 flex-1 pr-6">
+                            <p className="truncate text-[14px] font-semibold tracking-[-0.56px] text-[#303030]">
+                              {answerSheet.name}
+                            </p>
+                            <p className="mt-0.5 text-[12px] text-[#5e5e5e]/70">
+                              {(answerSheet.size / 1024 / 1024).toFixed(1)} MB
+                              <span className="mx-1.5 text-[#5e5e5e]/40">•</span>
+                              <span className="font-semibold text-[#10b981]">100%</span>
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                      {answerSheetError && (
+                        <p className="mt-2 text-center text-xs font-medium text-feedback-error">{answerSheetError}</p>
+                      )}
+                    </div>
 
+                  </div>
                 </div>
 
                 {/* Start Mapping / Start Grading CTA */}
