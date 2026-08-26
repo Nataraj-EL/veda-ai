@@ -175,6 +175,23 @@ export default function ExamAssessmentPage() {
     }
   };
 
+  const handleToggleGradingStatus = async () => {
+    if (!currentExam) return;
+    setIsSaving(true);
+    try {
+      const newStatus = currentExam.gradingStatus === "completed" ? "pending" : "completed";
+      await updateExam(currentExam.id, userId, {
+        gradingStatus: newStatus,
+      });
+      alert(`Grading marked as ${newStatus === "completed" ? "Completed" : "Pending Review"}!`);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to update grading status.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   if (isLoading || !currentExam) {
     return (
       <div className="flex h-screen bg-page-fill text-neutral-primary font-sans overflow-hidden">
@@ -199,6 +216,10 @@ export default function ExamAssessmentPage() {
   const activeAnswer = currentExam.answers?.find((a) => a.questionNumber === selectedQuestionNumber);
   const isUnanswered = newRegions.length === 0;
 
+  const maxMarks = currentExam.questions?.reduce((sum, q) => sum + (q.marks || 0), 0) || 0;
+  const totalScore = currentExam.mappings?.reduce((sum, m) => sum + (m.score || 0), 0) || 0;
+  const percent = maxMarks > 0 ? Math.round((totalScore / maxMarks) * 100) : 0;
+
   const totalPages = 2; // Simulated document pages
 
   return (
@@ -220,11 +241,21 @@ export default function ExamAssessmentPage() {
             {/* Top metadata bar */}
             <div className="flex items-center justify-between mb-4 border-b border-black/5 pb-3">
               <div>
-                <h2 className="text-[20px] font-extrabold tracking-tight text-[#303030]">
-                  {currentExam.title}
-                </h2>
-                <p className="text-xs text-[#5e5e5e]/55 font-medium mt-0.5">
-                  AI Assessment &amp; Answer Mapping
+                <div className="flex items-center gap-2">
+                  <h2 className="text-[20px] font-extrabold tracking-tight text-[#303030]">
+                    {currentExam.title}
+                  </h2>
+                  <span className={cn(
+                    "text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border",
+                    currentExam.gradingStatus === "completed"
+                      ? "bg-emerald-50 text-emerald-600 border-emerald-200/55"
+                      : "bg-amber-50 text-amber-600 border-amber-200/55"
+                  )}>
+                    {currentExam.gradingStatus === "completed" ? "Graded" : "Pending Review"}
+                  </span>
+                </div>
+                <p className="text-xs text-[#5e5e5e]/55 font-semibold mt-1">
+                  AI Assessment &amp; Answer Mapping • Score: {totalScore} / {maxMarks} ({percent}%)
                 </p>
               </div>
             </div>
@@ -366,16 +397,33 @@ export default function ExamAssessmentPage() {
                       />
                     </div>
 
-                    {/* Action button */}
-                    <button
-                      type="button"
-                      disabled={isSaving}
-                      onClick={handleSaveChanges}
-                      className="w-full flex h-10 items-center justify-center gap-1.5 rounded-full bg-[#181818] hover:bg-[#272727] text-white text-[13px] font-bold tracking-tight shadow-none transition-standard cursor-pointer disabled:opacity-50"
-                    >
-                      <Save className="w-4 h-4" />
-                      <span>{isSaving ? "Saving..." : "Save Assessment"}</span>
-                    </button>
+                    {/* Action buttons */}
+                    <div className="flex gap-2 mt-4 pt-4 border-t border-black/5">
+                      <button
+                        type="button"
+                        disabled={isSaving}
+                        onClick={handleSaveChanges}
+                        className="flex-1 flex h-10 items-center justify-center gap-1.5 rounded-full bg-[#181818] hover:bg-[#272727] text-white text-[13px] font-bold tracking-tight shadow-none transition-standard cursor-pointer disabled:opacity-50"
+                      >
+                        <Save className="w-4 h-4" />
+                        <span>{isSaving ? "Saving..." : "Save Details"}</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        disabled={isSaving}
+                        onClick={handleToggleGradingStatus}
+                        className={cn(
+                          "flex-1 flex h-10 items-center justify-center gap-1.5 rounded-full text-[13px] font-bold tracking-tight transition-standard cursor-pointer disabled:opacity-50 border",
+                          currentExam.gradingStatus === "completed"
+                            ? "bg-emerald-50 text-emerald-600 border-emerald-200 hover:bg-emerald-100/50"
+                            : "bg-white text-[#303030] border-black/10 hover:bg-slate-50"
+                        )}
+                      >
+                        <CheckCircle className="w-4 h-4" />
+                        <span>{currentExam.gradingStatus === "completed" ? "Reopen" : "Complete"}</span>
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>

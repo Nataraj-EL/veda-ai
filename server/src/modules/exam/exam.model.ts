@@ -16,6 +16,8 @@ export interface IExam extends Document {
   answers: ExamAnswer[];
   mappings: ExamMapping[];
   userId: string;
+  gradingStatus: "pending" | "completed";
+  totalScore: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -93,6 +95,13 @@ const examSchema = new Schema<IExam>(
     answers: { type: [examAnswerSchema], default: [] },
     mappings: { type: [examMappingSchema], default: [] },
     userId: { type: String, required: true, index: true },
+    gradingStatus: {
+      type: String,
+      enum: ["pending", "completed"],
+      default: "pending",
+      index: true,
+    },
+    totalScore: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

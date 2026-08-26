@@ -13,6 +13,8 @@ function toExamResponse(exam: IExam) {
     answers: exam.answers,
     mappings: exam.mappings,
     userId: exam.userId,
+    gradingStatus: exam.gradingStatus,
+    totalScore: exam.totalScore,
     createdAt: exam.createdAt.toISOString(),
     updatedAt: exam.updatedAt.toISOString(),
   };
@@ -89,6 +91,8 @@ export class ExamService {
       { questionNumber: "4", matched: true, extractedAnswerIndex: 4, score: 5, feedback: "All parts answered correctly with chemical equation implications." },
     ];
 
+    const totalScore = mockMappings.reduce((sum, m) => sum + (m.score || 0), 0);
+
     const exam = await Exam.create({
       title: input.title?.trim() || "Exam Paper",
       status: "completed",
@@ -98,6 +102,8 @@ export class ExamService {
       questions: mockQuestions,
       answers: mockAnswers,
       mappings: mockMappings,
+      gradingStatus: "pending",
+      totalScore,
     });
 
     return toExamResponse(exam);
@@ -124,6 +130,9 @@ export class ExamService {
   }
 
   async updateExam(id: string, userId: string, update: Partial<IExam>): Promise<ReturnType<typeof toExamResponse>> {
+    if (update.mappings) {
+      update.totalScore = update.mappings.reduce((sum, m) => sum + (m.score || 0), 0);
+    }
     const exam = await Exam.findOneAndUpdate(
       { _id: id, userId },
       { $set: update },

@@ -47,6 +47,8 @@ export interface Exam {
   questions?: ExamQuestion[];
   answers?: ExamAnswer[];
   mappings?: ExamMapping[];
+  gradingStatus: "pending" | "completed";
+  totalScore: number;
   createdAt: string;
   updatedAt: string;
   userId: string;
