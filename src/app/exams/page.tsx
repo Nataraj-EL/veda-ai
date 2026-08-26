@@ -8,10 +8,12 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Footer } from "@/components/layout/Footer";
+import { useRouter } from "next/navigation";
 import { useExamStore } from "@/store/useExamStore";
 import { useUserPreferencesStore } from "@/store/useUserPreferencesStore";
 
 export default function ExamsDashboard() {
+  const router = useRouter();
   const { exams, isLoading, fetchExams, deleteExam } = useExamStore();
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -137,8 +139,9 @@ export default function ExamsDashboard() {
                   {filteredExams.map((item) => (
                     <div
                       key={item.id}
+                      onClick={() => router.push(`/exams/${item.id}`)}
                       className={cn(
-                        "relative flex h-[142px] md:h-[182px] min-w-0 flex-col justify-between rounded-[24px] bg-white border border-black/5 p-5 md:p-6 shadow-none transition-standard md:max-w-[542px]",
+                        "relative flex h-[142px] md:h-[182px] min-w-0 flex-col justify-between rounded-[24px] bg-white border border-black/5 p-5 md:p-6 shadow-none transition-standard md:max-w-[542px] cursor-pointer hover:border-black/15",
                         activeMenuId === item.id ? "z-40" : "z-0"
                       )}
                     >
@@ -153,7 +156,7 @@ export default function ExamsDashboard() {
                             onClick={(e) => {
                               e.stopPropagation();
                               setActiveMenuId(null);
-                              alert("AI extraction, answer mapping, and spatial region highlighting details will display here in Sprint 2.");
+                              router.push(`/exams/${item.id}`);
                             }}
                             className="mx-1.5 flex min-h-[40px] w-[calc(100%-12px)] cursor-pointer items-center rounded-lg px-3 text-left text-[14px] font-bold leading-[1.2] tracking-[-0.56px] text-[#303030] transition-colors hover:bg-[#f4f4f4] border-none bg-transparent"
                           >
