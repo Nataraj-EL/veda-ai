@@ -57,7 +57,9 @@ export default function ExamAssessmentPage() {
     const activeAnswer = currentExam.answers?.find((a) => a.questionNumber === selectedQuestionNumber);
     const activeMapping = currentExam.mappings?.find((m) => m.questionNumber === selectedQuestionNumber);
 
-    setEditedAnswerText(activeAnswer?.text || "");
+    setEditedAnswerText(
+      activeAnswer?.text === "Unanswered" ? "" : activeAnswer?.text || ""
+    );
     setEditedScore(activeMapping?.score || 0);
     setEditedFeedback(activeMapping?.feedback || "");
     setNewRegions(activeAnswer?.regions || []);
@@ -134,7 +136,7 @@ export default function ExamAssessmentPage() {
       
       const newAnswerData = {
         questionNumber: selectedQuestionNumber,
-        text: editedAnswerText,
+        text: editedAnswerText.trim() === "" ? "Unanswered" : editedAnswerText,
         regions: newRegions,
       };
 

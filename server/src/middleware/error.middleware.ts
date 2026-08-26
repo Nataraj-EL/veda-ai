@@ -27,6 +27,24 @@ export function errorHandler(
     return;
   }
 
+  // Intercept Mongoose ValidationErrors and return a clean 400 status
+  if (err && (err as any).name === "ValidationError") {
+    const details: Record<string, string> = {};
+    if ((err as any).errors) {
+      for (const key of Object.keys((err as any).errors)) {
+        details[key] = (err as any).errors[key]?.message || "Validation failed";
+      }
+    }
+    sendError(
+      res,
+      400,
+      "VALIDATION_ERROR",
+      (err as any).message || "Database validation failed",
+      details
+    );
+    return;
+  }
+
   logger.error({ err }, "Unhandled server error");
   sendError(
     res,

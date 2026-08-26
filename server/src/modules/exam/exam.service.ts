@@ -73,7 +73,7 @@ export class ExamService {
       },
       {
         questionNumber: "3(b)",
-        text: "",
+        text: "Unanswered",
         regions: [],
       },
       {

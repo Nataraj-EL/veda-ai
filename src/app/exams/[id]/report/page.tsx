@@ -236,7 +236,9 @@ export default function GradedExamReportPage() {
                         <div className="space-y-1 bg-slate-50/50 border border-black/5 p-3 rounded-xl">
                           <p className="text-[11px] font-extrabold text-[#5e5e5e]/80">Extracted Student Answer</p>
                           <p className="text-[12px] font-medium text-blue-900 font-serif italic leading-relaxed whitespace-pre-wrap">
-                            {qAnswer?.text || "Question left unanswered by student."}
+                            {!qAnswer?.text || qAnswer.text === "Unanswered"
+                              ? "Question left unanswered by student."
+                              : qAnswer.text}
                           </p>
                         </div>
 
