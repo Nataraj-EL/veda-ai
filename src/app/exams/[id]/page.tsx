@@ -266,23 +266,16 @@ export default function ExamAssessmentPage() {
           <div className="flex-1 min-h-0 flex flex-col p-4 md:p-6 overflow-hidden">
             <div className="flex-1 w-full bg-white rounded-[24px] border border-black/5 shadow-[0_1px_2px_rgba(0,0,0,0.02)] flex flex-col items-center justify-center">
               <div className="flex flex-col items-center justify-center gap-6 px-6 text-center">
-                {/* Custom Sparkles SVG */}
-                <div className="relative flex h-28 w-28 items-center justify-center">
-                  <svg
-                    className="h-24 w-24 text-[#ff5623]"
-                    viewBox="0 0 100 100"
-                    fill="currentColor"
-                    aria-hidden
-                  >
-                    {/* Large Sparkle */}
-                    <path d="M70 20 Q70 35 85 35 Q70 35 70 50 Q70 35 55 35 Q70 35 70 20 Z" />
-                    {/* Medium Sparkle */}
-                    <path d="M35 45 Q35 55 45 55 Q35 55 35 65 Q35 55 25 55 Q35 55 35 45 Z" />
-                    {/* Small Sparkle */}
-                    <path d="M62 60 Q62 64 66 64 Q62 64 62 68 Q62 64 58 64 Q62 64 62 60 Z" />
-                    {/* Tiny Dot */}
-                    <circle cx="28" cy="32" r="2.5" />
-                  </svg>
+                {/* Figma sparkles loading illustration */}
+                <div className="relative flex h-24 w-24 items-center justify-center">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/images/loading-sparkles.png"
+                    alt="Loading..."
+                    width={96}
+                    height={96}
+                    className="h-full w-full object-contain animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite]"
+                  />
                 </div>
                 <div className="space-y-2">
                   <h3 className="text-[28px] md:text-[32px] font-extrabold tracking-[-1.04px] text-[#303030] leading-tight">
