@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Upload, CheckCircle, AlertTriangle } from "lucide-react";
+import { ArrowRight, Upload, FileText, AlertTriangle } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
@@ -33,29 +33,39 @@ export default function CreateExamPage() {
 
   // Simulate progress when uploading/processing
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isUploading) {
+    if (!isUploading) return;
+
+    let cancelled = false;
+    const start = window.setTimeout(() => {
+      if (cancelled) return;
       setSimulatedProgress(0);
       setProcessingState("uploading");
-      interval = setInterval(() => {
-        setSimulatedProgress((prev) => {
-          if (prev < 45) {
-            return prev + 5;
-          } else if (prev < 80) {
-            setProcessingState("verifying");
-            return prev + 2;
-          } else if (prev < 98) {
-            setProcessingState("saving");
-            return prev + 1;
-          }
-          return prev;
-        });
-      }, 150);
-    } else {
+    }, 0);
+
+    const interval = window.setInterval(() => {
+      setSimulatedProgress((prev) => {
+        if (prev < 45) {
+          return prev + 5;
+        }
+        if (prev < 80) {
+          setProcessingState("verifying");
+          return prev + 2;
+        }
+        if (prev < 98) {
+          setProcessingState("saving");
+          return prev + 1;
+        }
+        return prev;
+      });
+    }, 150);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(start);
+      window.clearInterval(interval);
       setSimulatedProgress(0);
       setProcessingState("idle");
-    }
-    return () => clearInterval(interval);
+    };
   }, [isUploading]);
 
   const validateFile = (file: File, fieldName: string, setError: (msg: string) => void): boolean => {
@@ -145,36 +155,36 @@ export default function CreateExamPage() {
           backHref="/exams"
         />
 
-        {/* Upload & Processing Loader Stepper overlay */}
+        {/* Figma Extraction flow — full-page Extracting state */}
         {isUploading && (
-          <div className="fixed inset-0 bg-slate-900/40 flex items-center justify-center z-50 p-4">
-            <div className="bg-surface-fill border border-neutral-border rounded-[28px] p-6 max-w-md w-full shadow-sm text-center space-y-4">
-              <div className="flex flex-col items-center justify-center space-y-4">
-                <div className="relative w-16 h-16">
-                  <div className="absolute inset-0 rounded-full border-4 border-slate-100" />
-                  <div className="absolute inset-0 rounded-full border-4 border-t-[#FA643C] animate-spin" />
-                </div>
-                <div className="space-y-1">
-                  <h3 className="text-lg font-bold text-black">
-                    {processingState === "uploading"
-                      ? "Uploading files..."
-                      : processingState === "verifying"
-                        ? "Verifying document formats..."
-                        : "Saving exam details..."}
-                  </h3>
-                  <p className="text-xs text-neutral-secondary font-normal tracking-wide">
-                    {simulatedProgress}% COMPLETED
-                  </p>
-                </div>
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#f5f5f5]/95 backdrop-blur-[2px]">
+            <div className="flex flex-col items-center justify-center gap-4 px-6 text-center">
+              <div className="relative flex h-16 w-16 items-center justify-center">
+                <span className="absolute inset-0 animate-ping rounded-full bg-[#ff5623]/15" />
+                <svg
+                  className="relative h-10 w-10 text-[#ff5623]"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden
+                >
+                  <path d="M12 2.5 13.8 9.2 20.5 11 13.8 12.8 12 19.5 10.2 12.8 3.5 11 10.2 9.2 12 2.5Z" />
+                  <path d="M19 3.5 19.7 6.1 22.3 6.8 19.7 7.5 19 10.1 18.3 7.5 15.7 6.8 18.3 6.1 19 3.5Z" />
+                </svg>
               </div>
-
-              <div className="space-y-1.5">
-                <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-[#FA643C] to-[#A7280F] transition-all duration-75 ease-out rounded-full"
-                    style={{ width: `${simulatedProgress}%` }}
-                  />
-                </div>
+              <div className="space-y-1">
+                <h3 className="text-[22px] font-bold tracking-[-0.88px] text-[#303030]">
+                  Extracting...
+                </h3>
+                <p className="text-[14px] font-normal tracking-[-0.56px] text-[#5e5e5e]/70">
+                  {processingState === "uploading"
+                    ? "Uploading your files…"
+                    : processingState === "verifying"
+                      ? "This may take a while"
+                      : "Saving exam details…"}
+                </p>
+                <p className="pt-2 text-[12px] font-medium tabular-nums text-[#5e5e5e]/50">
+                  {simulatedProgress}%
+                </p>
               </div>
             </div>
           </div>
@@ -185,7 +195,7 @@ export default function CreateExamPage() {
             
             {/* Error block if backend fails */}
             {uploadError && (
-              <div className="max-w-[720px] w-full mb-4 bg-feedback-error/5 border border-feedback-error/20 p-4 rounded-xl flex items-start gap-3">
+              <div className="max-w-[820px] w-full mb-4 bg-feedback-error/5 border border-feedback-error/20 p-4 rounded-xl flex items-start gap-3">
                 <AlertTriangle className="text-feedback-error w-5 h-5 shrink-0 mt-0.5" />
                 <div>
                   <h4 className="text-sm font-bold text-feedback-error">Upload failed</h4>
@@ -194,33 +204,38 @@ export default function CreateExamPage() {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="max-w-[720px] w-full space-y-6 flex flex-col items-center">
+            <form
+              onSubmit={handleSubmit}
+              className="w-full max-w-[820px] flex flex-col items-center gap-6 rounded-[28px] bg-white/90 px-5 py-8 shadow-[0_1px_0_rgba(0,0,0,0.04)] md:px-10 md:py-10"
+            >
               
-              {/* Header Title block */}
-              <div className="text-center space-y-1 w-full">
-                <h2 className="text-[28px] md:text-[36px] font-extrabold text-[#303030] tracking-tight leading-tight">
-                  Upload <span className="bg-[#ff5623]/10 text-[#ff5623] px-3.5 py-1 rounded-full inline-block mt-1 md:mt-0">Question Paper &amp; Answer Sheets</span>
+              {/* Header Title block — Figma Extraction flow */}
+              <div className="w-full space-y-2 text-center">
+                <h2 className="text-[26px] font-extrabold leading-[1.2] tracking-[-1.04px] text-[#303030] md:text-[36px]">
+                  Upload{" "}
+                  <span className="inline-block rounded-full bg-[#ff5623]/12 px-3.5 py-1 text-[#ff5623]">
+                    Question Paper &amp; Answer Sheets
+                  </span>
                 </h2>
-                <p className="text-[#5e5e5e]/55 text-sm md:text-[16px] font-normal tracking-wide">
+                <p className="text-[14px] font-normal tracking-[-0.56px] text-[#5e5e5e]/55 md:text-[16px]">
                   Upload both files to get started
                 </p>
               </div>
 
               {/* Concentric circle illustration */}
-              <div className="relative flex justify-center items-center my-4">
-                <div className="absolute w-36 h-36 rounded-full border border-dashed border-[#ff5623]/30 animate-[spin_60s_linear_infinite]" />
-                <div className="absolute w-44 h-44 rounded-full border border-dashed border-black/5" />
-                <div className="relative w-28 h-28 rounded-full bg-gradient-to-br from-orange-50 to-orange-100 border border-orange-200/50 flex items-center justify-center overflow-hidden shadow-inner">
-                  {/* Figma-like vector teacher outline avatar */}
-                  <svg className="w-14 h-14 text-[#ff5623]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <div className="relative my-2 flex items-center justify-center">
+                <div className="absolute h-36 w-36 rounded-full border border-dashed border-[#ff5623]/30 animate-[spin_60s_linear_infinite]" />
+                <div className="absolute h-44 w-44 rounded-full border border-dashed border-black/5" />
+                <div className="relative flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border border-orange-200/50 bg-gradient-to-br from-orange-50 to-orange-100 shadow-inner">
+                  <svg className="h-14 w-14 text-[#ff5623]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
                     <path d="M12 14c3.31 0 6-2.69 6-6s-2.69-6-6-6-6 2.69-6 6 2.69 6 6 6z" strokeLinecap="round" strokeLinejoin="round" />
                     <path d="M12 16c-4.42 0-8 2.58-8 6h16c0-3.42-3.58-6-8-6z" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </div>
               </div>
 
-              {/* Upload boxes row - stacked on mobile, row on desktop */}
-              <div className="flex flex-col md:flex-row gap-6 w-full">
+              {/* Upload boxes — stacked mobile, side-by-side desktop */}
+              <div className="flex w-full flex-col gap-4 md:flex-row md:gap-5">
                 
                 {/* 1. Question Paper Card */}
                 <div className="flex-1">
@@ -235,42 +250,45 @@ export default function CreateExamPage() {
                     <div
                       onClick={() => document.getElementById("question-paper-input")?.click()}
                       className={cn(
-                        "h-48 border-2 border-dashed border-black/10 hover:border-[#ff5623]/50 bg-white rounded-[24px] flex flex-col items-center justify-center p-6 text-center cursor-pointer transition-standard",
+                        "flex h-44 cursor-pointer flex-col items-center justify-center rounded-[20px] border-2 border-dashed border-black/10 bg-[#fafafa] p-6 text-center transition-standard hover:border-[#ff5623]/50",
                         questionPaperError && "border-feedback-error bg-feedback-error/5"
                       )}
                     >
-                      <div className="h-10 w-10 rounded-xl bg-slate-100 flex items-center justify-center mb-3">
-                        <Upload className="w-5 h-5 text-[#303030]" strokeWidth={2} />
+                      <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-white">
+                        <Upload className="h-5 w-5 text-[#303030]" strokeWidth={2} />
                       </div>
                       <p className="text-sm font-semibold text-[#303030]">
                         Upload <span className="text-[#ff5623]">Question Paper</span>
                       </p>
-                      <p className="text-[11px] text-neutral-secondary/50 mt-1">
-                        Max 10MB
-                      </p>
+                      <p className="mt-1 text-[11px] text-neutral-secondary/50">Max 10MB</p>
                     </div>
                   ) : (
-                    <div className="h-48 border border-black/10 bg-white rounded-[24px] flex flex-col items-center justify-center p-6 text-center">
-                      <div className="h-10 w-10 rounded-xl bg-emerald-50 text-[#10b981] flex items-center justify-center mb-3">
-                        <CheckCircle className="w-5 h-5" />
-                      </div>
-                      <p className="text-sm font-semibold text-[#303030] truncate max-w-[200px]">
-                        {questionPaper.name}
-                      </p>
-                      <p className="text-[11px] text-neutral-secondary/50 mt-0.5">
-                        {(questionPaper.size / 1024 / 1024).toFixed(2)} MB
-                      </p>
+                    <div className="relative flex min-h-[88px] items-center gap-3 rounded-[16px] border border-black/10 bg-[#f7f7f7] px-4 py-3 md:min-h-[100px]">
                       <button
                         type="button"
                         onClick={() => setQuestionPaper(null)}
-                        className="text-[11px] font-bold text-feedback-error hover:underline mt-2 border-none bg-transparent cursor-pointer"
+                        className="absolute right-2.5 top-2.5 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border-none bg-transparent text-[#5e5e5e] hover:bg-black/5"
+                        aria-label="Remove question paper"
                       >
-                        Remove file
+                        <span className="text-[16px] leading-none">×</span>
                       </button>
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#ff5623]/10 text-[#ff5623]">
+                        <FileText className="h-5 w-5" strokeWidth={1.75} />
+                      </div>
+                      <div className="min-w-0 flex-1 pr-6">
+                        <p className="truncate text-[14px] font-semibold tracking-[-0.56px] text-[#303030]">
+                          {questionPaper.name}
+                        </p>
+                        <p className="mt-0.5 text-[12px] text-[#5e5e5e]/70">
+                          {(questionPaper.size / 1024 / 1024).toFixed(1)} MB
+                          <span className="mx-1.5 text-[#5e5e5e]/40">•</span>
+                          <span className="font-semibold text-[#10b981]">100%</span>
+                        </p>
+                      </div>
                     </div>
                   )}
                   {questionPaperError && (
-                    <p className="text-xs text-feedback-error font-medium text-center mt-2">{questionPaperError}</p>
+                    <p className="mt-2 text-center text-xs font-medium text-feedback-error">{questionPaperError}</p>
                   )}
                 </div>
 
@@ -287,64 +305,67 @@ export default function CreateExamPage() {
                     <div
                       onClick={() => document.getElementById("answer-sheet-input")?.click()}
                       className={cn(
-                        "h-48 border-2 border-dashed border-black/10 hover:border-[#ff5623]/50 bg-white rounded-[24px] flex flex-col items-center justify-center p-6 text-center cursor-pointer transition-standard",
+                        "flex h-44 cursor-pointer flex-col items-center justify-center rounded-[20px] border-2 border-dashed border-black/10 bg-[#fafafa] p-6 text-center transition-standard hover:border-[#ff5623]/50",
                         answerSheetError && "border-feedback-error bg-feedback-error/5"
                       )}
                     >
-                      <div className="h-10 w-10 rounded-xl bg-slate-100 flex items-center justify-center mb-3">
-                        <Upload className="w-5 h-5 text-[#303030]" strokeWidth={2} />
+                      <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-white">
+                        <Upload className="h-5 w-5 text-[#303030]" strokeWidth={2} />
                       </div>
                       <p className="text-sm font-semibold text-[#303030]">
                         Upload <span className="text-[#ff5623]">Answer Sheet</span>
                       </p>
-                      <p className="text-[11px] text-neutral-secondary/50 mt-1">
-                        Max 10MB
-                      </p>
+                      <p className="mt-1 text-[11px] text-neutral-secondary/50">Max 10MB</p>
                     </div>
                   ) : (
-                    <div className="h-48 border border-black/10 bg-white rounded-[24px] flex flex-col items-center justify-center p-6 text-center">
-                      <div className="h-10 w-10 rounded-xl bg-emerald-50 text-[#10b981] flex items-center justify-center mb-3">
-                        <CheckCircle className="w-5 h-5" />
-                      </div>
-                      <p className="text-sm font-semibold text-[#303030] truncate max-w-[200px]">
-                        {answerSheet.name}
-                      </p>
-                      <p className="text-[11px] text-neutral-secondary/50 mt-0.5">
-                        {(answerSheet.size / 1024 / 1024).toFixed(2)} MB
-                      </p>
+                    <div className="relative flex min-h-[88px] items-center gap-3 rounded-[16px] border border-black/10 bg-[#f7f7f7] px-4 py-3 md:min-h-[100px]">
                       <button
                         type="button"
                         onClick={() => setAnswerSheet(null)}
-                        className="text-[11px] font-bold text-feedback-error hover:underline mt-2 border-none bg-transparent cursor-pointer"
+                        className="absolute right-2.5 top-2.5 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border-none bg-transparent text-[#5e5e5e] hover:bg-black/5"
+                        aria-label="Remove answer sheet"
                       >
-                        Remove file
+                        <span className="text-[16px] leading-none">×</span>
                       </button>
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#ff5623]/10 text-[#ff5623]">
+                        <FileText className="h-5 w-5" strokeWidth={1.75} />
+                      </div>
+                      <div className="min-w-0 flex-1 pr-6">
+                        <p className="truncate text-[14px] font-semibold tracking-[-0.56px] text-[#303030]">
+                          {answerSheet.name}
+                        </p>
+                        <p className="mt-0.5 text-[12px] text-[#5e5e5e]/70">
+                          {(answerSheet.size / 1024 / 1024).toFixed(1)} MB
+                          <span className="mx-1.5 text-[#5e5e5e]/40">•</span>
+                          <span className="font-semibold text-[#10b981]">100%</span>
+                        </p>
+                      </div>
                     </div>
                   )}
                   {answerSheetError && (
-                    <p className="text-xs text-feedback-error font-medium text-center mt-2">{answerSheetError}</p>
+                    <p className="mt-2 text-center text-xs font-medium text-feedback-error">{answerSheetError}</p>
                   )}
                 </div>
 
               </div>
 
-              {/* Start Mapping Button */}
-              <div className="flex flex-col items-center justify-center pt-4 w-full">
+              {/* Start Mapping / Start Grading CTA */}
+              <div className="flex w-full flex-col items-center justify-center pt-2">
                 <button
                   type="submit"
                   disabled={!questionPaper || !answerSheet}
                   className={cn(
-                    "inline-flex h-11 items-center justify-center gap-1.5 rounded-full px-8 text-[15px] font-bold tracking-tight select-none cursor-pointer transition-standard border-none",
-                    (questionPaper && answerSheet)
-                      ? "bg-[#181818] hover:bg-[#272727] text-white shadow-sm"
-                      : "bg-[#c5c5c5] text-white/70 cursor-not-allowed shadow-none"
+                    "inline-flex h-12 cursor-pointer select-none items-center justify-center gap-1.5 rounded-full border-none px-8 text-[16px] font-semibold tracking-[-0.64px] transition-standard",
+                    questionPaper && answerSheet
+                      ? "bg-[#181818] text-white shadow-none hover:bg-[#272727]"
+                      : "cursor-not-allowed bg-[#c5c5c5] text-white/70 shadow-none"
                   )}
                 >
                   <span>Start Mapping</span>
-                  <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
+                  <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
                 </button>
-                <p className="text-[11px] text-[#5e5e5e]/50 text-center max-w-[320px] mt-2 leading-relaxed">
-                  Once both files are uploaded, you'll be able to map answers with questions
+                <p className="mt-3 max-w-[360px] text-center text-[12px] leading-relaxed tracking-[-0.48px] text-[#5e5e5e]/50">
+                  Once both files are uploaded, you&apos;ll be able to map answers with questions
                 </p>
               </div>
 

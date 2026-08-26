@@ -64,7 +64,7 @@ export default function ExamsDashboard() {
 
       {/* Main Page Container */}
       <div className="flex min-w-0 flex-1 flex-col min-h-0 overflow-hidden md:px-3 md:pt-3">
-        <Header title="Exams Dashboard" variant="assignments" />
+        <Header title="Exams" variant="assignments" />
 
         <div className="min-h-0 flex-1 overflow-y-auto flex flex-col">
           {/* Main Content Area */}
