@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, BookOpen, AlertCircle, FileText, CheckCircle, HelpCircle } from "lucide-react";
+import { ArrowLeft, BookOpen, AlertCircle, FileText, CheckCircle, HelpCircle, Save, Crop, X } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
@@ -11,16 +11,36 @@ import { Footer } from "@/components/layout/Footer";
 import { useExamStore } from "@/store/useExamStore";
 import { useUserPreferencesStore } from "@/store/useUserPreferencesStore";
 
+interface TempBox {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  pageNum: number;
+}
+
 export default function ExamAssessmentPage() {
   const params = useParams();
   const router = useRouter();
   const examId = params?.id as string;
 
-  const { currentExam, isLoading, fetchExamById } = useExamStore();
+  const { currentExam, isLoading, fetchExamById, updateExam } = useExamStore();
   const [selectedQuestionNumber, setSelectedQuestionNumber] = useState<string>("1");
 
-  const pageRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
+  // Editing states
+  const [editedAnswerText, setEditedAnswerText] = useState("");
+  const [editedScore, setEditedScore] = useState(0);
+  const [editedFeedback, setEditedFeedback] = useState("");
+  const [newRegions, setNewRegions] = useState<any[]>([]);
+  const [isSaving, setIsSaving] = useState(false);
 
+  // Region drawing states
+  const [isDrawingMode, setIsDrawingMode] = useState(false);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [drawStart, setDrawStart] = useState<{ x: number; y: number; pageNum: number } | null>(null);
+  const [tempBox, setTempBox] = useState<TempBox | null>(null);
+
+  const pageRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
   const userId = useUserPreferencesStore((state) => state.userId) || "default-user";
 
   useEffect(() => {
@@ -30,17 +50,24 @@ export default function ExamAssessmentPage() {
     }
   }, [examId, fetchExamById, userId]);
 
-  // Set initial selected question once exam is loaded
+  // Synchronize input fields when selected question changes
   useEffect(() => {
-    if (currentExam?.questions && currentExam.questions.length > 0) {
-      setSelectedQuestionNumber(currentExam.questions[0].questionNumber);
-    }
-  }, [currentExam]);
+    if (!currentExam) return;
+    const activeQuestion = currentExam.questions?.find((q) => q.questionNumber === selectedQuestionNumber);
+    const activeAnswer = currentExam.answers?.find((a) => a.questionNumber === selectedQuestionNumber);
+    const activeMapping = currentExam.mappings?.find((m) => m.questionNumber === selectedQuestionNumber);
+
+    setEditedAnswerText(activeAnswer?.text || "");
+    setEditedScore(activeMapping?.score || 0);
+    setEditedFeedback(activeMapping?.feedback || "");
+    setNewRegions(activeAnswer?.regions || []);
+    setIsDrawingMode(false);
+    setTempBox(null);
+  }, [selectedQuestionNumber, currentExam]);
 
   const handleQuestionClick = (qNum: string) => {
     setSelectedQuestionNumber(qNum);
 
-    // Find the page number of this question's answer region
     const answer = currentExam?.answers?.find((a) => a.questionNumber === qNum);
     const targetPage = answer?.regions?.[0]?.pageNumber;
 
@@ -49,6 +76,102 @@ export default function ExamAssessmentPage() {
         behavior: "smooth",
         block: "nearest",
       });
+    }
+  };
+
+  // Canvas drawing handlers
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>, pageNum: number) => {
+    if (!isDrawingMode) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const startX = ((e.clientX - rect.left) / rect.width) * 100;
+    const startY = ((e.clientY - rect.top) / rect.height) * 100;
+    setDrawStart({ x: startX, y: startY, pageNum });
+    setTempBox({ x: startX, y: startY, width: 0, height: 0, pageNum });
+    setIsDrawing(true);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDrawing || !drawStart) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const currentX = ((e.clientX - rect.left) / rect.width) * 100;
+    const currentY = ((e.clientY - rect.top) / rect.height) * 100;
+
+    const x = Math.min(drawStart.x, currentX);
+    const y = Math.min(drawStart.y, currentY);
+    const width = Math.abs(drawStart.x - currentX);
+    const height = Math.abs(drawStart.y - currentY);
+
+    setTempBox({ x, y, width, height, pageNum: drawStart.pageNum });
+  };
+
+  const handleMouseUp = () => {
+    if (!isDrawing || !tempBox) return;
+    setIsDrawing(false);
+    // Set the new coordinate region
+    setNewRegions([
+      {
+        pageNumber: tempBox.pageNum,
+        boundingBox: {
+          x: Math.round(tempBox.x * 10) / 10,
+          y: Math.round(tempBox.y * 10) / 10,
+          width: Math.round(tempBox.width * 10) / 10,
+          height: Math.round(tempBox.height * 10) / 10,
+        },
+      },
+    ]);
+    setIsDrawingMode(false);
+    setTempBox(null);
+  };
+
+  // Save changes handler to backend
+  const handleSaveChanges = async () => {
+    if (!currentExam) return;
+    setIsSaving(true);
+    try {
+      // Find matching index or insert new ones
+      const updatedAnswers = [...(currentExam.answers || [])];
+      let ansIdx = updatedAnswers.findIndex((a) => a.questionNumber === selectedQuestionNumber);
+      
+      const newAnswerData = {
+        questionNumber: selectedQuestionNumber,
+        text: editedAnswerText,
+        regions: newRegions,
+      };
+
+      if (ansIdx > -1) {
+        updatedAnswers[ansIdx] = newAnswerData;
+      } else {
+        updatedAnswers.push(newAnswerData);
+      }
+
+      const updatedMappings = [...(currentExam.mappings || [])];
+      let mapIdx = updatedMappings.findIndex((m) => m.questionNumber === selectedQuestionNumber);
+      
+      const newMappingData = {
+        questionNumber: selectedQuestionNumber,
+        matched: newRegions.length > 0,
+        score: editedScore,
+        feedback: editedFeedback,
+        extractedAnswerIndex: ansIdx > -1 ? ansIdx : updatedAnswers.length - 1,
+      };
+
+      if (mapIdx > -1) {
+        updatedMappings[mapIdx] = newMappingData;
+      } else {
+        updatedMappings.push(newMappingData);
+      }
+
+      await updateExam(currentExam.id, userId, {
+        answers: updatedAnswers,
+        mappings: updatedMappings,
+      });
+
+      alert("Changes saved successfully!");
+    } catch (error) {
+      console.error(error);
+      alert("Failed to save changes.");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -72,15 +195,11 @@ export default function ExamAssessmentPage() {
     );
   }
 
-  // Get current active details
   const activeQuestion = currentExam.questions?.find((q) => q.questionNumber === selectedQuestionNumber);
   const activeAnswer = currentExam.answers?.find((a) => a.questionNumber === selectedQuestionNumber);
-  const activeMapping = currentExam.mappings?.find((m) => m.questionNumber === selectedQuestionNumber);
+  const isUnanswered = newRegions.length === 0;
 
-  const isUnanswered = !activeAnswer || activeAnswer.regions.length === 0;
-
-  // Extract unique pages from the answer regions
-  const totalPages = 2; // Fixed document length for our high-fidelity sample
+  const totalPages = 2; // Simulated document pages
 
   return (
     <div className="flex h-screen bg-page-fill text-neutral-primary font-sans overflow-hidden">
@@ -96,10 +215,9 @@ export default function ExamAssessmentPage() {
         />
 
         <div className="min-h-0 flex-1 overflow-y-auto flex flex-col">
-          {/* Side-by-Side Main Container */}
           <div className="mx-auto w-full max-w-[1200px] px-4 pt-4 pb-24 md:px-0 md:pb-12 flex-1 flex flex-col min-h-0">
             
-            {/* Top title and metadata bar */}
+            {/* Top metadata bar */}
             <div className="flex items-center justify-between mb-4 border-b border-black/5 pb-3">
               <div>
                 <h2 className="text-[20px] font-extrabold tracking-tight text-[#303030]">
@@ -111,10 +229,10 @@ export default function ExamAssessmentPage() {
               </div>
             </div>
 
-            {/* Split panels - side-by-side on desktop, stacked on mobile */}
+            {/* Split panels - side-by-side on desktop */}
             <div className="flex flex-col lg:flex-row gap-6 flex-1 min-h-0 items-stretch">
               
-              {/* Left Panel: Questions list */}
+              {/* Left Panel: Questions and details */}
               <div className="w-full lg:w-[460px] bg-white border border-neutral-border rounded-[28px] p-5 flex flex-col justify-between shadow-none">
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 border-b border-black/5 pb-3">
@@ -123,7 +241,7 @@ export default function ExamAssessmentPage() {
                   </div>
 
                   {/* Scrollable Questions List */}
-                  <div className="space-y-3 max-h-[500px] lg:max-h-[60vh] overflow-y-auto pr-1">
+                  <div className="space-y-3 max-h-[300px] lg:max-h-[38vh] overflow-y-auto pr-1">
                     {currentExam.questions?.map((q) => {
                       const qAnswer = currentExam.answers?.find((a) => a.questionNumber === q.questionNumber);
                       const qUnanswered = !qAnswer || qAnswer.regions.length === 0;
@@ -149,7 +267,6 @@ export default function ExamAssessmentPage() {
                               </span>
                             </div>
 
-                            {/* Status badge */}
                             <span
                               className={cn(
                                 "text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full shrink-0",
@@ -162,7 +279,7 @@ export default function ExamAssessmentPage() {
                             </span>
                           </div>
 
-                          <p className="mt-2 text-xs font-semibold leading-relaxed text-[#5e5e5e]/80 line-clamp-3">
+                          <p className="mt-2 text-xs font-semibold leading-relaxed text-[#5e5e5e]/80 line-clamp-2">
                             {q.text}
                           </p>
                         </div>
@@ -171,35 +288,94 @@ export default function ExamAssessmentPage() {
                   </div>
                 </div>
 
-                {/* Selected Question Details */}
+                {/* Review Form Card */}
                 {activeQuestion && (
-                  <div className="mt-5 border-t border-black/5 pt-4 space-y-3 bg-slate-50/50 p-4 rounded-[20px]">
-                    <div className="flex items-center gap-1.5 text-xs font-extrabold text-[#303030]">
-                      <AlertCircle className="w-4 h-4 text-[#ff5623]" />
-                      <span>Selected Question Details</span>
+                  <div className="mt-4 border-t border-black/5 pt-4 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 text-xs font-extrabold text-[#303030]">
+                        <AlertCircle className="w-4 h-4 text-[#ff5623]" />
+                        <span>Configure Mapping &amp; Feedback</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setIsDrawingMode(!isDrawingMode)}
+                        className={cn(
+                          "inline-flex h-7 items-center gap-1 rounded-full px-3 text-[11px] font-extrabold tracking-tight transition-standard border cursor-pointer",
+                          isDrawingMode
+                            ? "bg-[#ff5623] text-white border-transparent"
+                            : "bg-white text-[#303030] border-black/10 hover:bg-slate-50"
+                        )}
+                      >
+                        <Crop className="w-3.5 h-3.5" />
+                        <span>{isDrawingMode ? "Cancel Drawing" : "Adjust Region"}</span>
+                      </button>
                     </div>
-                    <div className="text-xs font-semibold leading-relaxed text-[#5e5e5e]/80">
-                      <p className="font-extrabold text-black">Q{activeQuestion.questionNumber}:</p>
-                      <p className="mt-0.5">{activeQuestion.text}</p>
-                    </div>
-                    {activeMapping && activeMapping.matched && (
-                      <div className="text-xs text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-xl p-2.5 space-y-1">
-                        <div className="flex items-center gap-1 font-bold">
-                          <CheckCircle className="w-3.5 h-3.5" />
-                          <span>Extracted Answer Score: {activeMapping.score} / {activeQuestion.marks}</span>
-                        </div>
-                        <p className="font-semibold text-emerald-800/80">{activeMapping.feedback}</p>
+
+                    {isDrawingMode && (
+                      <div className="bg-[#ff5623]/5 border border-[#ff5623]/25 text-[11px] text-[#ff5623] font-semibold p-2.5 rounded-xl text-center">
+                        Drawing Mode Active: Click and drag on the answer sheet to define the new answer box.
                       </div>
                     )}
-                    {activeMapping && !activeMapping.matched && (
-                      <div className="text-xs text-amber-700 bg-amber-50 border border-amber-100 rounded-xl p-2.5 space-y-1">
-                        <div className="flex items-center gap-1 font-bold">
-                          <HelpCircle className="w-3.5 h-3.5" />
-                          <span>Status: Left Unanswered</span>
-                        </div>
-                        <p className="font-semibold text-amber-800/80">Student did not attempt this question.</p>
+
+                    {/* Answer Text Area */}
+                    <div className="space-y-1">
+                      <label className="text-[11px] font-bold text-[#5e5e5e]/85">Extracted Student Answer</label>
+                      <textarea
+                        value={editedAnswerText}
+                        onChange={(e) => setEditedAnswerText(e.target.value)}
+                        placeholder="No text extracted yet..."
+                        className="w-full h-16 resize-none rounded-xl border border-black/10 bg-[#f8f8f8] p-3 text-[12px] font-medium leading-normal text-[#303030] placeholder:text-[#5e5e5e]/30 focus:outline-none"
+                      />
+                    </div>
+
+                    {/* Score and feedback inputs */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-bold text-[#5e5e5e]/85">
+                          Score (Max {activeQuestion.marks})
+                        </label>
+                        <input
+                          type="number"
+                          min={0}
+                          max={activeQuestion.marks}
+                          value={editedScore}
+                          onChange={(e) => setEditedScore(Math.min(activeQuestion.marks, Math.max(0, parseInt(e.target.value) || 0)))}
+                          className="w-full rounded-xl border border-black/10 bg-[#f8f8f8] px-3 py-2 text-[12px] font-medium text-[#303030] focus:outline-none"
+                        />
                       </div>
-                    )}
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-bold text-[#5e5e5e]/85">Status</label>
+                        <span className={cn(
+                          "block text-center rounded-xl border py-2 text-[11px] font-bold uppercase",
+                          isUnanswered
+                            ? "bg-amber-50 text-amber-600 border-amber-200"
+                            : "bg-emerald-50 text-emerald-600 border-emerald-200"
+                        )}>
+                          {isUnanswered ? "Unanswered" : "Mapped"}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[11px] font-bold text-[#5e5e5e]/85">Teacher Feedback</label>
+                      <textarea
+                        value={editedFeedback}
+                        onChange={(e) => setEditedFeedback(e.target.value)}
+                        placeholder="Write feedback comments..."
+                        className="w-full h-16 resize-none rounded-xl border border-black/10 bg-[#f8f8f8] p-3 text-[12px] font-medium leading-normal text-[#303030] placeholder:text-[#5e5e5e]/30 focus:outline-none"
+                      />
+                    </div>
+
+                    {/* Action button */}
+                    <button
+                      type="button"
+                      disabled={isSaving}
+                      onClick={handleSaveChanges}
+                      className="w-full flex h-10 items-center justify-center gap-1.5 rounded-full bg-[#181818] hover:bg-[#272727] text-white text-[13px] font-bold tracking-tight shadow-none transition-standard cursor-pointer disabled:opacity-50"
+                    >
+                      <Save className="w-4 h-4" />
+                      <span>{isSaving ? "Saving..." : "Save Assessment"}</span>
+                    </button>
                   </div>
                 )}
               </div>
@@ -212,11 +388,11 @@ export default function ExamAssessmentPage() {
                     <h3 className="text-sm font-bold tracking-tight text-[#303030]">Student Answer Sheet</h3>
                   </div>
                   <div className="text-[11px] font-bold text-[#5e5e5e]/55">
-                    {isUnanswered ? "No highlight" : `Answer Region Highlighted`}
+                    {isDrawingMode ? "Click &amp; drag on paper to map" : isUnanswered ? "No highlight" : `Answer Region Highlighted`}
                   </div>
                 </div>
 
-                {/* Viewport for document sheets */}
+                {/* Document Pages Container */}
                 <div className="flex-1 overflow-y-auto max-h-[70vh] bg-slate-50/50 rounded-2xl p-4 space-y-6 mt-4 border border-black/5">
                   {Array.from({ length: totalPages }).map((_, idx) => {
                     const pageNum = idx + 1;
@@ -224,21 +400,26 @@ export default function ExamAssessmentPage() {
                       <div
                         key={pageNum}
                         ref={(el) => { pageRefs.current[pageNum] = el; }}
-                        className="relative bg-white border border-slate-200 shadow-sm rounded-lg aspect-[1/1.414] w-full max-w-[500px] p-6 md:p-8 mx-auto my-4 text-left font-serif overflow-hidden select-none"
+                        onMouseDown={(e) => handleMouseDown(e, pageNum)}
+                        onMouseMove={handleMouseMove}
+                        onMouseUp={handleMouseUp}
+                        className={cn(
+                          "relative bg-white border border-slate-200 shadow-sm rounded-lg aspect-[1/1.414] w-full max-w-[500px] p-6 md:p-8 mx-auto my-4 text-left font-serif overflow-hidden select-none",
+                          isDrawingMode ? "cursor-crosshair border-dashed border-[#ff5623]/60 bg-orange-50/5" : ""
+                        )}
                       >
-                        {/* Page number badge */}
                         <div className="absolute top-3 right-3 text-[10px] font-bold text-[#a9a9a9] bg-slate-50 px-2 py-0.5 rounded border">
                           Page {pageNum}
                         </div>
 
-                        {/* Bounding box highlight overlay */}
-                        {activeQuestion && activeAnswer?.regions?.map((region, rIdx) => {
+                        {/* Saved Answer highlights */}
+                        {!isDrawingMode && newRegions?.map((region: any, rIdx: number) => {
                           if (region.pageNumber === pageNum) {
                             const { x, y, width, height } = region.boundingBox;
                             return (
                               <div
                                 key={rIdx}
-                                className="absolute border-[2.5px] border-[#ff5623] bg-[#ff5623]/8 rounded-xl transition-all duration-300 animate-pulse pointer-events-none"
+                                className="absolute border-[2.5px] border-[#ff5623] bg-[#ff5623]/8 rounded-xl transition-all duration-300 pointer-events-none"
                                 style={{
                                   left: `${x}%`,
                                   top: `${y}%`,
@@ -250,6 +431,19 @@ export default function ExamAssessmentPage() {
                           }
                           return null;
                         })}
+
+                        {/* Drawing feedback boxes */}
+                        {isDrawingMode && tempBox && tempBox.pageNum === pageNum && (
+                          <div
+                            className="absolute border-2 border-dashed border-[#ff5623] bg-[#ff5623]/10 rounded-lg pointer-events-none"
+                            style={{
+                              left: `${tempBox.x}%`,
+                              top: `${tempBox.y}%`,
+                              width: `${tempBox.width}%`,
+                              height: `${tempBox.height}%`,
+                            }}
+                          />
+                        )}
 
                         {/* Simulated Handwriting text */}
                         <div className="h-full flex flex-col justify-start space-y-8 font-serif italic text-blue-800 text-sm md:text-[15px] pt-8">

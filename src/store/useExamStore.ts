@@ -13,6 +13,7 @@ interface ExamState {
   fetchExamById: (id: string, userId: string) => Promise<void>;
   createExam: (formData: FormData, userId: string) => Promise<Exam>;
   deleteExam: (id: string, userId: string) => Promise<void>;
+  updateExam: (id: string, userId: string, update: Partial<Exam>) => Promise<Exam>;
   resetStore: () => void;
   clearUploadError: () => void;
 }
@@ -125,6 +126,39 @@ export const useExamStore = create<ExamState>((set, get) => ({
       }
     } catch (error: any) {
       console.error("Failed to delete exam:", error);
+      throw error;
+    }
+  },
+
+  updateExam: async (id: string, userId: string, update: Partial<Exam>) => {
+    try {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL;
+      const res = await fetch(
+        `${apiBase}/api/exams/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "x-user-id": userId,
+          },
+          body: JSON.stringify(update),
+        }
+      );
+
+      if (res.ok) {
+        const result = await res.json();
+        const updatedExam = result.data?.exam || result.exam;
+        set((state) => ({
+          exams: state.exams.map((e) => (e.id === id ? updatedExam : e)),
+          currentExam: state.currentExam?.id === id ? updatedExam : state.currentExam,
+        }));
+        return updatedExam;
+      } else {
+        const errorData = await res.json();
+        throw new Error(errorData?.error?.message || "Failed to update exam");
+      }
+    } catch (error: any) {
+      console.error("Failed to update exam:", error);
       throw error;
     }
   },

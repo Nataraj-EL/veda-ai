@@ -8,10 +8,12 @@ import {
   deleteExam,
   getExam,
   listExams,
+  updateExam,
 } from "./exam.controller.js";
 import {
   createExamSchema,
   examIdParamSchema,
+  updateExamSchema,
 } from "./exam.validation.js";
 
 const router = Router();
@@ -78,6 +80,13 @@ router.get(
   "/:id",
   validate(examIdParamSchema, "params"),
   getExam
+);
+
+router.put(
+  "/:id",
+  validate(examIdParamSchema, "params"),
+  validate(updateExamSchema, "body"),
+  updateExam
 );
 
 router.delete(

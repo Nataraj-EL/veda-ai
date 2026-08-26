@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import { asyncHandler } from "../../utils/async-handler.js";
 import { sendSuccess } from "../../utils/response.js";
 import { examService } from "./exam.service.js";
-import type { CreateExamBody, ExamIdParams } from "./exam.validation.js";
+import type { CreateExamBody, ExamIdParams, UpdateExamBody } from "./exam.validation.js";
 import { AppError } from "../../utils/app-error.js";
 
 function getRequestUserId(req: Request): string {
@@ -72,5 +72,15 @@ export const deleteExam = asyncHandler(
     const userId = getRequestUserId(req);
     await examService.deleteExam(id, userId);
     sendSuccess(res, { message: "Exam deleted successfully" });
+  }
+);
+
+export const updateExam = asyncHandler(
+  async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params as ExamIdParams;
+    const userId = getRequestUserId(req);
+    const body = req.body as UpdateExamBody;
+    const exam = await examService.updateExam(id, userId, body);
+    sendSuccess(res, { exam });
   }
 );

@@ -122,6 +122,18 @@ export class ExamService {
       throw new NotFoundError("Exam not found or access denied");
     }
   }
+
+  async updateExam(id: string, userId: string, update: Partial<IExam>): Promise<ReturnType<typeof toExamResponse>> {
+    const exam = await Exam.findOneAndUpdate(
+      { _id: id, userId },
+      { $set: update },
+      { new: true }
+    );
+    if (!exam) {
+      throw new NotFoundError("Exam not found or access denied");
+    }
+    return toExamResponse(exam);
+  }
 }
 
 export const examService = new ExamService();
