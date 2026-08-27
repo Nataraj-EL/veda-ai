@@ -141,7 +141,7 @@ export default function ExamsDashboard() {
                       key={item.id}
                       onClick={() => router.push(`/exams/${item.id}`)}
                       className={cn(
-                        "relative flex h-[142px] md:h-[182px] min-w-0 flex-col justify-between rounded-[24px] bg-white border border-black/5 p-5 md:p-6 shadow-none transition-standard md:max-w-[542px] cursor-pointer hover:border-black/15",
+                        "relative flex h-auto min-h-[142px] md:h-[182px] min-w-0 flex-col justify-between rounded-[24px] bg-white border border-black/5 p-5 md:p-6 shadow-none transition-standard md:max-w-[542px] cursor-pointer hover:border-black/15",
                         activeMenuId === item.id ? "z-40" : "z-0"
                       )}
                     >
