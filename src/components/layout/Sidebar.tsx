@@ -247,8 +247,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {isAssignments ? (
           <div className={cn("flex flex-col pt-6", isSidebarCollapsed ? "px-[18px] items-center" : "px-[26.5px]")}>
             {/* Figma 2:10590 — 136×40 logo + wordmark. Collapsible. */}
-            <div className={cn("flex items-center", isSidebarCollapsed ? "justify-center w-10 h-10 overflow-hidden" : "justify-between w-full")}>
-              <SidebarBrand variant={brandVariant} />
+            <div className={cn("flex items-center", isSidebarCollapsed ? "justify-center w-[44px] h-[40px]" : "justify-between w-full")}>
+              <SidebarBrand variant={brandVariant} isCollapsed={isSidebarCollapsed} />
               {!isSidebarCollapsed && (
                 <button
                   type="button"
@@ -279,8 +279,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         ) : (
           <div className={cn("flex flex-col pt-6", isSidebarCollapsed ? "px-[18px] items-center" : "px-6")}>
-            <div className={cn("flex items-center", isSidebarCollapsed ? "justify-center w-10 h-10 overflow-hidden" : "justify-between w-full")}>
-              <SidebarBrand variant={brandVariant} />
+            <div className={cn("flex items-center", isSidebarCollapsed ? "justify-center w-[44px] h-[40px]" : "justify-between w-full")}>
+              <SidebarBrand variant={brandVariant} isCollapsed={isSidebarCollapsed} />
               {!isSidebarCollapsed && (
                 <button
                   type="button"

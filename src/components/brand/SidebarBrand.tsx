@@ -12,9 +12,11 @@ const LOGO_SRC = {
 export function SidebarBrand({
   className,
   variant = "gradient",
+  isCollapsed = false,
 }: {
   className?: string;
   variant?: BrandVariant;
+  isCollapsed?: boolean;
 }) {
   const src = LOGO_SRC[variant];
 
@@ -22,7 +24,8 @@ export function SidebarBrand({
     <Link
       href="/"
       className={cn(
-        "inline-flex cursor-pointer select-none items-center h-10 w-[136px]",
+        "inline-flex cursor-pointer select-none items-center",
+        isCollapsed ? "h-10 w-[44px] overflow-hidden" : "h-10 w-[136px]",
         className
       )}
     >
@@ -32,7 +35,10 @@ export function SidebarBrand({
         alt="VedaAI"
         width={136}
         height={40}
-        className="object-contain object-left h-10 w-[136px]"
+        className={cn(
+          "object-contain object-left h-10",
+          isCollapsed ? "w-[136px] min-w-[136px]" : "w-[136px]"
+        )}
       />
     </Link>
   );
