@@ -399,18 +399,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             {!isSidebarCollapsed && <span>Settings</span>}
           </button>
 
-          {isSidebarCollapsed && (
-            <button
-              type="button"
-              onClick={() => setIsSidebarCollapsed(false)}
-              className="flex h-10 w-10 items-center justify-center rounded-xl cursor-pointer text-[#5e5e5e] hover:bg-[#f0f0f0]/50 border-none bg-transparent"
-              aria-label="Expand sidebar"
-              title="Expand Sidebar"
-            >
-              <SidebarToggleIcon className="h-5 w-5 text-[#5e5e5e]" />
-            </button>
-          )}
-
           {/* Dynamic high contrast School Info block */}
           <div
             className={cn(
@@ -456,6 +444,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </div>
             )}
           </div>
+
+          {isSidebarCollapsed && (
+            <button
+              type="button"
+              onClick={() => setIsSidebarCollapsed(false)}
+              className="flex h-10 w-10 items-center justify-center rounded-xl cursor-pointer text-[#303030] hover:bg-[#f0f0f0]/50 border-none bg-transparent"
+              aria-label="Expand sidebar"
+              title="Expand Sidebar"
+            >
+              <ChevronsRight className="h-6 w-6 text-[#303030]" strokeWidth={2.2} />
+            </button>
+          )}
         </div>
       </aside>
 
