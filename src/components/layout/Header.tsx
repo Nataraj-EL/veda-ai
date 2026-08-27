@@ -237,16 +237,6 @@ export const Header: React.FC<HeaderProps> = ({
       <header className="flex md:hidden shrink-0 z-40 w-full flex-col bg-transparent select-none no-print px-4 pt-3 gap-1">
         <div className="flex h-14 w-full items-center justify-between rounded-[20px] border border-black/10 bg-white px-4 shadow-sm">
           <div className="flex items-center gap-2">
-            {showBackButton && (
-              <button
-                type="button"
-                onClick={handleBackClick}
-                className="flex shrink-0 items-center justify-center transition-standard cursor-pointer h-8 w-8 rounded-full bg-[#f6f6f6] hover:bg-[#eaeaea] text-[#303030]"
-                aria-label="Navigate back"
-              >
-                <ChevronLeft className="h-4 w-4" strokeWidth={2.5} />
-              </button>
-            )}
             <SidebarBrand
               variant={isAssignments ? "mono" : brandVariant}
               className="origin-left"
