@@ -15,6 +15,38 @@ import { useUserPreferencesStore } from "@/store/useUserPreferencesStore";
 import { PreferencesModal } from "@/components/ui/PreferencesModal";
 import { InitialsAvatar } from "@/components/ui/InitialsAvatar";
 
+/** Custom panel-layout toggle icon (first attached image) */
+function SidebarToggleIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={cn("h-5 w-5 shrink-0", className)}
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden
+    >
+      <rect
+        x="1.5"
+        y="1.5"
+        width="17"
+        height="17"
+        rx="3"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M6.5 1.5V18.5"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 /** Figma "Exams" icon (node 1:9071) */
 const ExamsSidebarIcon: SidebarIconComponent = ({ className }) => (
   <svg
@@ -215,7 +247,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {isAssignments ? (
           <div className={cn("flex flex-col pt-6", isSidebarCollapsed ? "px-[18px] items-center" : "px-[26.5px]")}>
             {/* Figma 2:10590 — 136×40 logo + wordmark. Collapsible. */}
-            <div className={cn("flex items-center", isSidebarCollapsed ? "justify-center w-10 overflow-hidden" : "justify-between w-full")}>
+            <div className={cn("flex items-center", isSidebarCollapsed ? "justify-center w-10 h-10 overflow-hidden" : "justify-between w-full")}>
               <SidebarBrand variant={brandVariant} />
               {!isSidebarCollapsed && (
                 <button
@@ -224,17 +256,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg hover:bg-black/5 text-[#5e5e5e] cursor-pointer border-none bg-transparent"
                   aria-label="Collapse sidebar"
                 >
-                  <PanelLeftClose size={20} strokeWidth={1.8} />
+                  <SidebarToggleIcon className="h-5 w-5 text-[#5e5e5e]" />
                 </button>
               )}
             </div>
 
             {/* Figma 2:10598 — 56px below logo, CTA centered in 251px column */}
-            <div className={cn("mt-14 flex justify-center w-full", isSidebarCollapsed ? "max-w-[42px]" : "max-w-[251px]")}>
+            <div className={cn("mt-14 flex justify-center w-full", isSidebarCollapsed ? "max-w-[44px]" : "max-w-[251px]")}>
               <Link href={ctaHref} passHref className="w-full">
                 {isSidebarCollapsed ? (
-                  <span className="inline-flex h-[42px] w-[42px] items-center justify-center rounded-full bg-zinc-800 border border-white/10 hover:bg-zinc-700 text-[#E2E8F0] hover:text-white cursor-pointer select-none transition-standard shadow-sm">
-                    <CreateAssignmentSparkleIcon className="shrink-0" />
+                  <span className="inline-flex h-[44px] w-[44px] items-center justify-center rounded-full bg-[#303030] border-[3px] border-[#ff5623] hover:bg-[#3d3d3d] text-white cursor-pointer select-none transition-standard shadow-sm">
+                    <CreateAssignmentSparkleIcon className="shrink-0 text-white" />
                   </span>
                 ) : (
                   <span className="inline-flex h-[42px] w-full items-center justify-center gap-2 rounded-full px-6 text-[16px] font-medium leading-[28px] tracking-[-0.64px] text-[#E2E8F0] transition-standard shadow-sm cursor-pointer select-none btn-gradient-border group hover:text-white">
@@ -247,7 +279,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         ) : (
           <div className={cn("flex flex-col pt-6", isSidebarCollapsed ? "px-[18px] items-center" : "px-6")}>
-            <div className={cn("flex items-center", isSidebarCollapsed ? "justify-center w-10 overflow-hidden" : "justify-between w-full")}>
+            <div className={cn("flex items-center", isSidebarCollapsed ? "justify-center w-10 h-10 overflow-hidden" : "justify-between w-full")}>
               <SidebarBrand variant={brandVariant} />
               {!isSidebarCollapsed && (
                 <button
@@ -256,15 +288,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg hover:bg-black/5 text-[#5e5e5e] cursor-pointer border-none bg-transparent"
                   aria-label="Collapse sidebar"
                 >
-                  <PanelLeftClose size={20} strokeWidth={1.8} />
+                  <SidebarToggleIcon className="h-5 w-5 text-[#5e5e5e]" />
                 </button>
               )}
             </div>
-            <div className={cn("mt-6 w-full flex justify-center", isSidebarCollapsed ? "max-w-[42px]" : "")}>
+            <div className={cn("mt-6 w-full flex justify-center", isSidebarCollapsed ? "max-w-[44px]" : "")}>
               <Link href={ctaHref} passHref className="w-full">
                 {isSidebarCollapsed ? (
-                  <span className="inline-flex h-[42px] w-[42px] items-center justify-center rounded-full bg-zinc-800 border border-white/10 hover:bg-zinc-700 text-[#E2E8F0] hover:text-white cursor-pointer select-none transition-standard shadow-sm">
-                    <CreateAssignmentSparkleIcon className="shrink-0" />
+                  <span className="inline-flex h-[44px] w-[44px] items-center justify-center rounded-full bg-[#303030] border-[3px] border-[#ff5623] hover:bg-[#3d3d3d] text-white cursor-pointer select-none transition-standard shadow-sm">
+                    <CreateAssignmentSparkleIcon className="shrink-0 text-white" />
                   </span>
                 ) : (
                   <span className="inline-flex w-full items-center justify-center gap-2 rounded-full py-2.5 px-6 text-[16px] font-medium text-[#E2E8F0] transition-standard shadow-sm cursor-pointer select-none btn-gradient-border group hover:text-white">
@@ -375,7 +407,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               aria-label="Expand sidebar"
               title="Expand Sidebar"
             >
-              <ChevronsRight size={20} strokeWidth={1.8} />
+              <SidebarToggleIcon className="h-5 w-5 text-[#5e5e5e]" />
             </button>
           )}
 
