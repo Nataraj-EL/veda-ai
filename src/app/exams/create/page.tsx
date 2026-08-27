@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Upload, FileText, AlertTriangle } from "lucide-react";
+import { ArrowRight, Upload, FileText, AlertTriangle, Clock, Cloud, Settings, ClipboardList } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
@@ -240,6 +240,57 @@ export default function CreateExamPage() {
                     height={180}
                     className="h-full w-full object-contain"
                   />
+                  
+                  {/* Revolving Orbit Overlay */}
+                  <div className="absolute inset-0 pointer-events-none z-10 animate-[orbitRotation_25s_linear_infinite]">
+                    {/* 1. Clock Icon (Top-Right, ~295deg) */}
+                    <div 
+                      className="absolute left-1/2 top-1/2 w-[26px] h-[26px] rounded-full bg-gradient-to-b from-[#ff7a5a] to-[#be3318] shadow-md border border-white/25 flex items-center justify-center text-white"
+                      style={{
+                        transform: 'translate(-50%, -50%) rotate(295deg) translateY(-67px) rotate(-295deg)'
+                      }}
+                    >
+                      <div className="animate-[counterOrbit_25s_linear_infinite] flex items-center justify-center">
+                        <Clock className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
+                      </div>
+                    </div>
+                    
+                    {/* 2. Cloud Icon (Bottom-Right, ~23deg) */}
+                    <div 
+                      className="absolute left-1/2 top-1/2 w-[26px] h-[26px] rounded-full bg-gradient-to-b from-[#ff7a5a] to-[#be3318] shadow-md border border-white/25 flex items-center justify-center text-white"
+                      style={{
+                        transform: 'translate(-50%, -50%) rotate(23deg) translateY(-67px) rotate(-23deg)'
+                      }}
+                    >
+                      <div className="animate-[counterOrbit_25s_linear_infinite] flex items-center justify-center">
+                        <Cloud className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
+                      </div>
+                    </div>
+                    
+                    {/* 3. Gear/Settings Icon (Bottom, ~112deg) */}
+                    <div 
+                      className="absolute left-1/2 top-1/2 w-[26px] h-[26px] rounded-full bg-gradient-to-b from-[#ff7a5a] to-[#be3318] shadow-md border border-white/25 flex items-center justify-center text-white"
+                      style={{
+                        transform: 'translate(-50%, -50%) rotate(112deg) translateY(-67px) rotate(-112deg)'
+                      }}
+                    >
+                      <div className="animate-[counterOrbit_25s_linear_infinite] flex items-center justify-center">
+                        <Settings className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
+                      </div>
+                    </div>
+                    
+                    {/* 4. List Icon (Left, ~198deg) */}
+                    <div 
+                      className="absolute left-1/2 top-1/2 w-[26px] h-[26px] rounded-full bg-gradient-to-b from-[#ff7a5a] to-[#be3318] shadow-md border border-white/25 flex items-center justify-center text-white"
+                      style={{
+                        transform: 'translate(-50%, -50%) rotate(198deg) translateY(-67px) rotate(-198deg)'
+                      }}
+                    >
+                      <div className="animate-[counterOrbit_25s_linear_infinite] flex items-center justify-center">
+                        <ClipboardList className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Upload boxes container card — Figma border, radius, spacing and padding */}

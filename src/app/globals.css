@@ -228,3 +228,22 @@ textarea:focus-visible {
   --dist: -20px;
   animation: burstLine 0.5s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
 }
+
+/* Revolving Orbit Animations */
+@keyframes orbitRotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes counterOrbit {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
