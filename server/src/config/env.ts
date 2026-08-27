@@ -36,7 +36,7 @@ const envSchema = z.object({
   OPENAI_BASE_URL: z.string().url().default("https://api.openai.com/v1"),
 
   GEMINI_API_KEY: z.string().optional(),
-  GEMINI_MODEL: z.string().default("gemini-2.5-flash"),
+  GEMINI_MODEL: z.string().default("gemini-3.5-flash-lite"),
 
   GROQ_API_KEY: z.string().optional(),
   GROQ_MODEL: z.string().default("llama-3.3-70b-versatile"),

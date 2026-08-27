@@ -27,10 +27,15 @@ function toExamResponse(exam: IExam) {
 
 function resolveAiProvider() {
   if (env.GEMINI_API_KEY) {
+    let modelName = env.GEMINI_MODEL || "gemini-3.5-flash-lite";
+    if (modelName === "gemini-2.5-flash" || modelName === "gemini-2.5-flash-lite") {
+      modelName = "gemini-3.5-flash-lite";
+    }
+
     return {
       provider: new GeminiProvider({
         apiKey: env.GEMINI_API_KEY,
-        model: env.GEMINI_MODEL || "gemini-3.5-flash-lite",
+        model: modelName,
         timeoutMs: 90000,
       }),
       source: "gemini" as const,
