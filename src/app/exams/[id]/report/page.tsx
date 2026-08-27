@@ -262,7 +262,7 @@ export default function GradedExamReportPage() {
               <div className="rounded-[28px] border border-black/5 bg-white p-6 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
                 
                 {/* Profile info & count badges */}
-                <div className="flex flex-col gap-3 min-w-0 flex-1">
+                <div className="flex flex-col gap-4 min-w-0 flex-1">
                   <div>
                     <span className="font-semibold text-xs text-[#8e8e93] block uppercase tracking-wider">
                       Student Name
@@ -276,38 +276,52 @@ export default function GradedExamReportPage() {
                   </div>
                   
                   <div className="flex flex-wrap gap-2 mt-2">
-                    <span className="bg-[#ecfdf5] border border-emerald-100 text-[#059669] rounded-full px-3 py-1 flex items-center gap-1.5 font-bold text-xs">
-                      <CheckCircle className="w-3.5 h-3.5" />
+                    <span className="bg-[#eafaf1] text-[#16a34a] rounded-full px-3.5 py-1.5 flex items-center gap-2 font-bold text-xs leading-none shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#16a34a]/10 text-[#16a34a]">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </span>
                       <span>{correctCount} Correct</span>
                     </span>
-                    <span className="bg-[#fffbeb] border border-amber-100 text-[#d97706] rounded-full px-3 py-1 flex items-center gap-1.5 font-bold text-xs">
-                      <AlertTriangle className="w-3.5 h-3.5" />
+                    <span className="bg-[#fffde8] text-[#ca8a04] rounded-full px-3.5 py-1.5 flex items-center gap-2 font-bold text-xs leading-none shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#ca8a04]/10 text-[#ca8a04]">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                          <line x1="18" y1="6" x2="6" y2="18" />
+                          <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                      </span>
                       <span>{partialCount} Partial</span>
                     </span>
-                    <span className="bg-[#fef2f2] border border-red-100 text-[#dc2626] rounded-full px-3 py-1 flex items-center gap-1.5 font-bold text-xs">
-                      <XCircle className="w-3.5 h-3.5" />
+                    <span className="bg-[#fef2f2] text-[#b91c1c] rounded-full px-3.5 py-1.5 flex items-center gap-2 font-bold text-xs leading-none shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#b91c1c]/10 text-[#b91c1c]">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                          <line x1="18" y1="6" x2="6" y2="18" />
+                          <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                      </span>
                       <span>{incorrectCount} Incorrect</span>
                     </span>
                   </div>
                 </div>
 
-                {/* Score donut circle & Grade banner */}
-                <div className="flex items-center gap-6 shrink-0">
+                {/* Score donut circle & Grade banner (enclosed in light gray card container) */}
+                <div className="bg-[#f8f8f9] rounded-[24px] border border-black/[0.03] p-5 flex items-center gap-6 shrink-0">
                   {/* Circular Donut Ring */}
-                  <div className="relative flex items-center justify-center w-24 h-24 select-none">
-                    <svg className="w-full h-full transform -rotate-90">
+                  <div className="relative flex items-center justify-center w-[100px] h-[100px] select-none">
+                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                       <circle
-                        cx="48"
-                        cy="48"
+                        cx="50"
+                        cy="50"
                         r="40"
-                        className="stroke-slate-100 fill-transparent"
+                        className="stroke-slate-200 fill-transparent"
                         strokeWidth="8"
                       />
                       <circle
-                        cx="48"
-                        cy="48"
+                        cx="50"
+                        cy="50"
                         r="40"
-                        className="stroke-[#3dd218] fill-transparent transition-all duration-500"
+                        className="stroke-[#16a34a] fill-transparent transition-all duration-500"
                         strokeWidth="8"
                         strokeDasharray={circumference}
                         strokeDashoffset={strokeDashoffset}
@@ -315,10 +329,10 @@ export default function GradedExamReportPage() {
                       />
                     </svg>
                     <div className="absolute flex flex-col items-center justify-center">
-                      <span className="text-[22px] font-extrabold text-[#303030] leading-none">
+                      <span className="text-[24px] font-black text-[#303030] leading-none">
                         {currentTotalScore}
                       </span>
-                      <span className="text-[9px] font-bold text-[#8e8e93] mt-0.5 uppercase tracking-wider">
+                      <span className="text-[10px] font-bold text-[#8e8e93] mt-1 uppercase tracking-wider">
                         Out of {maxMarks}
                       </span>
                     </div>
@@ -327,20 +341,25 @@ export default function GradedExamReportPage() {
                   {/* Grade Badge details */}
                   <div className="flex flex-col items-start gap-1">
                     <span className={cn(
-                      "px-2.5 py-0.5 rounded-md font-bold text-[10px] border tracking-wide uppercase",
-                      labelBg
+                      "px-3 py-1 rounded-full font-bold text-[10px] uppercase tracking-wider border-none leading-none shadow-[0_1px_2px_rgba(0,0,0,0.02)]",
+                      percent >= 85
+                        ? "bg-[#eafaf1] text-[#16a34a]"
+                        : percent >= 70
+                        ? "bg-blue-50 text-blue-600"
+                        : percent >= 50
+                        ? "bg-yellow-50 text-yellow-600"
+                        : "bg-red-50 text-red-600"
                     )}>
                       {performanceLabel}
                     </span>
-                    <span className="text-[44px] font-extrabold text-[#303030] leading-none mt-1">
+                    <span className="text-[44px] font-black text-[#303030] leading-none mt-1.5">
                       {gradeLetter}
                     </span>
-                    <span className="text-xs font-semibold text-[#8e8e93]">
+                    <span className="text-xs font-bold text-[#8e8e93] mt-1">
                       {percent}%
                     </span>
                   </div>
                 </div>
-
               </div>
 
               {/* Subheading row */}
