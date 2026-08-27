@@ -1,6 +1,11 @@
-import { NotFoundError } from "../../utils/app-error.js";
+import { NotFoundError, AppError } from "../../utils/app-error.js";
 import { Exam, type IExam } from "./exam.model.js";
 import type { CreateExamDto } from "./exam.types.js";
+import { extractTextFromPdf } from "../../utils/pdf-extractor.js";
+import { env } from "../../config/env.js";
+import { logger } from "../../utils/logger.js";
+import { GroqProvider } from "../generation/providers/groq.provider.js";
+import { GeminiProvider } from "../generation/providers/gemini.provider.js";
 
 function toExamResponse(exam: IExam) {
   return {
@@ -20,88 +25,172 @@ function toExamResponse(exam: IExam) {
   };
 }
 
+function resolveAiProvider() {
+  if (env.GEMINI_API_KEY) {
+    return {
+      provider: new GeminiProvider({
+        apiKey: env.GEMINI_API_KEY,
+        model: env.GEMINI_MODEL || "gemini-2.5-flash",
+        timeoutMs: 90000,
+      }),
+      source: "gemini" as const,
+    };
+  } else if (env.GROQ_API_KEY) {
+    return {
+      provider: new GroqProvider({
+        apiKey: env.GROQ_API_KEY,
+        model: env.GROQ_MODEL,
+        timeoutMs: 90000,
+      }),
+      source: "groq" as const,
+    };
+  }
+  throw new AppError("No AI provider API key configured (GROQ_API_KEY or GEMINI_API_KEY)", 500, "AI_PROVIDER_UNCONFIGURED");
+}
+
 export class ExamService {
   async createExam(input: CreateExamDto): Promise<ReturnType<typeof toExamResponse>> {
-    const mockQuestions = [
-      {
-        questionNumber: "1",
-        text: "Explain the process of brine electrolysis (chlor-alkali process). Write the chemical equations for the cathode and anode reactions.",
-        marks: 5,
-        regions: [{ pageNumber: 1, boundingBox: { x: 5, y: 5, width: 90, height: 10 } }],
-      },
-      {
-        questionNumber: "2",
-        text: "Explain why sodium hydroxide is formed in the solution instead of at the electrode.",
-        marks: 3,
-        regions: [{ pageNumber: 1, boundingBox: { x: 5, y: 17, width: 90, height: 8 } }],
-      },
-      {
-        questionNumber: "3(a)",
-        text: "Write the balanced chemical equation for the reaction of chlorine gas with slaked lime.",
-        marks: 2,
-        regions: [{ pageNumber: 1, boundingBox: { x: 5, y: 28, width: 90, height: 8 } }],
-      },
-      {
-        questionNumber: "3(b)",
-        text: "Explain the role of gypsum in the manufacturing and setting of cement.",
-        marks: 5,
-        regions: [{ pageNumber: 1, boundingBox: { x: 5, y: 39, width: 90, height: 8 } }],
-      },
-      {
-        questionNumber: "4",
-        text: "What is the common name of Sodium Hydrogen Carbonate? Write its chemical formula and one domestic use.",
-        marks: 5,
-        regions: [{ pageNumber: 1, boundingBox: { x: 5, y: 50, width: 90, height: 10 } }],
-      },
-    ];
+    if (!input.questionPaper.buffer || !input.studentAnswerSheet.buffer) {
+      throw new AppError("Both files must contain valid file buffers", 400, "FILES_REQUIRED");
+    }
 
-    const mockAnswers = [
-      {
-        questionNumber: "1",
-        text: "During brine (concentrated NaCl solution) electrolysis, chlorine gas is evolved at the anode and hydrogen gas at the cathode. Sodium hydroxide solution is formed near the cathode.\nAt Anode: 2Cl⁻ → Cl₂ + 2e⁻\nAt Cathode: 2H₂O + 2e⁻ → H₂ + 2OH⁻",
-        regions: [{ pageNumber: 1, boundingBox: { x: 5, y: 10, width: 90, height: 20 } }],
-      },
-      {
-        questionNumber: "2",
-        text: "Sodium ions (Na⁺) and hydroxide ions (OH⁻) remain in the solution and combine to form NaOH because hydrogen ions (H⁺) are preferentially reduced at the cathode due to their lower reduction potential.",
-        regions: [{ pageNumber: 1, boundingBox: { x: 5, y: 32, width: 90, height: 16 } }],
-      },
-      {
-        questionNumber: "3(a)",
-        text: "Chlorine gas reacts with dry slaked lime [Ca(OH)₂] to produce bleaching powder (calcium oxychloride):\nCa(OH)₂ + Cl₂ → CaOCl₂ + H₂O",
-        regions: [{ pageNumber: 1, boundingBox: { x: 5, y: 50, width: 90, height: 14 } }],
-      },
-      {
-        questionNumber: "3(b)",
-        text: "Unanswered",
-        regions: [],
-      },
-      {
-        questionNumber: "4",
-        text: "Common name: Baking Soda.\nChemical formula: NaHCO3.\nUse: Used in bakery (bread/cakes) to make them soft and spongy by releasing carbon dioxide gas on heating.",
-        regions: [{ pageNumber: 2, boundingBox: { x: 5, y: 12, width: 90, height: 22 } }],
-      },
-    ];
+    let questionPaperText = "";
+    let studentAnswerSheetText = "";
 
-    const mockMappings = [
-      { questionNumber: "1", matched: true, extractedAnswerIndex: 0, score: 5, feedback: "Excellent answer covering both anode and cathode equations accurately." },
-      { questionNumber: "2", matched: true, extractedAnswerIndex: 1, score: 3, feedback: "Correct explanation of preferential discharge." },
-      { questionNumber: "3(a)", matched: true, extractedAnswerIndex: 2, score: 2, feedback: "Equation is balanced and products are correct." },
-      { questionNumber: "3(b)", matched: false, score: 0, feedback: "Question left unanswered by student." },
-      { questionNumber: "4", matched: true, extractedAnswerIndex: 4, score: 5, feedback: "All parts answered correctly with chemical equation implications." },
-    ];
+    try {
+      questionPaperText = await extractTextFromPdf(input.questionPaper.buffer);
+    } catch (err: any) {
+      logger.error({ err }, "Question paper PDF extraction failed");
+      throw new AppError("Failed to extract text from Question Paper PDF. Ensure it is a valid PDF.", 400, "MATERIAL_EXTRACTION_FAILED");
+    }
 
-    const totalScore = mockMappings.reduce((sum, m) => sum + (m.score || 0), 0);
+    try {
+      studentAnswerSheetText = await extractTextFromPdf(input.studentAnswerSheet.buffer);
+    } catch (err: any) {
+      logger.error({ err }, "Student answer sheet PDF extraction failed");
+      throw new AppError("Failed to extract text from Student Answer Sheet PDF. Ensure it is a valid PDF.", 400, "MATERIAL_EXTRACTION_FAILED");
+    }
+
+    if (!questionPaperText.trim()) {
+      throw new AppError("Failed to extract text from Question Paper PDF. Ensure it contains readable text.", 400, "MATERIAL_EXTRACTION_FAILED");
+    }
+    if (!studentAnswerSheetText.trim()) {
+      throw new AppError("Failed to extract text from Student Answer Sheet PDF. Ensure it contains readable text.", 400, "MATERIAL_EXTRACTION_FAILED");
+    }
+
+    const systemPrompt = `You are an elite academic grading assistant.
+Your task is to analyze the provided Question Paper text and the Student's Answer Sheet text, extract all questions, identify the student's answers, grade each answer, and map them together.
+
+CRITICAL EXTRACTION RULES:
+1. Extract all questions from the Question Paper text.
+2. If the Question Paper text does not contain explicit numbered questions, you MUST generate 3 to 5 realistic questions based on the content of the text.
+3. For each question, extract or match the student's answer from the Student Answer Sheet text. If the Answer Sheet does not contain explicit answers, match relevant paragraphs or summaries from the Answer Sheet text that answer the question.
+4. Be fair and professional in grading. Award scores proportionally to correctness.
+5. If a question is clearly unanswered or skipped in the answer sheet, set matched=false, score=0, and feedback="Question left unanswered by student."
+6. Output ONLY the raw JSON object matching the schema below. No explanations, no markdown formatting (no \`\`\`json blocks), just the raw JSON text.
+
+JSON Schema:
+{
+  "questions": [
+    {
+      "questionNumber": "string (e.g. '1', '2', '3(a)')",
+      "text": "string (full question text)",
+      "marks": number (maximum marks allowed. If not specified, default to 5)"
+    }
+  ],
+  "answers": [
+    {
+      "questionNumber": "string (the question number this answer corresponds to)",
+      "text": "string (the text of the student's answer)"
+    }
+  ],
+  "mappings": [
+    {
+      "questionNumber": "string",
+      "matched": boolean (true if attempted, false if unanswered/skipped/empty)",
+      "extractedAnswerIndex": number (the 0-based index of this answer in the answers array above, or null/undefined if unmatched/unanswered)",
+      "score": number (marks awarded, from 0 up to the question's 'marks'. If unmatched/unanswered, score must be 0)",
+      "feedback": "string (detailed constructive educational feedback on this specific answer)"
+    }
+  ]
+}`;
+
+    const userPrompt = `Analyze the exam text below and generate the structured grading.
+
+=== QUESTION PAPER TEXT ===
+${questionPaperText}
+
+=== STUDENT ANSWER SHEET TEXT ===
+${studentAnswerSheetText}`;
+
+    const { provider, source } = resolveAiProvider();
+    logger.info({ source, qLen: questionPaperText.length, aLen: studentAnswerSheetText.length }, "Sending exam extraction/OCR request to AI Provider");
+
+    let rawResponse = "";
+    try {
+      rawResponse = await provider.generate(systemPrompt, userPrompt);
+    } catch (err: any) {
+      logger.error({ err }, "AI Provider failed to generate exam grading");
+      throw new AppError(`AI assessment generation failed: ${err.message}`, 502, "AI_PROVIDER_ERROR");
+    }
+
+    let parsedResult: any;
+    try {
+      let cleanJson = rawResponse.trim();
+      if (cleanJson.startsWith("```")) {
+        cleanJson = cleanJson.replace(/^```json\s*/i, "").replace(/```$/, "").trim();
+      }
+      logger.info({ cleanJson }, "AI raw JSON string response");
+      parsedResult = JSON.parse(cleanJson);
+    } catch (err) {
+      logger.error({ rawResponse, err }, "Failed to parse AI provider JSON response");
+      throw new AppError("AI provider returned invalid JSON response format", 502, "AI_PARSE_ERROR");
+    }
+
+    const questions = Array.isArray(parsedResult.questions) ? parsedResult.questions : [];
+    const answers = Array.isArray(parsedResult.answers) ? parsedResult.answers : [];
+    const mappings = Array.isArray(parsedResult.mappings) ? parsedResult.mappings : [];
+
+    const formattedQuestions = questions.map((q: any) => ({
+      questionNumber: String(q.questionNumber || ""),
+      text: String(q.text || ""),
+      marks: Number(q.marks || 5),
+      regions: [],
+    }));
+
+    const formattedAnswers = answers.map((a: any) => ({
+      questionNumber: String(a.questionNumber || ""),
+      text: String(a.text || ""),
+      regions: [],
+    }));
+
+    const formattedMappings = mappings.map((m: any) => ({
+      questionNumber: String(m.questionNumber || ""),
+      matched: Boolean(m.matched),
+      extractedAnswerIndex: typeof m.extractedAnswerIndex === "number" ? m.extractedAnswerIndex : undefined,
+      score: typeof m.score === "number" ? m.score : 0,
+      feedback: String(m.feedback || ""),
+    }));
+
+    const totalScore = formattedMappings.reduce((sum: number, m: any) => sum + (m.score || 0), 0);
 
     const exam = await Exam.create({
       title: input.title?.trim() || "Exam Paper",
       status: "completed",
-      questionPaper: input.questionPaper,
-      studentAnswerSheet: input.studentAnswerSheet,
+      questionPaper: {
+        name: input.questionPaper.name,
+        size: input.questionPaper.size,
+        type: input.questionPaper.type,
+      },
+      studentAnswerSheet: {
+        name: input.studentAnswerSheet.name,
+        size: input.studentAnswerSheet.size,
+        type: input.studentAnswerSheet.type,
+      },
       userId: input.userId,
-      questions: mockQuestions,
-      answers: mockAnswers,
-      mappings: mockMappings,
+      questions: formattedQuestions,
+      answers: formattedAnswers,
+      mappings: formattedMappings,
       gradingStatus: "pending",
       totalScore,
     });

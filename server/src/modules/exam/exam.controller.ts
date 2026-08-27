@@ -35,11 +35,13 @@ export const createExam = asyncHandler(
         name: questionPaperFile.originalname,
         size: questionPaperFile.size,
         type: questionPaperFile.mimetype,
+        buffer: questionPaperFile.buffer,
       },
       studentAnswerSheet: {
         name: studentAnswerSheetFile.originalname,
         size: studentAnswerSheetFile.size,
         type: studentAnswerSheetFile.mimetype,
+        buffer: studentAnswerSheetFile.buffer,
       },
     });
 
