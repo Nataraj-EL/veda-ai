@@ -498,7 +498,7 @@ export default function ExamAssessmentPage() {
                           height: `${height}%`,
                         }}
                       >
-                        <span className="absolute top-0 left-0 rounded-tl-[14px] rounded-br-[14px] bg-[#3dd218] px-2 py-0.5 text-[12px] font-bold text-white">
+                        <span className="absolute bottom-full left-[-2px] rounded-t-[10px] rounded-b-none bg-[#3dd218] px-3.5 py-0.5 font-serif text-[15px] font-extrabold leading-tight text-white">
                           Q{selectedQuestionNumber}
                         </span>
                       </div>
