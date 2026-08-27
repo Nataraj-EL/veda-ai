@@ -154,10 +154,40 @@ ${studentAnswerSheetText}`;
     let rawResponse = "";
     try {
       if (source === "gemini") {
-        rawResponse = await (provider as GeminiProvider).generate(systemPrompt, userPrompt, [
-          { buffer: input.questionPaper.buffer, mimeType: input.questionPaper.type },
-          { buffer: input.studentAnswerSheet.buffer, mimeType: input.studentAnswerSheet.type },
-        ]);
+        const visualFiles: any[] = [];
+        
+        if (questionPaperText.trim().length < 200) {
+          logger.info({ name: input.questionPaper.name }, "Question paper text layer is empty or short; sending raw buffer for visual OCR");
+          visualFiles.push({ buffer: input.questionPaper.buffer, mimeType: input.questionPaper.type });
+        } else {
+          logger.info({ name: input.questionPaper.name }, "Question paper text layer extracted successfully; skipping visual buffer");
+        }
+
+        if (studentAnswerSheetText.trim().length < 200) {
+          logger.info({ name: input.studentAnswerSheet.name }, "Student answer sheet text layer is empty or short; sending raw buffer for visual OCR");
+          visualFiles.push({ buffer: input.studentAnswerSheet.buffer, mimeType: input.studentAnswerSheet.type });
+        } else {
+          logger.info({ name: input.studentAnswerSheet.name }, "Student answer sheet text layer extracted successfully; skipping visual buffer");
+        }
+
+        try {
+          if (visualFiles.length > 0) {
+            logger.info("Attempting multimodal visual extraction with raw file buffers");
+            rawResponse = await (provider as GeminiProvider).generate(systemPrompt, userPrompt, visualFiles);
+          } else {
+            logger.info("Both files have text layers; performing text-only extraction with Gemini");
+            rawResponse = await provider.generate(systemPrompt, userPrompt);
+          }
+        } catch (mismatchedError: any) {
+          logger.warn({ err: mismatchedError }, "Multimodal visual extraction failed; falling back to text-only prompt");
+          
+          // Ensure we have extracted text to fall back to
+          if (!questionPaperText.trim() || !studentAnswerSheetText.trim()) {
+            throw new AppError("Visual extraction failed and text layer is empty. Ensure files contain readable text.", 400, "MATERIAL_EXTRACTION_FAILED");
+          }
+          
+          rawResponse = await provider.generate(systemPrompt, userPrompt);
+        }
       } else {
         rawResponse = await provider.generate(systemPrompt, userPrompt);
       }

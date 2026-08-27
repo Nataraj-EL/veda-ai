@@ -26,16 +26,6 @@ export class GeminiProvider {
   ): Promise<string> {
     const genAI = new GoogleGenerativeAI(this.apiKey);
 
-    // Gemini supports JSON-only responses via responseMimeType.
-    const model = genAI.getGenerativeModel({
-      model: this.model,
-      systemInstruction: systemPrompt,
-      generationConfig: {
-        temperature: 0.4,
-        responseMimeType: "application/json",
-      },
-    });
-
     const parts: any[] = [userPrompt];
     if (files && files.length > 0) {
       for (const file of files) {
@@ -48,9 +38,19 @@ export class GeminiProvider {
       }
     }
 
-    const maxAttempts = 2;
+    let activeModelName = this.model;
+    const maxAttempts = 3;
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
+        const model = genAI.getGenerativeModel({
+          model: activeModelName,
+          systemInstruction: systemPrompt,
+          generationConfig: {
+            temperature: 0.4,
+            responseMimeType: "application/json",
+          },
+        });
+
         const result = await model.generateContent(parts, {
           timeout: this.timeoutMs,
         });
@@ -64,15 +64,20 @@ export class GeminiProvider {
         const message = err instanceof Error ? err.message : String(err);
         const normalized = message.toLowerCase();
 
-        const isRateLimit = message.includes("429");
+        const isRateLimit = message.includes("429") || normalized.includes("too many requests");
         const isHighDemand503 =
-          message.includes("[503") || normalized.includes("high demand");
-        const isTimeout = normalized.includes("timeout");
+          message.includes("[503") || normalized.includes("high demand") || normalized.includes("service unavailable");
+        const isTimeout = normalized.includes("timeout") || normalized.includes("aborted");
 
         const isTransient = isRateLimit || isHighDemand503 || isTimeout;
 
         if (isTransient && attempt < maxAttempts) {
-          const backoffMs = 1200 * Math.pow(2, attempt - 1) + Math.floor(Math.random() * 300);
+          if (activeModelName !== "gemini-flash-lite-latest") {
+            logger.warn({ activeModelName }, "Switching to gemini-flash-lite-latest to bypass resource load constraints");
+            activeModelName = "gemini-flash-lite-latest";
+          }
+
+          const backoffMs = 2500 * Math.pow(2, attempt - 1) + Math.floor(Math.random() * 500);
           logger.warn(
             { attempt, backoffMs, message },
             "Transient Gemini error; retrying"
