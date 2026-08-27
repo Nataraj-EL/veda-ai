@@ -163,12 +163,9 @@ ${studentAnswerSheetText}`;
           logger.info({ name: input.questionPaper.name }, "Question paper text layer extracted successfully; skipping visual buffer");
         }
 
-        if (studentAnswerSheetText.trim().length < 200) {
-          logger.info({ name: input.studentAnswerSheet.name }, "Student answer sheet text layer is empty or short; sending raw buffer for visual OCR");
-          visualFiles.push({ buffer: input.studentAnswerSheet.buffer, mimeType: input.studentAnswerSheet.type });
-        } else {
-          logger.info({ name: input.studentAnswerSheet.name }, "Student answer sheet text layer extracted successfully; skipping visual buffer");
-        }
+        // ALWAYS send the student answer sheet buffer visually to ensure accurate bounding box detection
+        logger.info({ name: input.studentAnswerSheet.name }, "Sending student answer sheet visually to ensure accurate bounding box detection");
+        visualFiles.push({ buffer: input.studentAnswerSheet.buffer, mimeType: input.studentAnswerSheet.type });
 
         try {
           if (visualFiles.length > 0) {
