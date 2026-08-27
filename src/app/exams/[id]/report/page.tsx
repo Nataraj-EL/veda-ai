@@ -356,7 +356,7 @@ export default function GradedExamReportPage() {
                   </div>
 
                   {/* Grade Badge details */}
-                  <div className="flex flex-col items-start gap-1">
+                  <div className="flex flex-col items-center justify-center gap-1 min-w-[90px]">
                     <span className={cn(
                       "px-3 py-1 rounded-full font-bold text-[10px] uppercase tracking-wider border-none leading-none shadow-[0_1px_2px_rgba(0,0,0,0.02)]",
                       percent >= 85
@@ -364,15 +364,24 @@ export default function GradedExamReportPage() {
                         : percent >= 70
                         ? "bg-blue-50 text-blue-600"
                         : percent >= 50
-                        ? "bg-yellow-50 text-yellow-600"
+                        ? "bg-[#fffde8] text-[#ca8a04]"
                         : "bg-red-50 text-red-600"
                     )}>
                       {performanceLabel}
                     </span>
-                    <span className="text-[44px] font-black text-[#303030] leading-none mt-1.5">
+                    <span className={cn(
+                      "text-[48px] font-black leading-none mt-1.5",
+                      percent >= 85
+                        ? "text-[#16a34a]"
+                        : percent >= 70
+                        ? "text-blue-600"
+                        : percent >= 50
+                        ? "text-[#ca8a04]"
+                        : "text-red-600"
+                    )}>
                       {gradeLetter}
                     </span>
-                    <span className="text-xs font-bold text-[#8e8e93] mt-1">
+                    <span className="text-[14px] font-extrabold text-[#303030] mt-1">
                       {percent}%
                     </span>
                   </div>
