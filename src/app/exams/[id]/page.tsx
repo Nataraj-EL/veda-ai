@@ -49,6 +49,11 @@ export default function ExamAssessmentPage() {
   const [mobileTab, setMobileTab] = useState<"questions" | "answers">("questions");
   const [zoomPercent, setZoomPercent] = useState(100);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isFirefox, setIsFirefox] = useState(false);
+
+  useEffect(() => {
+    setIsFirefox(navigator.userAgent.toLowerCase().includes("firefox"));
+  }, []);
 
   const [editedAnswerText, setEditedAnswerText] = useState("");
   const [editedScore, setEditedScore] = useState(0);
@@ -528,7 +533,12 @@ export default function ExamAssessmentPage() {
                   ) : (
                     <iframe
                       src={`${process.env.NEXT_PUBLIC_API_URL}${currentExam.studentAnswerSheet.path}#page=${pageNum}&toolbar=0&navpanes=0&scrollbar=0&messages=0`}
-                      className="absolute inset-0 h-full w-full border-none pointer-events-none z-0"
+                      className={cn(
+                        "absolute border-none pointer-events-none z-0",
+                        isFirefox
+                          ? "-top-[40px] h-[calc(100%+40px)] w-full left-0"
+                          : "inset-0 h-full w-full"
+                      )}
                       title="Student Answer Sheet"
                     />
                   )
