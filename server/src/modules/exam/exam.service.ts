@@ -94,11 +94,11 @@ CRITICAL EXTRACTION RULES:
 1. Extract all questions from the Question Paper text.
 2. If the Question Paper text does not contain explicit numbered questions, you MUST generate 3 to 5 realistic questions based on the content of the text.
 3. For each question, extract or match the student's answer from the Student Answer Sheet text. If the Answer Sheet does not contain explicit answers, match relevant paragraphs or summaries from the Answer Sheet text that answer the question.
-4. For each extracted student answer, you MUST also identify its location in the Student's Answer Sheet. Estimate the approximate region/bounding box where the answer is written on the page, using percentage values (0 to 100) relative to the page width and height:
-   - x: percentage distance from the left edge of the page (0 to 100)
-   - y: percentage distance from the top edge of the page (0 to 100)
-   - width: percentage width of the answer block (0 to 100)
-   - height: percentage height of the answer block (0 to 100)
+4. For each extracted student answer, you MUST also identify its location in the Student's Answer Sheet. Estimate the approximate region/boundingBox where the answer is written on the page, using Gemini's native 0 to 1000 coordinate space (where 0 is top/left, 1000 is bottom/right of the page):
+   - x: X coordinate of the top-left corner of the answer block (0 to 1000)
+   - y: Y coordinate of the top-left corner of the answer block (0 to 1000)
+   - width: width of the answer block (0 to 1000)
+   - height: height of the answer block (0 to 1000)
    - pageNumber: 1-based page number where this answer is located.
 5. Be fair and professional in grading. Award scores proportionally to correctness.
 6. If a question is clearly unanswered or skipped in the answer sheet, set matched=false, score=0, and feedback="Question left unanswered by student."
@@ -224,10 +224,10 @@ ${studentAnswerSheetText}`;
         ? a.regions.map((r: any) => ({
             pageNumber: typeof r.pageNumber === "number" ? r.pageNumber : 1,
             boundingBox: {
-              x: typeof r.boundingBox?.x === "number" ? (r.boundingBox.x > 100 ? r.boundingBox.x / 10 : r.boundingBox.x) : 10,
-              y: typeof r.boundingBox?.y === "number" ? (r.boundingBox.y > 100 ? r.boundingBox.y / 10 : r.boundingBox.y) : 10,
-              width: typeof r.boundingBox?.width === "number" ? (r.boundingBox.width > 100 ? r.boundingBox.width / 10 : r.boundingBox.width) : 80,
-              height: typeof r.boundingBox?.height === "number" ? (r.boundingBox.height > 100 ? r.boundingBox.height / 10 : r.boundingBox.height) : 20,
+              x: typeof r.boundingBox?.x === "number" ? Math.round(r.boundingBox.x / 10) : 10,
+              y: typeof r.boundingBox?.y === "number" ? Math.round(r.boundingBox.y / 10) : 10,
+              width: typeof r.boundingBox?.width === "number" ? Math.round(r.boundingBox.width / 10) : 80,
+              height: typeof r.boundingBox?.height === "number" ? Math.round(r.boundingBox.height / 10) : 20,
             },
           }))
         : [],
