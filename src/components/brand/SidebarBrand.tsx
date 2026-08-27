@@ -4,7 +4,7 @@ import { cn } from "@/utils/cn";
 type BrandVariant = "gradient" | "mono";
 
 const LOGO_SRC = {
-  gradient: "/images/vedaai-logo-gradient.png",
+  gradient: "/images/vedaai-logo-mono.png",
   mono: "/images/vedaai-logo-mono.png",
 } as const;
 

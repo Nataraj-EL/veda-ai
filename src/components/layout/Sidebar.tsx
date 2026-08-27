@@ -5,7 +5,8 @@ import {
   LayoutGrid,
   FileText,
   Settings,
-  ClipboardList,
+  ChevronsRight,
+  PanelLeftClose,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/utils/cn";
@@ -13,6 +14,32 @@ import { SidebarBrand } from "@/components/brand/SidebarBrand";
 import { useUserPreferencesStore } from "@/store/useUserPreferencesStore";
 import { PreferencesModal } from "@/components/ui/PreferencesModal";
 import { InitialsAvatar } from "@/components/ui/InitialsAvatar";
+
+/** Figma "Exams" icon (node 1:9071) */
+const ExamsSidebarIcon: SidebarIconComponent = ({ className }) => (
+  <svg
+    className={cn("h-5 w-5 shrink-0", className)}
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden
+  >
+    <path
+      d="M13.3335 3.33334H15.0002C15.4422 3.33334 15.8661 3.50894 16.1787 3.8215C16.4912 4.13406 16.6668 4.55798 16.6668 5.00001V16.6667C16.6668 17.1087 16.4912 17.5326 16.1787 17.8452C15.8661 18.1577 15.4422 18.3333 15.0002 18.3333H5.00016C4.55814 18.3333 4.13421 18.1577 3.82165 17.8452C3.50909 17.5326 3.3335 17.1087 3.3335 16.6667V5.00001C3.3335 4.55798 3.50909 4.13406 3.82165 3.8215C4.13421 3.50894 4.55814 3.33334 5.00016 3.33334H6.66683"
+      stroke="currentColor"
+      strokeWidth={NAV_ICON_STROKE}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M12.4998 1.66666H7.49984C7.0396 1.66666 6.6665 2.03975 6.6665 2.49999V4.16666C6.6665 4.62689 7.0396 4.99999 7.49984 4.99999H12.4998C12.9601 4.99999 13.3332 4.62689 13.3332 4.16666V2.49999C13.3332 2.03975 12.9601 1.66666 12.4998 1.66666Z"
+      stroke="currentColor"
+      strokeWidth={NAV_ICON_STROKE}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
 
 /** Figma sidebar icons: 20×20, lightweight outline stroke */
 const NAV_ICON_SIZE = 20;
@@ -146,7 +173,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const ctaHref = primaryCta === "aiTeacherToolkit" ? "#" : "/create";
   const ctaLabel = primaryCta === "aiTeacherToolkit" ? "AI Teacher's Toolkit" : "Create Assignment";
 
-  const { preferences, loadPreferences, setIsSettingsOpen } = useUserPreferencesStore();
+  const { preferences, loadPreferences, setIsSettingsOpen, isSidebarCollapsed, setIsSidebarCollapsed } = useUserPreferencesStore();
 
   useEffect(() => {
     loadPreferences();
@@ -163,45 +190,88 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { label: "Home", href: "/", icon: LayoutGrid },
     { label: "My Classroom", href: "#", customIcon: MyGroupsIcon },
     { label: "Assignments", href: "/", icon: FileText },
-    { label: "Exams", href: "/exams", icon: ClipboardList },
+    { label: "Exams", href: "/exams", customIcon: ExamsSidebarIcon },
     { label: "My Library", href: "#", customIcon: MyLibraryIcon },
   ];
+
+  const widthClass = isSidebarCollapsed
+    ? "w-[76px]"
+    : isAssignments
+      ? "w-[304px]"
+      : "w-[300px]";
 
   return (
     <>
       <aside
         className={cn(
-          "hidden md:flex flex-col flex-shrink-0 z-30 select-none no-print bg-surface-fill",
+          "hidden md:flex flex-col flex-shrink-0 z-30 select-none no-print bg-surface-fill transition-all duration-300",
+          widthClass,
           isAssignments
-            ? "w-[304px] m-3 rounded-2xl h-[calc(100vh-1.5rem)] shadow-sm"
-            : "w-[300px] border-r border-neutral-border h-screen sticky top-0"
+            ? "m-3 rounded-2xl h-[calc(100vh-1.5rem)] shadow-sm"
+            : "border-r border-neutral-border h-screen sticky top-0"
         )}
       >
         
         {isAssignments ? (
-          <div className="flex flex-col px-[26.5px] pt-6">
-            {/* Figma 2:10590 — 136×40 logo + wordmark */}
-            <SidebarBrand variant={brandVariant} />
+          <div className={cn("flex flex-col pt-6", isSidebarCollapsed ? "px-[18px] items-center" : "px-[26.5px]")}>
+            {/* Figma 2:10590 — 136×40 logo + wordmark. Collapsible. */}
+            <div className={cn("flex items-center", isSidebarCollapsed ? "justify-center w-10 overflow-hidden" : "justify-between w-full")}>
+              <SidebarBrand variant={brandVariant} />
+              {!isSidebarCollapsed && (
+                <button
+                  type="button"
+                  onClick={() => setIsSidebarCollapsed(true)}
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg hover:bg-black/5 text-[#5e5e5e] cursor-pointer border-none bg-transparent"
+                  aria-label="Collapse sidebar"
+                >
+                  <PanelLeftClose size={20} strokeWidth={1.8} />
+                </button>
+              )}
+            </div>
 
             {/* Figma 2:10598 — 56px below logo, CTA centered in 251px column */}
-            <div className="mt-14 flex w-full max-w-[251px] justify-center">
+            <div className={cn("mt-14 flex justify-center w-full", isSidebarCollapsed ? "max-w-[42px]" : "max-w-[251px]")}>
               <Link href={ctaHref} passHref className="w-full">
-                <span className="inline-flex h-[42px] w-full items-center justify-center gap-2 rounded-full px-6 text-[16px] font-medium leading-[28px] tracking-[-0.64px] text-[#E2E8F0] transition-standard shadow-sm cursor-pointer select-none btn-gradient-border group hover:text-white">
-                  <CreateAssignmentSparkleIcon className="shrink-0 text-[#E2E8F0] group-hover:text-white transition-colors" />
-                  <span className="whitespace-nowrap">{ctaLabel}</span>
-                </span>
+                {isSidebarCollapsed ? (
+                  <span className="inline-flex h-[42px] w-[42px] items-center justify-center rounded-full bg-zinc-800 border border-white/10 hover:bg-zinc-700 text-[#E2E8F0] hover:text-white cursor-pointer select-none transition-standard shadow-sm">
+                    <CreateAssignmentSparkleIcon className="shrink-0" />
+                  </span>
+                ) : (
+                  <span className="inline-flex h-[42px] w-full items-center justify-center gap-2 rounded-full px-6 text-[16px] font-medium leading-[28px] tracking-[-0.64px] text-[#E2E8F0] transition-standard shadow-sm cursor-pointer select-none btn-gradient-border group hover:text-white">
+                    <CreateAssignmentSparkleIcon className="shrink-0 text-[#E2E8F0] group-hover:text-white transition-colors" />
+                    <span className="whitespace-nowrap">{ctaLabel}</span>
+                  </span>
+                )}
               </Link>
             </div>
           </div>
         ) : (
-          <div className="p-6">
-            <SidebarBrand variant={brandVariant} />
-            <div className="mt-6">
+          <div className={cn("flex flex-col pt-6", isSidebarCollapsed ? "px-[18px] items-center" : "px-6")}>
+            <div className={cn("flex items-center", isSidebarCollapsed ? "justify-center w-10 overflow-hidden" : "justify-between w-full")}>
+              <SidebarBrand variant={brandVariant} />
+              {!isSidebarCollapsed && (
+                <button
+                  type="button"
+                  onClick={() => setIsSidebarCollapsed(true)}
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg hover:bg-black/5 text-[#5e5e5e] cursor-pointer border-none bg-transparent"
+                  aria-label="Collapse sidebar"
+                >
+                  <PanelLeftClose size={20} strokeWidth={1.8} />
+                </button>
+              )}
+            </div>
+            <div className={cn("mt-6 w-full flex justify-center", isSidebarCollapsed ? "max-w-[42px]" : "")}>
               <Link href={ctaHref} passHref className="w-full">
-                <span className="inline-flex w-full items-center justify-center gap-2 rounded-full py-2.5 px-6 text-[16px] font-medium text-[#E2E8F0] transition-standard shadow-sm cursor-pointer select-none btn-gradient-border group hover:text-white">
-                  <CreateAssignmentSparkleIcon className="text-[#E2E8F0] group-hover:text-white transition-colors" />
-                  <span>{ctaLabel}</span>
-                </span>
+                {isSidebarCollapsed ? (
+                  <span className="inline-flex h-[42px] w-[42px] items-center justify-center rounded-full bg-zinc-800 border border-white/10 hover:bg-zinc-700 text-[#E2E8F0] hover:text-white cursor-pointer select-none transition-standard shadow-sm">
+                    <CreateAssignmentSparkleIcon className="shrink-0" />
+                  </span>
+                ) : (
+                  <span className="inline-flex w-full items-center justify-center gap-2 rounded-full py-2.5 px-6 text-[16px] font-medium text-[#E2E8F0] transition-standard shadow-sm cursor-pointer select-none btn-gradient-border group hover:text-white">
+                    <CreateAssignmentSparkleIcon className="text-[#E2E8F0] group-hover:text-white transition-colors" />
+                    <span>{ctaLabel}</span>
+                  </span>
+                )}
               </Link>
             </div>
           </div>
@@ -210,8 +280,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* 3. Reusable Navigation List */}
         <nav
           className={cn(
-            "flex-1 overflow-y-auto flex flex-col",
-            isAssignments ? "mt-14 gap-2 px-[26.5px]" : "gap-2 px-4"
+            "flex-1 overflow-y-auto flex flex-col mt-14 gap-2",
+            isSidebarCollapsed
+              ? "px-3 items-center"
+              : isAssignments
+                ? "px-[26.5px]"
+                : "px-4"
           )}
         >
           {navItems.map((item) => {
@@ -229,8 +303,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
             return (
               <Link key={item.label} href={item.href} passHref>
                 <span
+                  title={isSidebarCollapsed ? item.label : undefined}
                   className={cn(
-                    "flex h-10 items-center justify-between rounded-lg px-3 text-[16px] leading-[1.4] tracking-[-0.64px] transition-standard cursor-pointer select-none font-normal",
+                    "flex h-10 items-center transition-standard cursor-pointer select-none font-normal",
+                    isSidebarCollapsed
+                      ? "justify-center w-10 rounded-xl px-0"
+                      : "justify-between rounded-lg px-3 text-[16px] leading-[1.4] tracking-[-0.64px]",
                     isAssignments
                       ? "text-[#5e5e5e]/80 hover:text-[#303030] hover:bg-[#f0f0f0]/50"
                       : "text-[#757575] hover:text-[#1A1A1A] hover:bg-[#F4F4F4]/50",
@@ -240,15 +318,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         : "bg-[#e5e5e5] text-[#1A1A1A] font-medium")
                   )}
                 >
-                  <span className="flex min-w-0 flex-1 items-center gap-3">
+                  <span className={cn("flex min-w-0 items-center", isSidebarCollapsed ? "justify-center w-full" : "flex-1 gap-3")}>
                     {item.customIcon ? (
                       <item.customIcon className={iconColor} />
                     ) : item.icon ? (
                       <SidebarNavIcon icon={item.icon} className={iconColor} />
                     ) : null}
-                    <span className="truncate">{item.label}</span>
+                    {!isSidebarCollapsed && <span className="truncate">{item.label}</span>}
                   </span>
-                  {item.label === "Assignments" && assignmentCount > 0 && (
+                  {!isSidebarCollapsed && item.label === "Assignments" && assignmentCount > 0 && (
                     <span className="ml-2 flex h-5 min-w-[22px] shrink-0 items-center justify-center rounded-[48px] bg-[#ff5623] px-2.5 text-sm font-semibold leading-[1.4] tracking-[-0.56px] text-white shadow-[inset_0_0_32px_rgba(255,161,10,0.25)]">
                       {assignmentCount}
                     </span>
@@ -262,17 +340,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* 4. Bottom Utilities & School Profile block */}
         <div
           className={cn(
-            "space-y-2",
-            isAssignments
-              ? "space-y-2 px-[26.5px] pb-6 pt-0"
-              : "space-y-3 border-t border-neutral-border p-4"
+            "space-y-2 pb-6 pt-2 flex flex-col",
+            isSidebarCollapsed
+              ? "px-3 items-center"
+              : isAssignments
+                ? "px-[26.5px]"
+                : "px-4"
           )}
         >
           <button
             type="button"
             onClick={() => setIsSettingsOpen(true)}
+            title={isSidebarCollapsed ? "Settings" : undefined}
             className={cn(
-              "flex h-10 w-full items-center gap-2 rounded-lg px-3 cursor-pointer select-none font-normal text-[16px] leading-[1.4] tracking-[-0.64px] transition-standard bg-transparent border-none text-left",
+              "flex h-10 items-center cursor-pointer select-none font-normal text-[16px] leading-[1.4] tracking-[-0.64px] transition-standard bg-transparent border-none text-left w-full",
+              isSidebarCollapsed ? "justify-center rounded-xl p-0" : "gap-2 rounded-lg px-3",
               isAssignments
                 ? "text-[#5e5e5e]/80 hover:text-[#303030] hover:bg-[#f0f0f0]/50"
                 : "text-sm text-neutral-secondary hover:text-neutral-primary font-medium"
@@ -282,44 +364,65 @@ export const Sidebar: React.FC<SidebarProps> = ({
               icon={Settings}
               className={isAssignments ? "text-[#5e5e5e]/80" : "text-neutral-secondary"}
             />
-            <span>Settings</span>
+            {!isSidebarCollapsed && <span>Settings</span>}
           </button>
+
+          {isSidebarCollapsed && (
+            <button
+              type="button"
+              onClick={() => setIsSidebarCollapsed(false)}
+              className="flex h-10 w-10 items-center justify-center rounded-xl cursor-pointer text-[#5e5e5e] hover:bg-[#f0f0f0]/50 border-none bg-transparent"
+              aria-label="Expand sidebar"
+              title="Expand Sidebar"
+            >
+              <ChevronsRight size={20} strokeWidth={1.8} />
+            </button>
+          )}
 
           {/* Dynamic high contrast School Info block */}
           <div
             className={cn(
-              "flex items-center p-3 cursor-pointer hover:bg-black/5 transition-standard",
+              "flex items-center cursor-pointer hover:bg-black/5 transition-standard w-full",
+              isSidebarCollapsed ? "justify-center p-1.5" : "p-3",
               isAssignments
                 ? "gap-2 bg-[#f0f0f0] rounded-2xl"
                 : "space-x-3 bg-page-fill border border-neutral-border rounded-xl"
             )}
             onClick={() => setIsSettingsOpen(true)}
+            title={isSidebarCollapsed ? preferences?.schoolName : undefined}
           >
             <InitialsAvatar
               name={preferences?.schoolName || "Delhi Public School"}
+              imageUrl="/images/school-avatar.png"
               className={cn(
                 "shrink-0",
-                isAssignments ? "h-14 w-[59px]" : "h-10 w-10"
+                isSidebarCollapsed
+                  ? "h-9 w-9"
+                  : isAssignments
+                    ? "h-14 w-[59px]"
+                    : "h-10 w-10"
               )}
             />
-            <div className="min-w-0 text-left">
-              <p
-                className={cn(
-                  "font-bold text-[#303030] truncate",
-                  isAssignments ? "text-base" : "text-xs text-neutral-primary"
-                )}
-              >
-                {preferences?.schoolName || "Delhi Public School"}
-              </p>
-              <p
-                className={cn(
-                  "truncate",
-                  isAssignments ? "text-sm text-[#5e5e5e]" : "text-[10px] text-neutral-secondary"
-                )}
-              >
-                {preferences?.schoolAddress || "Bokaro Steel City"}
-              </p>
-            </div>
+            {!isSidebarCollapsed && (
+              <div className="min-w-0 text-left">
+                <p
+                  className={cn(
+                    "font-bold text-[#303030] truncate",
+                    isAssignments ? "text-base" : "text-xs text-neutral-primary"
+                  )}
+                >
+                  {preferences?.schoolName || "Delhi Public School"}
+                </p>
+                <p
+                  className={cn(
+                    "truncate",
+                    isAssignments ? "text-sm text-[#5e5e5e]" : "text-[10px] text-neutral-secondary"
+                  )}
+                >
+                  {preferences?.schoolAddress || "Bokaro Steel City"}
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </aside>

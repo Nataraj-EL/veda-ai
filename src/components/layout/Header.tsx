@@ -106,13 +106,23 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         <div className="flex shrink-0 items-center gap-[10px]">
-          {isAssignments && (
+          {isAssignments ? (
             <button
               type="button"
-              className="flex h-9 w-9 shrink-0 items-center justify-center text-[#303030] transition-standard cursor-pointer hover:opacity-75"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#f6f6f6] text-[#303030] hover:bg-[#eaeaea] transition-standard cursor-pointer"
               aria-label="Help"
             >
-              <HelpCircle className="h-[20px] w-[20px] text-[#303030]" strokeWidth={1.8} />
+              <span className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-[#303030] text-[13px] font-extrabold text-[#303030] leading-none select-none">
+                ?
+              </span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="rounded-full p-1.5 text-neutral-secondary hover:bg-page-fill hover:text-neutral-primary cursor-pointer"
+              aria-label="Help"
+            >
+              <HelpCircle className="h-5 w-5" />
             </button>
           )}
 
@@ -121,7 +131,7 @@ export const Header: React.FC<HeaderProps> = ({
             className={cn(
               "relative flex shrink-0 items-center justify-center text-[#303030] transition-standard cursor-pointer",
               isAssignments
-                ? "h-9 w-9 hover:opacity-75"
+                ? "h-9 w-9 rounded-full bg-[#f6f6f6] hover:bg-[#eaeaea]"
                 : "rounded-full p-1.5 text-neutral-secondary hover:bg-page-fill hover:text-neutral-primary"
             )}
             aria-label="View notifications"
@@ -139,10 +149,20 @@ export const Header: React.FC<HeaderProps> = ({
           {isAssignments && (
             <button
               type="button"
-              className="flex h-9 w-9 shrink-0 items-center justify-center text-[#303030] transition-standard cursor-pointer hover:opacity-75"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#f6f6f6] text-[#303030] hover:bg-[#eaeaea] transition-standard cursor-pointer"
               aria-label="AI Toolkit"
             >
-              <Sparkles className="h-[20px] w-[20px] text-[#303030]" strokeWidth={1.8} />
+              {/* Figma Sparkles Vector layout exact path */}
+              <svg
+                className="h-5 w-5 shrink-0 text-[#303030]"
+                viewBox="0 0 19 18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden
+              >
+                <path fillRule="evenodd" clipRule="evenodd" d="M4.63783 8.63783L6.18377 4H7.13246L8.6784 8.63783L13.3162 10.1838V11.1325L8.6784 12.6784L7.13246 17.3162H6.18377L4.63783 12.6784L0 11.1325V10.1838L4.63783 8.63783Z" fill="currentColor"/>
+                <path fillRule="evenodd" clipRule="evenodd" d="M13.3878 2.38783L14.1838 0H15.1325L15.9284 2.38783L18.3162 3.18377V4.13246L15.9284 4.9284L15.1325 7.31623H14.1838L13.3878 4.9284L11 4.13246V3.18377L13.3878 2.38783Z" fill="currentColor"/>
+              </svg>
             </button>
           )}
 
@@ -157,6 +177,7 @@ export const Header: React.FC<HeaderProps> = ({
           >
             <InitialsAvatar
               name={preferences?.teacherName || "John Doe"}
+              imageUrl="/images/user-avatar.png"
               className={cn(
                 "shrink-0",
                 isAssignments ? "h-8 w-8" : "h-7 w-7"
@@ -174,8 +195,8 @@ export const Header: React.FC<HeaderProps> = ({
             </span>
             <ChevronDown
               className={cn(
-                "shrink-0 text-[#a9a9a9]",
-                isAssignments ? "h-6 w-6" : "h-3.5 w-3.5"
+                "shrink-0",
+                isAssignments ? "h-6 w-6 text-[#303030]" : "h-3.5 w-3.5 text-[#a9a9a9]"
               )}
             />
           </div>
@@ -219,6 +240,7 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
             <InitialsAvatar
               name={preferences?.teacherName || "John Doe"}
+              imageUrl="/images/user-avatar.png"
               onClick={() => setIsSettingsOpen(true)}
               className="h-8 w-8 border border-slate-200 cursor-pointer hover:opacity-85"
             />

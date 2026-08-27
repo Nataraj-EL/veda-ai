@@ -11,12 +11,14 @@ interface UserPreferencesState {
   userId: string;
   showOnboarding: boolean;
   isSettingsOpen: boolean;
+  isSidebarCollapsed: boolean;
   
   // Actions
   loadPreferences: () => void;
   savePreferences: (prefs: UserPreferences) => void;
   setShowOnboarding: (val: boolean) => void;
   setIsSettingsOpen: (val: boolean) => void;
+  setIsSidebarCollapsed: (val: boolean) => void;
 }
 
 const LOCAL_STORAGE_KEY = "veda_user_preferences";
@@ -42,6 +44,8 @@ export const useUserPreferencesStore = create<UserPreferencesState>((set) => ({
   userId: "",
   showOnboarding: false,
   isSettingsOpen: false,
+
+  isSidebarCollapsed: false,
 
   loadPreferences: () => {
     if (typeof window === "undefined") return;
@@ -74,4 +78,5 @@ export const useUserPreferencesStore = create<UserPreferencesState>((set) => ({
 
   setShowOnboarding: (showOnboarding) => set({ showOnboarding }),
   setIsSettingsOpen: (isSettingsOpen) => set({ isSettingsOpen }),
+  setIsSidebarCollapsed: (isSidebarCollapsed) => set({ isSidebarCollapsed }),
 }));
