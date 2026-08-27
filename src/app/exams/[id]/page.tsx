@@ -50,6 +50,7 @@ export default function ExamAssessmentPage() {
   const [zoomPercent, setZoomPercent] = useState(100);
   const [currentPage, setCurrentPage] = useState(1);
   const [isFirefox, setIsFirefox] = useState(false);
+  const [showAnswerSheet, setShowAnswerSheet] = useState(true);
 
   useEffect(() => {
     setIsFirefox(navigator.userAgent.toLowerCase().includes("firefox"));
@@ -409,9 +410,6 @@ export default function ExamAssessmentPage() {
         {/* Profile info & count badges */}
         <div className="flex flex-col gap-4 min-w-0 flex-1">
           <div>
-            <span className="font-semibold text-xs text-[#8e8e93] block uppercase tracking-wider">
-              Student Name
-            </span>
             <h3 className="text-[20px] font-extrabold text-[#303030] leading-tight mt-0.5 truncate">
               {currentExam.studentAnswerSheet?.name?.split("-")?.[0]?.trim() || "Aryan Sharma"}
             </h3>
@@ -814,6 +812,34 @@ export default function ExamAssessmentPage() {
         <Header title="Exams" variant="assignments" backHref="/exams" />
 
         <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+          {/* Subheader Banner */}
+          <div className="mx-auto w-full max-w-[1343px] px-3 md:px-0 pt-4 pb-2 flex items-center justify-between shrink-0">
+            <div>
+              <h2 className="text-[28px] font-extrabold tracking-[-1.04px] text-[#303030] leading-tight">
+                Evaluation Report
+              </h2>
+              <p className="text-[14px] font-normal leading-normal text-[#5e5e5e]/80 mt-1">
+                {currentExam.studentAnswerSheet?.name?.split("-")?.[0]?.trim() || "Aryan Sharma"} - {currentTotalScore}/{maxMarks} marks
+              </p>
+            </div>
+            
+            <button
+              type="button"
+              onClick={() => setShowAnswerSheet(!showAnswerSheet)}
+              className="hidden lg:inline-flex items-center gap-1.5 h-11 px-5 rounded-full border border-black/10 bg-white hover:bg-slate-50 transition-standard cursor-pointer font-bold text-sm text-[#303030]"
+            >
+              {showAnswerSheet ? (
+                <>
+                  <span>Hide Answer Sheets</span>
+                </>
+              ) : (
+                <>
+                  <span>Show Answer Sheets</span>
+                </>
+              )}
+            </button>
+          </div>
+
           <div className="mx-auto flex w-full max-w-[1343px] flex-1 flex-col px-3 pb-24 pt-3 md:px-0 md:pb-10">
             {/* Mobile Questions / Answer Sheet toggle — Figma 3:1192 / 3:1576 */}
             <div className="mb-3 flex rounded-full bg-[#f6f6f6] p-1 lg:hidden">
@@ -845,12 +871,17 @@ export default function ExamAssessmentPage() {
 
             {/* Desktop split — Figma 1:8861 */}
             <div className="hidden min-h-0 flex-1 gap-3 lg:flex">
-              <div className="flex w-[min(672px,48%)] shrink-0 flex-col gap-4 overflow-y-auto rounded-[20px] bg-white/50 p-4">
+              <div className={cn(
+                "flex shrink-0 flex-col gap-4 overflow-y-auto rounded-[20px] bg-white/50 p-4 transition-all duration-300",
+                showAnswerSheet ? "w-[min(672px,48%)]" : "w-full"
+              )}>
                 {renderQuestionList()}
               </div>
-              <div className="flex min-h-[640px] min-w-0 flex-1 flex-col">
-                {renderAnswerSheet()}
-              </div>
+              {showAnswerSheet && (
+                <div className="flex min-h-[640px] min-w-0 flex-1 flex-col">
+                  {renderAnswerSheet()}
+                </div>
+              )}
             </div>
 
             {/* Mobile panels */}
