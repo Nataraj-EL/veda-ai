@@ -72,8 +72,7 @@ export default function ExamAssessmentPage() {
   const userId = useUserPreferencesStore((state) => state.userId) || "default-user";
 
   useEffect(() => {
-    useUserPreferencesStore.getState().loadPreferences();
-    if (examId) {
+    if (examId && userId) {
       fetchExamById(examId, userId);
     }
   }, [examId, fetchExamById, userId]);

@@ -71,11 +71,15 @@ export class ExamService {
       throw new AppError("Failed to extract text from Student Answer Sheet PDF. Ensure it is a valid PDF.", 400, "MATERIAL_EXTRACTION_FAILED");
     }
 
-    if (!questionPaperText.trim()) {
-      throw new AppError("Failed to extract text from Question Paper PDF. Ensure it contains readable text.", 400, "MATERIAL_EXTRACTION_FAILED");
-    }
-    if (!studentAnswerSheetText.trim()) {
-      throw new AppError("Failed to extract text from Student Answer Sheet PDF. Ensure it contains readable text.", 400, "MATERIAL_EXTRACTION_FAILED");
+    const { provider, source } = resolveAiProvider();
+
+    if (source !== "gemini") {
+      if (!questionPaperText.trim()) {
+        throw new AppError("Failed to extract text from Question Paper PDF. Ensure it contains readable text.", 400, "MATERIAL_EXTRACTION_FAILED");
+      }
+      if (!studentAnswerSheetText.trim()) {
+        throw new AppError("Failed to extract text from Student Answer Sheet PDF. Ensure it contains readable text.", 400, "MATERIAL_EXTRACTION_FAILED");
+      }
     }
 
     const systemPrompt = `You are an elite academic grading assistant.
@@ -123,12 +127,18 @@ ${questionPaperText}
 === STUDENT ANSWER SHEET TEXT ===
 ${studentAnswerSheetText}`;
 
-    const { provider, source } = resolveAiProvider();
     logger.info({ source, qLen: questionPaperText.length, aLen: studentAnswerSheetText.length }, "Sending exam extraction/OCR request to AI Provider");
 
     let rawResponse = "";
     try {
-      rawResponse = await provider.generate(systemPrompt, userPrompt);
+      if (source === "gemini") {
+        rawResponse = await (provider as GeminiProvider).generate(systemPrompt, userPrompt, [
+          { buffer: input.questionPaper.buffer, mimeType: input.questionPaper.type },
+          { buffer: input.studentAnswerSheet.buffer, mimeType: input.studentAnswerSheet.type },
+        ]);
+      } else {
+        rawResponse = await provider.generate(systemPrompt, userPrompt);
+      }
     } catch (err: any) {
       logger.error({ err }, "AI Provider failed to generate exam grading");
       throw new AppError(`AI assessment generation failed: ${err.message}`, 502, "AI_PROVIDER_ERROR");

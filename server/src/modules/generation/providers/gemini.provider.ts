@@ -21,7 +21,8 @@ export class GeminiProvider {
 
   async generate(
     systemPrompt: string,
-    userPrompt: string
+    userPrompt: string,
+    files?: { buffer: Buffer; mimeType: string }[]
   ): Promise<string> {
     const genAI = new GoogleGenerativeAI(this.apiKey);
 
@@ -35,10 +36,22 @@ export class GeminiProvider {
       },
     });
 
+    const parts: any[] = [userPrompt];
+    if (files && files.length > 0) {
+      for (const file of files) {
+        parts.push({
+          inlineData: {
+            data: file.buffer.toString("base64"),
+            mimeType: file.mimeType,
+          },
+        });
+      }
+    }
+
     const maxAttempts = 2;
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
-        const result = await model.generateContent(userPrompt, {
+        const result = await model.generateContent(parts, {
           timeout: this.timeoutMs,
         });
 

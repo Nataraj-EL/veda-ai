@@ -80,3 +80,7 @@ export const useUserPreferencesStore = create<UserPreferencesState>((set) => ({
   setIsSettingsOpen: (isSettingsOpen) => set({ isSettingsOpen }),
   setIsSidebarCollapsed: (isSidebarCollapsed) => set({ isSidebarCollapsed }),
 }));
+
+if (typeof window !== "undefined") {
+  useUserPreferencesStore.getState().loadPreferences();
+}
