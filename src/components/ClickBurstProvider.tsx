@@ -6,6 +6,7 @@ interface ClickEffect {
   id: number;
   x: number;
   y: number;
+  color: "black" | "white";
 }
 
 export default function ClickBurstProvider({ children }: { children: React.ReactNode }) {
@@ -16,28 +17,47 @@ export default function ClickBurstProvider({ children }: { children: React.React
       const target = e.target as HTMLElement | null;
       if (!target) return;
 
-      // Filter out interactive controls / CTA targets
-      const isInteractive = (el: HTMLElement): boolean => {
-        const tag = el.tagName.toLowerCase();
-        return (
-          tag === "button" ||
-          tag === "a" ||
-          tag === "input" ||
-          tag === "textarea" ||
-          tag === "select" ||
-          el.getAttribute("role") === "button" ||
-          el.closest("button") !== null ||
-          el.closest("a") !== null ||
-          el.closest('[role="button"]') !== null
-        );
-      };
+      // Filter out typing inputs/controls to keep form typing clear
+      const tag = target.tagName.toLowerCase();
+      if (tag === "input" || tag === "textarea" || tag === "select") {
+        return;
+      }
 
-      if (isInteractive(target)) return;
+      // Walk up the DOM tree to detect if the target is sitting inside a dark background
+      let el: HTMLElement | null = target;
+      let isDarkBackground = false;
+
+      while (el && el !== document.body) {
+        const style = window.getComputedStyle(el);
+        const bgColor = style.backgroundColor;
+        
+        if (bgColor && bgColor !== "transparent" && bgColor !== "rgba(0, 0, 0, 0)") {
+          const match = bgColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+          if (match) {
+            const r = parseInt(match[1], 10);
+            const g = parseInt(match[2], 10);
+            const b = parseInt(match[3], 10);
+            
+            const alphaMatch = bgColor.match(/rgba?\(\d+,\s*\d+,\s*\d+,\s*([\d.]+)\)/);
+            const alpha = alphaMatch ? parseFloat(alphaMatch[1]) : 1;
+            
+            if (alpha > 0.1) {
+              const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+              if (luminance < 100) {
+                isDarkBackground = true;
+              }
+              break;
+            }
+          }
+        }
+        el = el.parentElement;
+      }
 
       const newEffect = {
         id: Date.now() + Math.random(),
         x: e.clientX,
         y: e.clientY,
+        color: (isDarkBackground ? "white" : "black") as "black" | "white",
       };
 
       setEffects((prev) => [...prev, newEffect]);
@@ -64,10 +84,10 @@ export default function ClickBurstProvider({ children }: { children: React.React
             className="absolute -translate-x-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center"
             style={{ left: eff.x, top: eff.y }}
           >
-            <span className="absolute w-[2.5px] h-[10.5px] rounded-full bg-black animate-burst-1" />
-            <span className="absolute w-[2.5px] h-[10.5px] rounded-full bg-black animate-burst-2" />
-            <span className="absolute w-[2.5px] h-[10.5px] rounded-full bg-black animate-burst-3" />
-            <span className="absolute w-[2.5px] h-[10.5px] rounded-full bg-black animate-burst-4" />
+            <span className={`absolute w-[2.5px] h-[10.5px] rounded-full animate-burst-1 ${eff.color === "white" ? "bg-white" : "bg-black"}`} />
+            <span className={`absolute w-[2.5px] h-[10.5px] rounded-full animate-burst-2 ${eff.color === "white" ? "bg-white" : "bg-black"}`} />
+            <span className={`absolute w-[2.5px] h-[10.5px] rounded-full animate-burst-3 ${eff.color === "white" ? "bg-white" : "bg-black"}`} />
+            <span className={`absolute w-[2.5px] h-[10.5px] rounded-full animate-burst-4 ${eff.color === "white" ? "bg-white" : "bg-black"}`} />
           </div>
         ))}
       </div>
