@@ -39,6 +39,7 @@ export interface FileMetadata {
   type: string;
   path?: string;
   buffer?: Buffer;
+  data?: string;
 }
 
 export interface CreateExamDto {

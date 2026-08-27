@@ -46,6 +46,7 @@ const fileMetadataSchema = new Schema(
     size: { type: Number, required: true },
     type: { type: String, required: true },
     path: { type: String },
+    data: { type: String },
   },
   { _id: false }
 );
