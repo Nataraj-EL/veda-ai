@@ -166,44 +166,61 @@ export default function GradedExamReportPage() {
     setCurrentPage(page);
   };
 
+  const handleAutoSave = async (updatedScoresMap: Record<string, number>, updatedCommentsMap: Record<string, string>) => {
+    if (!currentExam) return;
+    const newMappings = currentExam.mappings?.map((m) => ({
+      ...m,
+      score: updatedScoresMap[m.questionNumber] ?? m.score ?? 0,
+      teacherComment: updatedCommentsMap[m.questionNumber] ?? m.teacherComment ?? "",
+    })) || [];
+
+    const newTotalScore = Object.values(updatedScoresMap).reduce((sum, s) => sum + s, 0);
+
+    try {
+      await updateExam(currentExam.id, userId, {
+        mappings: newMappings,
+        totalScore: newTotalScore,
+      });
+    } catch (err) {
+      console.error("Failed to auto-save report", err);
+    }
+  };
+
   const handleDecrementScore = (qNumber: string) => {
     setAdjustedScores((prev) => {
       const currentVal = prev[qNumber] ?? 0;
-      return {
+      const newVal = Math.max(0, currentVal - 1);
+      const updated = {
         ...prev,
-        [qNumber]: Math.max(0, currentVal - 1),
+        [qNumber]: newVal,
       };
+      handleAutoSave(updated, comments);
+      return updated;
     });
   };
 
   const handleIncrementScore = (qNumber: string, maxVal: number) => {
     setAdjustedScores((prev) => {
       const currentVal = prev[qNumber] ?? 0;
-      return {
+      const newVal = Math.min(maxVal, currentVal + 1);
+      const updated = {
         ...prev,
-        [qNumber]: Math.min(maxVal, currentVal + 1),
+        [qNumber]: newVal,
       };
+      handleAutoSave(updated, comments);
+      return updated;
     });
   };
 
-  const handleSave = async () => {
-    const newMappings = currentExam.mappings?.map((m) => ({
-      ...m,
-      score: adjustedScores[m.questionNumber] ?? m.score ?? 0,
-      teacherComment: comments[m.questionNumber] ?? m.teacherComment ?? "",
-    })) || [];
-
-    try {
-      await updateExam(currentExam.id, userId, {
-        mappings: newMappings,
-        totalScore: currentTotalScore,
-        gradingStatus: "completed",
-      });
-      alert("Evaluation Report saved successfully!");
-      router.push("/exams");
-    } catch (err) {
-      alert("Failed to save changes.");
-    }
+  const handleCommentBlur = (qNumber: string, val: string) => {
+    setComments((prev) => {
+      const updated = {
+        ...prev,
+        [qNumber]: val,
+      };
+      handleAutoSave(adjustedScores, updated);
+      return updated;
+    });
   };
 
   // Document active answer regions
@@ -491,6 +508,7 @@ export default function GradedExamReportPage() {
                               placeholder="Add your feedback to this question..."
                               value={comment}
                               onChange={(e) => setComments({ ...comments, [q.questionNumber]: e.target.value })}
+                              onBlur={(e) => handleCommentBlur(q.questionNumber, e.target.value)}
                               className="w-full text-sm font-medium text-[#303030] bg-white border border-black/10 rounded-xl px-4 py-3 focus:outline-none focus:border-[#ff5623] min-h-[70px] leading-relaxed shadow-inner"
                             />
                           </div>
@@ -500,18 +518,6 @@ export default function GradedExamReportPage() {
                     </div>
                   );
                 })}
-              </div>
-
-              {/* Action Buttons Row */}
-              <div className="flex items-center gap-3 mt-4 shrink-0">
-                <button
-                  type="button"
-                  onClick={() => router.push(`/exams/${examId}`)}
-                  className="inline-flex items-center gap-1.5 h-11 px-6 rounded-full border border-black/10 bg-white hover:bg-slate-50 transition-standard cursor-pointer font-bold text-sm text-[#303030]"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                  <span>Previous Student</span>
-                </button>
               </div>
 
             </div>
@@ -642,18 +648,6 @@ export default function GradedExamReportPage() {
                     );
                   })}
                 </div>
-              </div>
-
-              {/* Floating Bottom Action Bar */}
-              <div className="h-16 shrink-0 border-t border-black/10 bg-[#fafafa] flex items-center justify-end px-6">
-                <button
-                  type="button"
-                  onClick={handleSave}
-                  className="inline-flex items-center justify-center gap-1.5 h-11 px-6 rounded-full bg-[#181818] hover:bg-[#2e2e2e] text-white transition-standard cursor-pointer font-bold text-sm shadow-md"
-                >
-                  <span>Save & Next Student</span>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
               </div>
 
             </div>
