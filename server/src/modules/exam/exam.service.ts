@@ -102,7 +102,11 @@ CRITICAL EXTRACTION RULES:
    - pageNumber: 1-based page number where this answer is located.
 5. Be fair and professional in grading. Award scores proportionally to correctness.
 6. If a question is clearly unanswered or skipped in the answer sheet, set matched=false, score=0, and feedback="Question left unanswered by student."
-7. Output ONLY the raw JSON object matching the schema below. No explanations, no markdown formatting (no \`\`\`json blocks), just the raw JSON text.
+7. If the student has answered an extra question that was NOT asked in the original Question Paper (unsolicited answer), extract it anyway, add it to the questions list with a generated entry (e.g. "Extra Q1", etc.), grade it fairly, and explicitly state in the feedback: "Extra answer provided by student (unsolicited question)."
+8. If a student's answer is completely illegible, scribbled out, or blurred beyond recognition, set the score to 0 and write in the feedback: "Handwriting is illegible or scribbled out. Please review manually."
+9. If a student has written a question number but left the answer space completely blank, treat it as unanswered (matched=false, score=0, feedback="Question left unanswered by student.").
+10. If the student made multiple attempts to answer the same question, identify both, grade the best attempt, map the coordinates to the graded attempt, and note in the feedback: "Multiple attempts detected. Graded the most complete attempt and ignored the other."
+11. Output ONLY the raw JSON object matching the schema below. No explanations, no markdown formatting (no \`\`\`json blocks), just the raw JSON text.
 
 JSON Schema:
 {
