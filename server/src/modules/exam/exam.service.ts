@@ -89,9 +89,15 @@ CRITICAL EXTRACTION RULES:
 1. Extract all questions from the Question Paper text.
 2. If the Question Paper text does not contain explicit numbered questions, you MUST generate 3 to 5 realistic questions based on the content of the text.
 3. For each question, extract or match the student's answer from the Student Answer Sheet text. If the Answer Sheet does not contain explicit answers, match relevant paragraphs or summaries from the Answer Sheet text that answer the question.
-4. Be fair and professional in grading. Award scores proportionally to correctness.
-5. If a question is clearly unanswered or skipped in the answer sheet, set matched=false, score=0, and feedback="Question left unanswered by student."
-6. Output ONLY the raw JSON object matching the schema below. No explanations, no markdown formatting (no \`\`\`json blocks), just the raw JSON text.
+4. For each extracted student answer, you MUST also identify its location in the Student's Answer Sheet. Estimate the approximate region/bounding box where the answer is written on the page, using percentage values (0 to 100) relative to the page width and height:
+   - x: percentage distance from the left edge of the page (0 to 100)
+   - y: percentage distance from the top edge of the page (0 to 100)
+   - width: percentage width of the answer block (0 to 100)
+   - height: percentage height of the answer block (0 to 100)
+   - pageNumber: 1-based page number where this answer is located.
+5. Be fair and professional in grading. Award scores proportionally to correctness.
+6. If a question is clearly unanswered or skipped in the answer sheet, set matched=false, score=0, and feedback="Question left unanswered by student."
+7. Output ONLY the raw JSON object matching the schema below. No explanations, no markdown formatting (no \`\`\`json blocks), just the raw JSON text.
 
 JSON Schema:
 {
@@ -105,7 +111,18 @@ JSON Schema:
   "answers": [
     {
       "questionNumber": "string (the question number this answer corresponds to)",
-      "text": "string (the text of the student's answer)"
+      "text": "string (the text of the student's answer)",
+      "regions": [
+        {
+          "pageNumber": number,
+          "boundingBox": {
+            "x": number,
+            "y": number,
+            "width": number,
+            "height": number
+          }
+        }
+      ]
     }
   ],
   "mappings": [
@@ -171,7 +188,17 @@ ${studentAnswerSheetText}`;
     const formattedAnswers = answers.map((a: any) => ({
       questionNumber: String(a.questionNumber || ""),
       text: String(a.text || ""),
-      regions: [],
+      regions: Array.isArray(a.regions)
+        ? a.regions.map((r: any) => ({
+            pageNumber: typeof r.pageNumber === "number" ? r.pageNumber : 1,
+            boundingBox: {
+              x: typeof r.boundingBox?.x === "number" ? (r.boundingBox.x > 100 ? r.boundingBox.x / 10 : r.boundingBox.x) : 10,
+              y: typeof r.boundingBox?.y === "number" ? (r.boundingBox.y > 100 ? r.boundingBox.y / 10 : r.boundingBox.y) : 10,
+              width: typeof r.boundingBox?.width === "number" ? (r.boundingBox.width > 100 ? r.boundingBox.width / 10 : r.boundingBox.width) : 80,
+              height: typeof r.boundingBox?.height === "number" ? (r.boundingBox.height > 100 ? r.boundingBox.height / 10 : r.boundingBox.height) : 20,
+            },
+          }))
+        : [],
     }));
 
     const formattedMappings = mappings.map((m: any) => ({
@@ -184,6 +211,24 @@ ${studentAnswerSheetText}`;
 
     const totalScore = formattedMappings.reduce((sum: number, m: any) => sum + (m.score || 0), 0);
 
+    const fs = await import("fs");
+    const path = await import("path");
+
+    const uploadsDir = path.resolve(process.cwd(), "uploads");
+    if (!fs.existsSync(uploadsDir)) {
+      fs.mkdirSync(uploadsDir);
+    }
+
+    const qPaperExt = path.extname(input.questionPaper.name) || ".pdf";
+    const qPaperFilename = `question-paper-${Date.now()}-${Math.random().toString(36).substring(2, 7)}${qPaperExt}`;
+    const qPaperPath = path.join(uploadsDir, qPaperFilename);
+    fs.writeFileSync(qPaperPath, input.questionPaper.buffer);
+
+    const aSheetExt = path.extname(input.studentAnswerSheet.name) || ".pdf";
+    const aSheetFilename = `answer-sheet-${Date.now()}-${Math.random().toString(36).substring(2, 7)}${aSheetExt}`;
+    const aSheetPath = path.join(uploadsDir, aSheetFilename);
+    fs.writeFileSync(aSheetPath, input.studentAnswerSheet.buffer);
+
     const exam = await Exam.create({
       title: input.title?.trim() || "Exam Paper",
       status: "completed",
@@ -191,11 +236,13 @@ ${studentAnswerSheetText}`;
         name: input.questionPaper.name,
         size: input.questionPaper.size,
         type: input.questionPaper.type,
+        path: `/uploads/${qPaperFilename}`,
       },
       studentAnswerSheet: {
         name: input.studentAnswerSheet.name,
         size: input.studentAnswerSheet.size,
         type: input.studentAnswerSheet.type,
+        path: `/uploads/${aSheetFilename}`,
       },
       userId: input.userId,
       questions: formattedQuestions,

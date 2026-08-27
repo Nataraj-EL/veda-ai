@@ -296,7 +296,10 @@ export default function ExamAssessmentPage() {
     (q) => q.questionNumber === selectedQuestionNumber
   );
   const isUnanswered = newRegions.length === 0;
-  const totalPages = 2;
+  const totalPages = Math.max(
+    2,
+    ...(currentExam.answers?.flatMap((ans) => ans.regions?.map((r) => r.pageNumber) || []) || [])
+  );
   const allExpanded =
     (currentExam.questions?.length || 0) > 0 &&
     currentExam.questions!.every((q) => expandedIds.has(q.questionNumber));
@@ -514,32 +517,26 @@ export default function ExamAssessmentPage() {
                   />
                 )}
 
-                <div className="flex h-full flex-col justify-start space-y-8 pt-6 font-serif text-sm italic text-blue-800 md:text-[15px] select-text">
-                  {(() => {
-                    const answersForPage = currentExam.answers?.filter((ans) => {
-                      const page = ans.regions?.[0]?.pageNumber || 1;
-                      return page === pageNum;
-                    }) || [];
-
-                    if (answersForPage.length > 0) {
-                      return answersForPage.map((ans, aIdx) => (
-                        <div key={aIdx} className="space-y-1">
-                          <p className="text-[11px] font-extrabold not-italic text-[#FA643C]">
-                            Q{ans.questionNumber} answer:
-                          </p>
-                          <p className="leading-relaxed whitespace-pre-wrap">
-                            {ans.text}
-                          </p>
-                        </div>
-                      ));
-                    }
-                    return (
-                      <p className="text-[#5e5e5e]/50 font-sans not-italic text-center py-10">
-                        No answers mapped to Page {pageNum}
-                      </p>
-                    );
-                  })()}
-                </div>
+                {currentExam.studentAnswerSheet?.path ? (
+                  currentExam.studentAnswerSheet.type?.startsWith("image/") ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={`${process.env.NEXT_PUBLIC_API_URL}${currentExam.studentAnswerSheet.path}`}
+                      className="absolute inset-0 h-full w-full object-contain pointer-events-none"
+                      alt="Student Answer Sheet"
+                    />
+                  ) : (
+                    <iframe
+                      src={`${process.env.NEXT_PUBLIC_API_URL}${currentExam.studentAnswerSheet.path}#page=${pageNum}&toolbar=0&navpanes=0&scrollbar=0&messages=0`}
+                      className="absolute inset-0 h-full w-full border-none pointer-events-none"
+                      title="Student Answer Sheet"
+                    />
+                  )
+                ) : (
+                  <div className="flex h-full items-center justify-center text-[#5e5e5e]/50 font-sans not-italic">
+                    No answer sheet document loaded
+                  </div>
+                )}
               </div>
             );
           })}
