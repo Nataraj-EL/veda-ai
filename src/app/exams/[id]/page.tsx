@@ -261,6 +261,56 @@ export default function ExamAssessmentPage() {
     }
   };
 
+  const handleAutoSaveGrading = async (updatedMappings: any[]) => {
+    if (!currentExam) return;
+    const newTotalScore = updatedMappings.reduce((sum, m) => sum + (m.score || 0), 0);
+    try {
+      await updateExam(currentExam.id, userId, {
+        mappings: updatedMappings,
+        totalScore: newTotalScore,
+      });
+    } catch (err) {
+      console.error("Failed to auto-save grading changes", err);
+    }
+  };
+
+  const handleDecrementScore = async (qNumber: string) => {
+    if (!currentExam) return;
+    const mapping = currentExam.mappings?.find((m) => m.questionNumber === qNumber);
+    if (!mapping) return;
+    const currentVal = mapping.score ?? 0;
+    const newVal = Math.max(0, currentVal - 1);
+
+    const updatedMappings = currentExam.mappings?.map((m) =>
+      m.questionNumber === qNumber ? { ...m, score: newVal } : m
+    ) || [];
+
+    await handleAutoSaveGrading(updatedMappings);
+  };
+
+  const handleIncrementScore = async (qNumber: string, maxVal: number) => {
+    if (!currentExam) return;
+    const mapping = currentExam.mappings?.find((m) => m.questionNumber === qNumber);
+    if (!mapping) return;
+    const currentVal = mapping.score ?? 0;
+    const newVal = Math.min(maxVal, currentVal + 1);
+
+    const updatedMappings = currentExam.mappings?.map((m) =>
+      m.questionNumber === qNumber ? { ...m, score: newVal } : m
+    ) || [];
+
+    await handleAutoSaveGrading(updatedMappings);
+  };
+
+  const handleCommentBlur = async (qNumber: string, val: string) => {
+    if (!currentExam) return;
+    const updatedMappings = currentExam.mappings?.map((m) =>
+      m.questionNumber === qNumber ? { ...m, teacherComment: val } : m
+    ) || [];
+
+    await handleAutoSaveGrading(updatedMappings);
+  };
+
   if (isLoading || !currentExam) {
     return (
       <div className="flex h-screen bg-page-fill text-neutral-primary font-sans overflow-hidden">
@@ -309,16 +359,171 @@ export default function ExamAssessmentPage() {
     (currentExam.questions?.length || 0) > 0 &&
     currentExam.questions!.every((q) => expandedIds.has(q.questionNumber));
 
+  // Dynamic summary performance card parameters
+  const maxMarks = currentExam.questions?.reduce((sum, q) => sum + (q.marks || 0), 0) || 0;
+  const currentTotalScore = currentExam.mappings?.reduce((sum, m) => sum + (m.score || 0), 0) || 0;
+  const percent = maxMarks > 0 ? Math.round((currentTotalScore / maxMarks) * 100) : 0;
+
+  const correctCount = currentExam.questions?.filter((q) => {
+    const mapping = currentExam.mappings?.find((m) => m.questionNumber === q.questionNumber);
+    const score = mapping?.score ?? 0;
+    return score === q.marks && q.marks > 0;
+  }).length || 0;
+
+  const partialCount = currentExam.questions?.filter((q) => {
+    const mapping = currentExam.mappings?.find((m) => m.questionNumber === q.questionNumber);
+    const score = mapping?.score ?? 0;
+    return score > 0 && score < q.marks;
+  }).length || 0;
+
+  const incorrectCount = currentExam.questions?.filter((q) => {
+    const mapping = currentExam.mappings?.find((m) => m.questionNumber === q.questionNumber);
+    const score = mapping?.score ?? 0;
+    return score === 0;
+  }).length || 0;
+
+  let performanceLabel = "Average";
+  let gradeLetter = "C";
+  if (percent >= 85) {
+    performanceLabel = "Outstanding";
+    gradeLetter = "A";
+  } else if (percent >= 70) {
+    performanceLabel = "Good";
+    gradeLetter = "B";
+  } else if (percent >= 50) {
+    performanceLabel = "Average";
+    gradeLetter = "C";
+  } else {
+    performanceLabel = "Needs Improvement";
+    gradeLetter = "D";
+  }
+
+  const circumference = 2 * Math.PI * 40;
+  const strokeDashoffset = circumference - (circumference * percent) / 100;
+
   const renderQuestionList = () => (
     <div className="flex w-full flex-col gap-4">
-      <div className="flex items-center justify-between gap-3">
+      {/* Summary Performance Card */}
+      <div className="rounded-[28px] border border-black/5 bg-white p-6 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
+        
+        {/* Profile info & count badges */}
+        <div className="flex flex-col gap-4 min-w-0 flex-1">
+          <div>
+            <span className="font-semibold text-xs text-[#8e8e93] block uppercase tracking-wider">
+              Student Name
+            </span>
+            <h3 className="text-[20px] font-extrabold text-[#303030] leading-tight mt-0.5 truncate">
+              {currentExam.studentAnswerSheet?.name?.split("-")?.[0]?.trim() || "Aryan Sharma"}
+            </h3>
+            <p className="text-[13px] font-medium text-[#5e5e5e]/80 mt-1 truncate">
+              {currentExam.title}
+            </p>
+          </div>
+          
+          <div className="flex flex-wrap gap-2 mt-2">
+            <span className="bg-[#eafaf1] text-[#16a34a] rounded-full px-3.5 py-1.5 flex items-center gap-2 font-bold text-xs leading-none shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#16a34a]/10 text-[#16a34a]">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </span>
+              <span>{correctCount} Correct</span>
+            </span>
+            <span className="bg-[#fffde8] text-[#ca8a04] rounded-full px-3.5 py-1.5 flex items-center gap-2 font-bold text-xs leading-none shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#ca8a04]/10 text-[#ca8a04]">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </span>
+              <span>{partialCount} Partial</span>
+            </span>
+            <span className="bg-[#fef2f2] text-[#b91c1c] rounded-full px-3.5 py-1.5 flex items-center gap-2 font-bold text-xs leading-none shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#b91c1c]/10 text-[#b91c1c]">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </span>
+              <span>{incorrectCount} Incorrect</span>
+            </span>
+          </div>
+        </div>
+
+        {/* Score donut circle & Grade banner (enclosed in light gray card container) */}
+        <div className="bg-[#f8f8f9] rounded-[24px] border border-black/[0.03] p-5 flex items-center gap-6 shrink-0">
+          {/* Circular Donut Ring */}
+          <div className="relative flex items-center justify-center w-[100px] h-[100px] select-none">
+            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+              <circle
+                cx="50"
+                cy="50"
+                r="40"
+                className="stroke-slate-200 fill-transparent"
+                strokeWidth="8"
+              />
+              <circle
+                cx="50"
+                cy="50"
+                r="40"
+                className="stroke-[#16a34a] fill-transparent transition-all duration-500"
+                strokeWidth="8"
+                strokeDasharray={circumference}
+                strokeDashoffset={strokeDashoffset}
+                strokeLinecap="round"
+              />
+            </svg>
+            <div className="absolute flex flex-col items-center justify-center">
+              <span className="text-[24px] font-black text-[#303030] leading-none">
+                {currentTotalScore}
+              </span>
+              <span className="text-[10px] font-bold text-[#8e8e93] mt-1 uppercase tracking-wider">
+                Out of {maxMarks}
+              </span>
+            </div>
+          </div>
+
+          {/* Grade Badge details */}
+          <div className="flex flex-col items-center justify-center gap-1 min-w-[90px]">
+            <span className={cn(
+              "px-3 py-1 rounded-full font-bold text-[10px] uppercase tracking-wider border-none leading-none shadow-[0_1px_2px_rgba(0,0,0,0.02)]",
+              percent >= 85
+                ? "bg-[#eafaf1] text-[#16a34a]"
+                : percent >= 70
+                ? "bg-blue-50 text-blue-600"
+                : percent >= 50
+                ? "bg-[#fffde8] text-[#ca8a04]"
+                : "bg-red-50 text-red-600"
+            )}>
+              {performanceLabel}
+            </span>
+            <span className={cn(
+              "text-[48px] font-black leading-none mt-1.5",
+              percent >= 85
+                ? "text-[#16a34a]"
+                : percent >= 70
+                ? "text-blue-600"
+                : percent >= 50
+                ? "text-[#ca8a04]"
+                : "text-red-600"
+            )}>
+              {gradeLetter}
+            </span>
+            <span className="text-[14px] font-extrabold text-[#303030] mt-1">
+              {percent}%
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between gap-3 mt-2">
         <h3 className="text-[16px] font-bold tracking-[-0.64px] text-[#303030]">
-          Extracted Questions (from question paper)
+          Question-wise Breakdown
         </h3>
         <button
           type="button"
           onClick={handleExpandAll}
-          className="hidden h-11 shrink-0 cursor-pointer items-center rounded-full bg-white px-5 text-[14px] font-medium tracking-[-0.56px] text-[#181818] transition-standard hover:bg-[#f6f6f6] border-none md:inline-flex"
+          className="h-11 shrink-0 cursor-pointer items-center rounded-full bg-white px-5 text-[14px] font-medium tracking-[-0.56px] text-[#181818] transition-standard hover:bg-[#f6f6f6] border border-black/5 md:inline-flex"
         >
           {allExpanded ? "Collapse All" : "Expand All"}
         </button>
@@ -385,33 +590,64 @@ export default function ExamAssessmentPage() {
               </button>
 
               {isExpanded && (
-                <div className="flex flex-col gap-3">
-                  <div className="rounded-2xl bg-[#f6f6f6] px-5 py-4 md:px-6">
-                    <p className="text-[16px] font-bold tracking-[-0.64px] text-[#303030]">
+                <div className="flex flex-col gap-4 border-t border-black/5 bg-[#fafafa]/50 p-5 rounded-b-2xl cursor-default" onClick={(e) => e.stopPropagation()}>
+                  
+                  {/* Score Adjustment */}
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2.5 rounded-lg border border-black/10 bg-white px-2 py-1 shadow-sm">
+                      <button
+                        type="button"
+                        disabled={score <= 0}
+                        onClick={() => handleDecrementScore(q.questionNumber)}
+                        className="flex h-7 w-7 items-center justify-center rounded hover:bg-black/5 text-[#5e5e5e] disabled:opacity-30 cursor-pointer border-none bg-transparent"
+                      >
+                        <Minus className="w-4 h-4" />
+                      </button>
+                      <span className="min-w-[40px] text-center text-sm font-bold text-[#303030]">
+                        {score} / {q.marks || 0}
+                      </span>
+                      <button
+                        type="button"
+                        disabled={score >= (q.marks || 0)}
+                        onClick={() => handleIncrementScore(q.questionNumber, q.marks || 0)}
+                        className="flex h-7 w-7 items-center justify-center rounded hover:bg-black/5 text-[#5e5e5e] disabled:opacity-30 cursor-pointer border-none bg-transparent"
+                      >
+                        <Plus className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <span className="text-xs font-semibold text-[#8e8e93]">
+                      AI Suggested : {mapping?.score ?? 0}
+                    </span>
+                  </div>
+
+                  {/* AI Reasoning */}
+                  <div className="space-y-1.5">
+                    <span className="font-bold text-[10px] text-[#8e8e93] block uppercase tracking-wider">
                       AI Feedback
-                    </p>
-                    <p className="mt-2.5 text-[14px] font-normal leading-[1.4] tracking-[-0.56px] text-[#303030]">
-                      {feedback?.trim()
-                        ? feedback
-                        : "No feedback yet."}
+                    </span>
+                    <p className="text-[13.5px] font-medium text-[#5e5e5e] leading-relaxed bg-[#f6f6f6] rounded-xl px-4 py-3 border border-black/5">
+                      {feedback?.trim() ? feedback : "No feedback yet."}
                     </p>
                   </div>
+
+                  {/* Teacher comments input */}
+                  <div className="space-y-1.5">
+                    <span className="font-bold text-[10px] text-[#8e8e93] block uppercase tracking-wider">
+                      Teacher's Comments (Optional)
+                    </span>
+                    <textarea
+                      placeholder="Add your feedback to this question..."
+                      defaultValue={mapping?.teacherComment || ""}
+                      onBlur={(e) => handleCommentBlur(q.questionNumber, e.target.value)}
+                      className="w-full text-sm font-medium text-[#303030] bg-white border border-black/10 rounded-xl px-4 py-3 focus:outline-none focus:border-[#ff5623] min-h-[70px] leading-relaxed shadow-inner"
+                    />
+                  </div>
+
                 </div>
               )}
             </div>
           );
         })}
-      </div>
-
-      <div className="mt-4 flex justify-end border-t border-black/5 pt-4">
-        <button
-          type="button"
-          onClick={() => router.push(`/exams/${examId}/report`)}
-          className="inline-flex items-center justify-center gap-1.5 h-11 px-6 rounded-full bg-[#181818] hover:bg-[#2e2e2e] text-white font-bold text-sm transition-standard cursor-pointer shadow-md border-none"
-        >
-          <span>View Evaluation Report</span>
-          <ChevronRight className="w-4 h-4" />
-        </button>
       </div>
     </div>
   );
