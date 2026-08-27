@@ -212,7 +212,7 @@ export default function CreateExamPage() {
                         Upload
                       </span>
                       {/* Question Paper & Answer Sheets - 613 Hug x 56 Hug */}
-                      <span className="inline-flex h-[56px] items-center justify-center rounded-[12px] bg-[#ff5623]/10 px-4 text-[22px] font-extrabold tracking-[-0.88px] text-[#ff5623] md:text-[30px] whitespace-nowrap underline decoration-[#ff5623]/30 underline-offset-4 decoration-2">
+                      <span className="inline-flex h-[56px] items-center justify-center rounded-[12px] bg-[#ff5623]/10 px-4 text-[22px] font-extrabold tracking-[-0.88px] text-[#ff5623] md:text-[30px] whitespace-nowrap">
                         Question Paper &amp; Answer Sheets
                       </span>
                     </span>
@@ -221,7 +221,7 @@ export default function CreateExamPage() {
                       Upload Question Paper &amp; Answer Sheets
                     </span>
                   </h2>
-                  <p className="text-[14px] font-normal tracking-[-0.56px] text-[#5e5e5e]/55 md:text-[16px] mt-2">
+                  <p className="text-[14px] font-semibold tracking-[-0.56px] text-[#5e5e5e]/80 md:text-[16px] mt-2">
                     Upload both files to get started
                   </p>
                 </div>
