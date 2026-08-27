@@ -490,7 +490,7 @@ export default function ExamAssessmentPage() {
                     return (
                       <div
                         key={rIdx}
-                        className="pointer-events-none absolute rounded-2xl border-2 border-[#3dd218] bg-[rgba(94,255,53,0.1)]"
+                        className="pointer-events-none absolute rounded-2xl border-2 border-[#3dd218] bg-[rgba(94,255,53,0.1)] z-10"
                         style={{
                           left: `${x}%`,
                           top: `${y}%`,
@@ -498,7 +498,7 @@ export default function ExamAssessmentPage() {
                           height: `${height}%`,
                         }}
                       >
-                        <span className="absolute -top-7 left-3 rounded-t-xl bg-[#34ac15] px-3 py-1 text-[14px] font-bold tracking-[-0.56px] text-white">
+                        <span className="absolute top-0 left-0 rounded-tl-[14px] rounded-br-[14px] bg-[#3dd218] px-2 py-0.5 text-[12px] font-bold text-white">
                           Q{selectedQuestionNumber}
                         </span>
                       </div>
@@ -522,13 +522,13 @@ export default function ExamAssessmentPage() {
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={`${process.env.NEXT_PUBLIC_API_URL}${currentExam.studentAnswerSheet.path}`}
-                      className="absolute inset-0 h-full w-full object-contain pointer-events-none"
+                      className="absolute inset-0 h-full w-full object-contain pointer-events-none z-0"
                       alt="Student Answer Sheet"
                     />
                   ) : (
                     <iframe
                       src={`${process.env.NEXT_PUBLIC_API_URL}${currentExam.studentAnswerSheet.path}#page=${pageNum}&toolbar=0&navpanes=0&scrollbar=0&messages=0`}
-                      className="absolute inset-0 h-full w-full border-none pointer-events-none"
+                      className="absolute inset-0 h-full w-full border-none pointer-events-none z-0"
                       title="Student Answer Sheet"
                     />
                   )
