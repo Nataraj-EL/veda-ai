@@ -402,6 +402,17 @@ export default function ExamAssessmentPage() {
           );
         })}
       </div>
+
+      <div className="mt-4 flex justify-end border-t border-black/5 pt-4">
+        <button
+          type="button"
+          onClick={() => router.push(`/exams/${examId}/report`)}
+          className="inline-flex items-center justify-center gap-1.5 h-11 px-6 rounded-full bg-[#181818] hover:bg-[#2e2e2e] text-white font-bold text-sm transition-standard cursor-pointer shadow-md border-none"
+        >
+          <span>View Evaluation Report</span>
+          <ChevronRight className="w-4 h-4" />
+        </button>
+      </div>
     </div>
   );
 
