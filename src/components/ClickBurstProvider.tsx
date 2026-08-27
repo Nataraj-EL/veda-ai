@@ -64,10 +64,10 @@ export default function ClickBurstProvider({ children }: { children: React.React
             className="absolute -translate-x-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center"
             style={{ left: eff.x, top: eff.y }}
           >
-            <span className="absolute w-[3px] h-[9px] rounded-full bg-[#181818] animate-burst-1" />
-            <span className="absolute w-[3px] h-[9px] rounded-full bg-[#181818] animate-burst-2" />
-            <span className="absolute w-[3px] h-[9px] rounded-full bg-[#181818] animate-burst-3" />
-            <span className="absolute w-[3px] h-[9px] rounded-full bg-[#181818] animate-burst-4" />
+            <span className="absolute w-[3px] h-[9px] rounded-full bg-black animate-burst-1" />
+            <span className="absolute w-[3px] h-[9px] rounded-full bg-black animate-burst-2" />
+            <span className="absolute w-[3px] h-[9px] rounded-full bg-black animate-burst-3" />
+            <span className="absolute w-[3px] h-[9px] rounded-full bg-black animate-burst-4" />
           </div>
         ))}
       </div>
