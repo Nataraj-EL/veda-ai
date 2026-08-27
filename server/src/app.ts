@@ -22,7 +22,14 @@ export function createApp(): express.Application {
       autoLogging: env.NODE_ENV !== "test",
     })
   );
-  app.use(helmet());
+  app.use(
+    helmet({
+      frameguard: false,
+      crossOriginResourcePolicy: { policy: "cross-origin" },
+      crossOriginEmbedderPolicy: false,
+      contentSecurityPolicy: false,
+    })
+  );
   app.use(
     cors({
       origin: [
