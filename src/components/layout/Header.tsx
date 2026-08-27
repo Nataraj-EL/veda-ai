@@ -109,12 +109,22 @@ export const Header: React.FC<HeaderProps> = ({
           {isAssignments ? (
             <button
               type="button"
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#f6f6f6] text-[#303030] hover:bg-[#eaeaea] transition-standard cursor-pointer"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[#303030] transition-standard cursor-pointer hover:opacity-85 bg-transparent border-none"
               aria-label="Help"
             >
-              <span className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-[#303030] text-[13px] font-extrabold text-[#303030] leading-none select-none">
-                ?
-              </span>
+              {/* Figma Help SVG */}
+              <svg
+                width="36"
+                height="36"
+                viewBox="0 0 36 36"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-9 w-9 shrink-0"
+              >
+                <rect width="36" height="36" rx="18" fill="#F6F6F6"/>
+                <rect x="7" y="7" width="22" height="22" rx="11" stroke="#303030" strokeWidth="2"/>
+                <path d="M16.6108 19.5934C16.6108 17.5706 17.1694 16.7037 18.1712 15.8561L18.6528 15.4323C19.25 14.9507 19.6353 14.4305 19.6353 13.6214C19.6353 12.5041 18.9032 11.7143 17.8822 11.7143C16.7649 11.7143 15.9558 12.716 15.898 14.2957L13.3551 13.7563C13.4322 11.1363 15.3201 9.46034 17.9208 9.46034C20.5407 9.46034 22.3901 11.0785 22.3901 13.4481C22.3901 14.9892 21.6773 15.9139 20.6563 16.6845L20.1169 17.0697C19.3078 17.7055 18.961 18.2834 18.961 19.5934H16.6108ZM17.8244 23.8123C16.8997 23.8123 16.2448 23.1765 16.2448 22.2711C16.2448 21.385 16.8997 20.7492 17.8244 20.7492C18.7299 20.7492 19.3848 21.385 19.3848 22.2711C19.3848 23.1765 18.7299 23.8123 17.8244 23.8123Z" fill="#303030"/>
+              </svg>
             </button>
           ) : (
             <button
@@ -149,21 +159,34 @@ export const Header: React.FC<HeaderProps> = ({
           {isAssignments && (
             <button
               type="button"
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#f6f6f6] text-[#303030] hover:bg-[#eaeaea] transition-standard cursor-pointer"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[#303030] transition-standard cursor-pointer hover:opacity-85 bg-transparent border-none"
               aria-label="AI Toolkit"
             >
-              {/* Figma Sparkles Vector layout exact path */}
+              {/* Figma Sparkles SVG */}
               <svg
-                className="h-5 w-5 shrink-0 text-[#303030]"
-                viewBox="0 0 24 24"
+                width="36"
+                height="36"
+                viewBox="0 0 36 36"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                aria-hidden
+                className="h-9 w-9 shrink-0"
               >
-                <path
-                  d="M12 2C12 7.52285 7.52285 12 2 12C7.52285 12 12 16.4771 12 22C12 16.4771 16.4771 12 22 12C16.4771 12 12 7.52285 12 2Z"
-                  fill="currentColor"
-                />
+                <rect width="36" height="36" rx="18" fill="white"/>
+                <g filter="url(#filter0_i_0_39)">
+                  <path fillRule="evenodd" clipRule="evenodd" d="M12.2319 16.6604C14.4714 15.9139 16.2288 14.1565 16.9753 11.917L17.7219 9.67725L18.3125 8L18.9078 9.67725L19.6543 11.917C20.4008 14.1565 22.1582 15.9139 24.3977 16.6604L26.6375 17.407L28.3125 18L26.6375 18.5928L24.3977 19.3394C22.1582 20.0859 20.4008 21.8433 19.6543 24.0828L18.9078 26.3225L18.3125 28L17.7219 26.3225L16.9753 24.0828C16.2288 21.8433 14.4714 20.0859 12.2319 19.3394L9.99219 18.5928L7.6875 18L9.99219 17.407L12.2319 16.6604Z" fill="#2B2B2B"/>
+                </g>
+                <defs>
+                  <filter id="filter0_i_0_39" x="7.6875" y="8" width="20.625" height="20" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+                    <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+                    <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+                    <feOffset/>
+                    <feGaussianBlur stdDeviation="2"/>
+                    <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+                    <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.4 0"/>
+                    <feBlend mode="normal" in2="shape" result="effect1_innerShadow_0_39"/>
+                  </filter>
+                </defs>
               </svg>
             </button>
           )}
