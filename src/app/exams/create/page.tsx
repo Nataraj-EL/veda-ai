@@ -212,7 +212,7 @@ export default function CreateExamPage() {
                         Upload
                       </span>
                       {/* Question Paper & Answer Sheets - 613 Hug x 56 Hug */}
-                      <span className="inline-flex h-[56px] items-center justify-center rounded-[12px] bg-[#ff5623]/10 px-4 text-[22px] font-extrabold tracking-[-0.88px] text-[#ff5623] md:text-[30px] whitespace-nowrap">
+                      <span className="inline-flex h-[56px] items-center justify-center rounded-[12px] bg-[#ff5623]/10 px-4 text-[22px] font-extrabold tracking-[-0.88px] text-[#ff5623] md:text-[30px] whitespace-nowrap underline decoration-[#ff5623]/30 underline-offset-4 decoration-2">
                         Question Paper &amp; Answer Sheets
                       </span>
                     </span>
@@ -268,27 +268,30 @@ export default function CreateExamPage() {
                           <p className="mt-1 text-[11px] text-[#5e5e5e]/50">Max 10MB</p>
                         </div>
                       ) : (
-                        <div className="relative flex min-h-[88px] items-center gap-3 rounded-[16px] border border-black/10 bg-[#f7f7f7] px-4 py-3 md:min-h-[100px]">
-                          <button
-                            type="button"
-                            onClick={() => setQuestionPaper(null)}
-                            className="absolute right-2.5 top-2.5 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border-none bg-transparent text-[#5e5e5e] hover:bg-black/5"
-                            aria-label="Remove question paper"
-                          >
-                            <span className="text-[16px] leading-none">×</span>
-                          </button>
-                          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#ff5623]/10 text-[#ff5623]">
-                            <FileText className="h-5 w-5" strokeWidth={1.75} />
-                          </div>
-                          <div className="min-w-0 flex-1 pr-6">
-                            <p className="truncate text-[14px] font-semibold tracking-[-0.56px] text-[#303030]">
-                              {questionPaper.name}
-                            </p>
-                            <p className="mt-0.5 text-[12px] text-[#5e5e5e]/70">
-                              {(questionPaper.size / 1024 / 1024).toFixed(1)} MB
-                              <span className="mx-1.5 text-[#5e5e5e]/40">•</span>
-                              <span className="font-semibold text-[#10b981]">100%</span>
-                            </p>
+                        <div className="flex h-44 flex-col items-center justify-center rounded-[20px] border-2 border-dashed border-black/10 bg-white p-4 text-center">
+                          <div className="relative flex w-full max-w-[280px] items-center gap-3 rounded-[12px] bg-[#f7f7f7] px-4 py-3 text-left">
+                            <button
+                              type="button"
+                              onClick={() => setQuestionPaper(null)}
+                              className="absolute -right-2 -top-2 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full bg-[#303030] text-white hover:bg-black border-none"
+                              aria-label="Remove question paper"
+                            >
+                              <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1 1L7 7M7 1L1 7" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                              </svg>
+                            </button>
+                            {/* Figma red PDF badge */}
+                            <div className="flex h-10 w-[34px] shrink-0 flex-col items-center justify-center rounded-[6px] bg-[#e53935] text-[10px] font-extrabold text-white leading-none tracking-normal">
+                              PDF
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate text-[14px] font-semibold tracking-[-0.56px] text-[#303030]">
+                                {questionPaper.name}
+                              </p>
+                              <p className="mt-0.5 text-[11px] text-[#5e5e5e]/70">
+                                {(questionPaper.size / 1024 / 1024).toFixed(0)}MB <span className="mx-1">•</span> 2 Pages
+                              </p>
+                            </div>
                           </div>
                         </div>
                       )}
@@ -323,27 +326,30 @@ export default function CreateExamPage() {
                           <p className="mt-1 text-[11px] text-[#5e5e5e]/50">Max 10MB</p>
                         </div>
                       ) : (
-                        <div className="relative flex min-h-[88px] items-center gap-3 rounded-[16px] border border-black/10 bg-[#f7f7f7] px-4 py-3 md:min-h-[100px]">
-                          <button
-                            type="button"
-                            onClick={() => setAnswerSheet(null)}
-                            className="absolute right-2.5 top-2.5 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border-none bg-transparent text-[#5e5e5e] hover:bg-black/5"
-                            aria-label="Remove answer sheet"
-                          >
-                            <span className="text-[16px] leading-none">×</span>
-                          </button>
-                          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#ff5623]/10 text-[#ff5623]">
-                            <FileText className="h-5 w-5" strokeWidth={1.75} />
-                          </div>
-                          <div className="min-w-0 flex-1 pr-6">
-                            <p className="truncate text-[14px] font-semibold tracking-[-0.56px] text-[#303030]">
-                              {answerSheet.name}
-                            </p>
-                            <p className="mt-0.5 text-[12px] text-[#5e5e5e]/70">
-                              {(answerSheet.size / 1024 / 1024).toFixed(1)} MB
-                              <span className="mx-1.5 text-[#5e5e5e]/40">•</span>
-                              <span className="font-semibold text-[#10b981]">100%</span>
-                            </p>
+                        <div className="flex h-44 flex-col items-center justify-center rounded-[20px] border-2 border-dashed border-black/10 bg-white p-4 text-center">
+                          <div className="relative flex w-full max-w-[280px] items-center gap-3 rounded-[12px] bg-[#f7f7f7] px-4 py-3 text-left">
+                            <button
+                              type="button"
+                              onClick={() => setAnswerSheet(null)}
+                              className="absolute -right-2 -top-2 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full bg-[#303030] text-white hover:bg-black border-none"
+                              aria-label="Remove answer sheet"
+                            >
+                              <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1 1L7 7M7 1L1 7" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                              </svg>
+                            </button>
+                            {/* Figma red PDF badge */}
+                            <div className="flex h-10 w-[34px] shrink-0 flex-col items-center justify-center rounded-[6px] bg-[#e53935] text-[10px] font-extrabold text-white leading-none tracking-normal">
+                              PDF
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate text-[14px] font-semibold tracking-[-0.56px] text-[#303030]">
+                                {answerSheet.name}
+                              </p>
+                              <p className="mt-0.5 text-[11px] text-[#5e5e5e]/70">
+                                {(answerSheet.size / 1024 / 1024).toFixed(0)}MB <span className="mx-1">•</span> 6 Pages
+                              </p>
+                            </div>
                           </div>
                         </div>
                       )}
@@ -371,7 +377,7 @@ export default function CreateExamPage() {
                     <ArrowRight className="h-4 w-4" strokeWidth={2.2} />
                   </button>
                   <p className="mt-3 max-w-[410px] text-center text-[14px] leading-[22px] tracking-[-0.8px] text-[#5e5e5e]/80">
-                    Once both files are uploaded, you&apos;ll be able to map answers with questions
+                    Once both files are uploaded, you&apos;ll able to map answers with questions
                   </p>
                 </div>
 
