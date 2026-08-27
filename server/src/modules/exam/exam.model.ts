@@ -77,6 +77,7 @@ const examMappingSchema = new Schema(
     extractedAnswerIndex: { type: Number },
     score: { type: Number },
     feedback: { type: String },
+    teacherComment: { type: String },
   },
   { _id: false }
 );

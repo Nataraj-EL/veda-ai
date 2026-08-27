@@ -1,8 +1,23 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, FileText, CheckCircle, AlertCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  ChevronDown,
+  ChevronUp,
+  Plus,
+  Minus,
+  ChevronLeft,
+  ChevronRight,
+  Eye,
+  EyeOff,
+  CheckCircle,
+  AlertTriangle,
+  XCircle,
+  HelpCircle,
+  Sparkles
+} from "lucide-react";
 import { cn } from "@/utils/cn";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
@@ -16,9 +31,23 @@ export default function GradedExamReportPage() {
   const router = useRouter();
   const examId = params?.id as string;
 
-  const { currentExam, isLoading, fetchExamById } = useExamStore();
+  const { currentExam, isLoading, fetchExamById, updateExam } = useExamStore();
   const preferences = useUserPreferencesStore((state) => state.preferences);
   const userId = useUserPreferencesStore((state) => state.userId) || "default-user";
+
+  const [showAnswerSheet, setShowAnswerSheet] = useState(true);
+  const [expandedQuestions, setExpandedQuestions] = useState<Record<string, boolean>>({});
+  const [adjustedScores, setAdjustedScores] = useState<Record<string, number>>({});
+  const [comments, setComments] = useState<Record<string, string>>({});
+  const [selectedQuestionNumber, setSelectedQuestionNumber] = useState<string | null>(null);
+
+  const [zoomPercent, setZoomPercent] = useState(100);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isFirefox, setIsFirefox] = useState(false);
+
+  useEffect(() => {
+    setIsFirefox(navigator.userAgent.toLowerCase().includes("firefox"));
+  }, []);
 
   useEffect(() => {
     if (examId && userId) {
@@ -26,12 +55,32 @@ export default function GradedExamReportPage() {
     }
   }, [examId, fetchExamById, userId]);
 
+  useEffect(() => {
+    if (currentExam) {
+      const initialScores: Record<string, number> = {};
+      const initialComments: Record<string, string> = {};
+      currentExam.mappings?.forEach((m) => {
+        initialScores[m.questionNumber] = m.score ?? 0;
+        initialComments[m.questionNumber] = m.teacherComment ?? "";
+      });
+      setAdjustedScores(initialScores);
+      setComments(initialComments);
+
+      // Expand the first question card by default
+      if (currentExam.questions && currentExam.questions.length > 0) {
+        const firstQNum = currentExam.questions[0].questionNumber;
+        setExpandedQuestions({ [firstQNum]: true });
+        setSelectedQuestionNumber(firstQNum);
+      }
+    }
+  }, [currentExam]);
+
   if (isLoading || !currentExam) {
     return (
       <div className="flex h-screen bg-page-fill text-neutral-primary font-sans overflow-hidden">
         <Sidebar variant="assignments" assignmentCount={0} />
         <div className="flex min-w-0 flex-1 flex-col min-h-0 overflow-hidden md:px-3 md:pt-3">
-          <Header title="Exams Report" variant="assignments" backHref={`/exams/${examId}`} />
+          <Header title="Exams" variant="assignments" backHref={`/exams/${examId}`} />
           <div className="flex-grow flex items-center justify-center">
             <div className="flex flex-col items-center space-y-3">
               <div className="relative w-12 h-12">
@@ -46,305 +95,556 @@ export default function GradedExamReportPage() {
     );
   }
 
+  // Calculate scores and counts dynamically from state
   const maxMarks = currentExam.questions?.reduce((sum, q) => sum + (q.marks || 0), 0) || 0;
-  const totalScore = currentExam.mappings?.reduce((sum, m) => sum + (m.score || 0), 0) || 0;
-  const percent = maxMarks > 0 ? Math.round((totalScore / maxMarks) * 100) : 0;
-  const totalPages = 2; // Simulated document pages
+  const currentTotalScore = Object.values(adjustedScores).reduce((sum, s) => sum + s, 0);
+  const percent = maxMarks > 0 ? Math.round((currentTotalScore / maxMarks) * 100) : 0;
+
+  const correctCount = currentExam.questions?.filter((q) => {
+    const score = adjustedScores[q.questionNumber] ?? 0;
+    return score === q.marks && q.marks > 0;
+  }).length || 0;
+
+  const partialCount = currentExam.questions?.filter((q) => {
+    const score = adjustedScores[q.questionNumber] ?? 0;
+    return score > 0 && score < q.marks;
+  }).length || 0;
+
+  const incorrectCount = currentExam.questions?.filter((q) => {
+    const score = adjustedScores[q.questionNumber] ?? 0;
+    return score === 0;
+  }).length || 0;
+
+  // Grade letters and status texts
+  let performanceLabel = "Average";
+  let gradeLetter = "C";
+  let labelBg = "bg-amber-50 border-amber-200 text-amber-600";
+  
+  if (percent >= 85) {
+    performanceLabel = "Outstanding";
+    gradeLetter = "A";
+    labelBg = "bg-[#ecfdf5] border-emerald-200 text-[#059669]";
+  } else if (percent >= 70) {
+    performanceLabel = "Good";
+    gradeLetter = "B";
+    labelBg = "bg-blue-50 border-blue-200 text-blue-600";
+  } else if (percent >= 50) {
+    performanceLabel = "Average";
+    gradeLetter = "C";
+    labelBg = "bg-yellow-50 border-yellow-200 text-yellow-600";
+  } else {
+    performanceLabel = "Needs Improvement";
+    gradeLetter = "D";
+    labelBg = "bg-red-50 border-red-200 text-red-600";
+  }
+
+  // Progress Circle Geometry (r=40)
+  const circumference = 2 * Math.PI * 40;
+  const strokeDashoffset = circumference - (circumference * percent) / 100;
+
+  // Compute total pages from coordinates
+  const totalPages = currentExam.answers?.reduce((max, ans) => {
+    const pageNum = ans.regions?.[0]?.pageNumber || 1;
+    return Math.max(max, pageNum);
+  }, 1) || 1;
+
+  const isAllExpanded = currentExam.questions?.every((q) => expandedQuestions[q.questionNumber]) ?? false;
+
+  const handleToggleAll = () => {
+    const nextState = !isAllExpanded;
+    const updated: Record<string, boolean> = {};
+    currentExam.questions?.forEach((q) => {
+      updated[q.questionNumber] = nextState;
+    });
+    setExpandedQuestions(updated);
+  };
+
+  const handleQuestionClick = (qNumber: string) => {
+    setSelectedQuestionNumber(qNumber);
+    const ans = currentExam.answers?.find((a) => a.questionNumber === qNumber);
+    const page = ans?.regions?.[0]?.pageNumber || 1;
+    setCurrentPage(page);
+  };
+
+  const handleDecrementScore = (qNumber: string) => {
+    setAdjustedScores((prev) => {
+      const currentVal = prev[qNumber] ?? 0;
+      return {
+        ...prev,
+        [qNumber]: Math.max(0, currentVal - 1),
+      };
+    });
+  };
+
+  const handleIncrementScore = (qNumber: string, maxVal: number) => {
+    setAdjustedScores((prev) => {
+      const currentVal = prev[qNumber] ?? 0;
+      return {
+        ...prev,
+        [qNumber]: Math.min(maxVal, currentVal + 1),
+      };
+    });
+  };
+
+  const handleSave = async () => {
+    const newMappings = currentExam.mappings?.map((m) => ({
+      ...m,
+      score: adjustedScores[m.questionNumber] ?? m.score ?? 0,
+      teacherComment: comments[m.questionNumber] ?? m.teacherComment ?? "",
+    })) || [];
+
+    try {
+      await updateExam(currentExam.id, userId, {
+        mappings: newMappings,
+        totalScore: currentTotalScore,
+        gradingStatus: "completed",
+      });
+      alert("Evaluation Report saved successfully!");
+      router.push("/exams");
+    } catch (err) {
+      alert("Failed to save changes.");
+    }
+  };
+
+  // Document active answer regions
+  const activeAnswer = currentExam.answers?.find((a) => a.questionNumber === selectedQuestionNumber);
+  const activeRegions = activeAnswer?.regions || [];
 
   return (
     <div className="flex h-screen bg-page-fill text-neutral-primary font-sans overflow-hidden">
-      {/* Sidebar navigation (hidden in print) */}
       <Sidebar variant="assignments" assignmentCount={0} primaryCta="aiTeacherToolkit" />
 
-      {/* Main Page scroll wrapper */}
       <div className="flex min-w-0 flex-1 flex-col min-h-0 overflow-hidden md:px-3 md:pt-3">
-        {/* Header navigation (hidden in print) */}
-        <Header
-          title="Exams Report"
-          variant="assignments"
-          backHref={`/exams/${examId}`}
-        />
+        <Header title="Exams" variant="assignments" backHref={`/exams/${examId}`} />
 
-        <div className="min-h-0 flex-1 overflow-y-auto flex flex-col">
-          <div className="mx-auto w-full max-w-[850px] px-4 pt-4 pb-24 md:px-0 md:pb-12 flex-1 flex flex-col min-h-0">
-            
-            {/* Top dark action banner (hidden in print) */}
-            <div className="bg-[#27272A] text-white border border-neutral-border rounded-[28px] p-6 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4 no-print select-none mb-6">
-              <div className="min-w-0 text-left space-y-1">
-                <p className="text-xs font-semibold text-white/90 leading-relaxed">
-                  Certainly, {preferences?.teacherName || "Teacher"}! Here is the printable report card containing grading metrics and coordinate overlays.
-                </p>
-              </div>
-              
-              <div className="flex gap-3 shrink-0">
-                <button
-                  onClick={() => router.push(`/exams/${examId}`)}
-                  className="inline-flex items-center justify-center gap-1.5 h-11 px-4 rounded-full bg-zinc-800 hover:bg-zinc-700 text-white transition-standard cursor-pointer border border-zinc-700 font-medium text-sm"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                  <span>Back to Details</span>
-                </button>
-                <button
-                  onClick={() => window.print()}
-                  className="inline-flex items-center justify-center gap-1.5 h-11 px-5 rounded-full bg-white hover:bg-slate-100 text-neutral-primary transition-standard cursor-pointer font-bold text-sm"
-                >
-                  <FileText className="w-4 h-4 text-[#ff5623]" />
-                  <span>Print / Save as PDF</span>
-                </button>
-              </div>
+        <div className="flex-grow flex flex-col min-h-0 overflow-y-auto px-4 py-4 md:px-6">
+          
+          {/* Top Title Banner */}
+          <div className="flex items-center justify-between w-full max-w-[1343px] mx-auto mb-4 shrink-0">
+            <div>
+              <h2 className="text-[28px] font-extrabold tracking-[-1.04px] text-[#303030] leading-tight">
+                Evaluation Report
+              </h2>
+              <p className="text-[16px] font-semibold text-[#5e5e5e]/70 mt-1">
+                {currentExam.studentAnswerSheet?.name?.split("-")?.[0]?.trim() || "Aryan Sharma"} - {currentTotalScore}/{maxMarks} marks
+              </p>
             </div>
+            
+            <button
+              type="button"
+              onClick={() => setShowAnswerSheet(!showAnswerSheet)}
+              className="inline-flex items-center gap-1.5 h-11 px-5 rounded-full border border-black/10 bg-white hover:bg-slate-50 transition-standard cursor-pointer font-semibold text-[14px] text-[#303030]"
+            >
+              {showAnswerSheet ? (
+                <>
+                  <EyeOff className="w-4 h-4 text-[#8e8e93]" />
+                  <span>Hide Answer Sheets</span>
+                </>
+              ) : (
+                <>
+                  <Eye className="w-4 h-4 text-[#8e8e93]" />
+                  <span>Show Answer Sheets</span>
+                </>
+              )}
+            </button>
+          </div>
 
-            {/* ===============================================================
-               A4 PHYSICAL GRADING REPORT SHEET
-               =============================================================== */}
-            <article className="bg-white md:border md:border-neutral-border md:rounded-[28px] p-6 md:p-8 shadow-sm space-y-8 print-surface print-container text-left">
+          {/* Responsive Split Grid Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 w-full max-w-[1343px] mx-auto flex-1 min-h-0 pb-16">
+            
+            {/* LEFT PANEL: Evaluation Card & Accordions */}
+            <div className={cn(
+              "flex flex-col min-h-0 overflow-y-auto gap-4",
+              showAnswerSheet ? "lg:col-span-5" : "lg:col-span-12"
+            )}>
               
-              {/* Institution Header Block */}
-              <div className="text-center space-y-2 pb-4 border-b border-black/5">
-                <h1 className="text-[22px] font-extrabold text-[#303030] tracking-tight uppercase">
-                  {preferences?.schoolName || "Delhi Public School, Bokaro Steel City"}
-                </h1>
-                <h2 className="text-xs font-extrabold tracking-widest text-[#ff5623] uppercase">
-                  Graded Assessment Report
-                </h2>
-              </div>
-
-              {/* Assessment profile metadata */}
-              <div className="grid grid-cols-2 gap-4 text-xs bg-slate-50/75 border border-black/5 p-4 rounded-2xl">
-                <div className="space-y-1.5">
-                  <p className="flex items-center gap-1">
-                    <span className="font-extrabold text-[#303030]">Exam Title:</span>
-                    <span className="font-medium text-[#5e5e5e]">{currentExam.title}</span>
-                  </p>
-                  <p className="flex items-center gap-1">
-                    <span className="font-extrabold text-[#303030]">Student:</span>
-                    <span className="font-medium text-[#5e5e5e]">Chemistry Student</span>
-                  </p>
-                  <p className="flex items-center gap-1">
-                    <span className="font-extrabold text-[#303030]">Uploaded Date:</span>
-                    <span className="font-medium text-[#5e5e5e]">
-                      {new Date(currentExam.createdAt).toLocaleDateString("en-GB")}
+              {/* Summary Performance Card */}
+              <div className="rounded-[28px] border border-black/5 bg-white p-6 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
+                
+                {/* Profile info & count badges */}
+                <div className="flex flex-col gap-3 min-w-0 flex-1">
+                  <div>
+                    <span className="font-semibold text-xs text-[#8e8e93] block uppercase tracking-wider">
+                      Student Name
                     </span>
-                  </p>
-                </div>
-                <div className="space-y-1.5 text-right">
-                  <div className="flex items-center justify-end gap-2">
-                    <span className="font-extrabold text-[#303030]">Grading Status:</span>
-                    <span className={cn(
-                      "text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full border shrink-0",
-                      currentExam.gradingStatus === "completed"
-                        ? "bg-emerald-50 text-emerald-600 border-emerald-200/50"
-                        : "bg-amber-50 text-amber-600 border-amber-200/50"
-                    )}>
-                      {currentExam.gradingStatus === "completed" ? "Graded" : "Pending Review"}
+                    <h3 className="text-[20px] font-extrabold text-[#303030] leading-tight mt-0.5 truncate">
+                      {currentExam.studentAnswerSheet?.name?.split("-")?.[0]?.trim() || "Aryan Sharma"}
+                    </h3>
+                    <p className="text-[13px] font-medium text-[#5e5e5e]/80 mt-1 truncate">
+                      {currentExam.title}
+                    </p>
+                  </div>
+                  
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    <span className="bg-[#ecfdf5] border border-emerald-100 text-[#059669] rounded-full px-3 py-1 flex items-center gap-1.5 font-bold text-xs">
+                      <CheckCircle className="w-3.5 h-3.5" />
+                      <span>{correctCount} Correct</span>
+                    </span>
+                    <span className="bg-[#fffbeb] border border-amber-100 text-[#d97706] rounded-full px-3 py-1 flex items-center gap-1.5 font-bold text-xs">
+                      <AlertTriangle className="w-3.5 h-3.5" />
+                      <span>{partialCount} Partial</span>
+                    </span>
+                    <span className="bg-[#fef2f2] border border-red-100 text-[#dc2626] rounded-full px-3 py-1 flex items-center gap-1.5 font-bold text-xs">
+                      <XCircle className="w-3.5 h-3.5" />
+                      <span>{incorrectCount} Incorrect</span>
                     </span>
                   </div>
-                  <p className="flex items-center justify-end gap-1.5">
-                    <span className="font-extrabold text-[#303030]">Total Score:</span>
-                    <span className="text-sm font-extrabold text-[#ff5623]">
-                      {totalScore} / {maxMarks} ({percent}%)
+                </div>
+
+                {/* Score donut circle & Grade banner */}
+                <div className="flex items-center gap-6 shrink-0">
+                  {/* Circular Donut Ring */}
+                  <div className="relative flex items-center justify-center w-24 h-24 select-none">
+                    <svg className="w-full h-full transform -rotate-90">
+                      <circle
+                        cx="48"
+                        cy="48"
+                        r="40"
+                        className="stroke-slate-100 fill-transparent"
+                        strokeWidth="8"
+                      />
+                      <circle
+                        cx="48"
+                        cy="48"
+                        r="40"
+                        className="stroke-[#3dd218] fill-transparent transition-all duration-500"
+                        strokeWidth="8"
+                        strokeDasharray={circumference}
+                        strokeDashoffset={strokeDashoffset}
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    <div className="absolute flex flex-col items-center justify-center">
+                      <span className="text-[22px] font-extrabold text-[#303030] leading-none">
+                        {currentTotalScore}
+                      </span>
+                      <span className="text-[9px] font-bold text-[#8e8e93] mt-0.5 uppercase tracking-wider">
+                        Out of {maxMarks}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Grade Badge details */}
+                  <div className="flex flex-col items-start gap-1">
+                    <span className={cn(
+                      "px-2.5 py-0.5 rounded-md font-bold text-[10px] border tracking-wide uppercase",
+                      labelBg
+                    )}>
+                      {performanceLabel}
                     </span>
-                  </p>
+                    <span className="text-[44px] font-extrabold text-[#303030] leading-none mt-1">
+                      {gradeLetter}
+                    </span>
+                    <span className="text-xs font-semibold text-[#8e8e93]">
+                      {percent}%
+                    </span>
+                  </div>
                 </div>
+
               </div>
 
-              {/* Score Card Table Summary */}
-              <div className="space-y-3 break-inside-avoid">
-                <h3 className="text-sm font-extrabold text-[#303030] tracking-tight uppercase border-l-3 border-[#ff5623] pl-2">
-                  Graded Score Card
-                </h3>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-xs text-left border-collapse border border-black/5">
-                    <thead>
-                      <tr className="bg-slate-100/70 text-[#303030] border-b border-black/5">
-                        <th className="p-3 font-extrabold border-r border-black/5 w-16">Q No</th>
-                        <th className="p-3 font-extrabold border-r border-black/5">Question Details</th>
-                        <th className="p-3 font-extrabold border-r border-black/5 w-24 text-center">Max Marks</th>
-                        <th className="p-3 font-extrabold border-r border-black/5 w-28 text-center">Score Obtained</th>
-                        <th className="p-3 font-extrabold w-20 text-center">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {currentExam.questions?.map((q) => {
-                        const qMapping = currentExam.mappings?.find((m) => m.questionNumber === q.questionNumber);
-                        const scoreObtained = qMapping?.score ?? 0;
-                        const isMapped = qMapping?.matched ?? false;
-
-                        return (
-                          <tr key={q.questionNumber} className="border-b border-black/5 hover:bg-slate-50/50">
-                            <td className="p-3 font-bold border-r border-black/5">{q.questionNumber}</td>
-                            <td className="p-3 border-r border-black/5 font-medium text-[#5e5e5e] truncate max-w-[280px]">
-                              {q.text}
-                            </td>
-                            <td className="p-3 text-center border-r border-black/5 font-extrabold">{q.marks}</td>
-                            <td className="p-3 text-center border-r border-black/5 font-extrabold text-[#ff5623]">
-                              {scoreObtained}
-                            </td>
-                            <td className="p-3 text-center">
-                              <span className={cn(
-                                "text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border",
-                                isMapped
-                                  ? "bg-emerald-50 text-emerald-600 border-emerald-200/50"
-                                  : "bg-amber-50 text-amber-600 border-amber-200/50"
-                              )}>
-                                {isMapped ? "Mapped" : "Blank"}
-                              </span>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              {/* Detailed Breakdown Section */}
-              <div className="space-y-4">
-                <h3 className="text-sm font-extrabold text-[#303030] tracking-tight uppercase border-l-3 border-[#ff5623] pl-2 break-inside-avoid">
-                  Detailed Assessments
-                </h3>
+              {/* Subheading row */}
+              <div className="flex items-center justify-between mt-2 px-2 shrink-0">
+                <h4 className="text-[16px] font-bold text-[#303030]">
+                  Question-wise Breakdown
+                </h4>
                 
-                <div className="space-y-4">
-                  {currentExam.questions?.map((q) => {
-                    const qAnswer = currentExam.answers?.find((a) => a.questionNumber === q.questionNumber);
-                    const qMapping = currentExam.mappings?.find((m) => m.questionNumber === q.questionNumber);
-                    const scoreObtained = qMapping?.score ?? 0;
-                    const feedback = qMapping?.feedback ?? "No feedback provided.";
+                <button
+                  type="button"
+                  onClick={handleToggleAll}
+                  className="bg-white hover:bg-slate-50 border border-black/10 px-4 py-1.5 rounded-full text-xs font-semibold cursor-pointer text-[#303030]"
+                >
+                  {isAllExpanded ? "Collapse All" : "Expand All"}
+                </button>
+              </div>
+
+              {/* Accordion Questions List */}
+              <div className="space-y-3">
+                {currentExam.questions?.map((q, idx) => {
+                  const score = adjustedScores[q.questionNumber] ?? 0;
+                  const comment = comments[q.questionNumber] ?? "";
+                  const mapping = currentExam.mappings?.find((m) => m.questionNumber === q.questionNumber);
+                  const feedback = mapping?.feedback || "No AI feedback provided.";
+                  const isExpanded = expandedQuestions[q.questionNumber];
+
+                  return (
+                    <div
+                      key={q.questionNumber}
+                      onClick={() => handleQuestionClick(q.questionNumber)}
+                      className={cn(
+                        "rounded-[24px] border transition-all duration-200 overflow-hidden bg-white cursor-pointer select-none",
+                        selectedQuestionNumber === q.questionNumber
+                          ? "border-[#ff5623] shadow-sm"
+                          : "border-black/5 hover:border-black/15"
+                      )}
+                    >
+                      {/* Accordion Header */}
+                      <div className="flex items-center justify-between p-5 gap-3">
+                        <div className="flex items-center gap-3 min-w-0 flex-1">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#4a4a4a] text-white text-[14px] font-bold shrink-0">
+                            {idx + 1}
+                          </div>
+                          <span className="text-[15px] font-semibold text-[#303030] leading-relaxed truncate max-w-[320px] md:max-w-none">
+                            {q.text}
+                          </span>
+                        </div>
+                        
+                        <div className="flex items-center gap-3 shrink-0">
+                          <span className={cn(
+                            "px-3 py-1 rounded-full font-bold text-xs border uppercase",
+                            score === q.marks
+                              ? "bg-[#ecfdf5] border-emerald-100 text-[#059669]"
+                              : score > 0
+                              ? "bg-[#fffbeb] border-amber-100 text-[#d97706]"
+                              : "bg-[#fef2f2] border-red-100 text-[#dc2626]"
+                          )}>
+                            {score} / {q.marks}
+                          </span>
+                          
+                          <button
+                            type="button"
+                            className="p-1 text-[#8e8e93] hover:text-[#303030] cursor-pointer"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setExpandedQuestions((prev) => ({
+                                ...prev,
+                                [q.questionNumber]: !prev[q.questionNumber],
+                              }));
+                            }}
+                          >
+                            {isExpanded ? (
+                              <ChevronUp className="w-5 h-5" />
+                            ) : (
+                              <ChevronDown className="w-5 h-5" />
+                            )}
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Accordion Body */}
+                      {isExpanded && (
+                        <div className="px-5 pb-5 pt-1 border-t border-black/5 bg-[#fafafa]/50 space-y-4 cursor-default" onClick={(e) => e.stopPropagation()}>
+                          
+                          {/* Score Adjustment */}
+                          <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-2.5 rounded-lg border border-black/10 bg-white px-2 py-1 shadow-sm">
+                              <button
+                                type="button"
+                                disabled={score <= 0}
+                                onClick={() => handleDecrementScore(q.questionNumber)}
+                                className="flex h-7 w-7 items-center justify-center rounded hover:bg-black/5 text-[#5e5e5e] disabled:opacity-30 cursor-pointer border-none bg-transparent"
+                              >
+                                <Minus className="w-4 h-4" />
+                              </button>
+                              <span className="min-w-[40px] text-center text-sm font-bold text-[#303030]">
+                                {score} / {q.marks}
+                              </span>
+                              <button
+                                type="button"
+                                disabled={score >= q.marks}
+                                onClick={() => handleIncrementScore(q.questionNumber, q.marks)}
+                                className="flex h-7 w-7 items-center justify-center rounded hover:bg-black/5 text-[#5e5e5e] disabled:opacity-30 cursor-pointer border-none bg-transparent"
+                              >
+                                <Plus className="w-4 h-4" />
+                              </button>
+                            </div>
+                            <span className="text-xs font-semibold text-[#8e8e93]">
+                              AI Suggested : {mapping?.score ?? 0}
+                            </span>
+                          </div>
+
+                          {/* AI Reasoning */}
+                          <div className="space-y-1.5">
+                            <span className="font-bold text-[10px] text-[#8e8e93] block uppercase tracking-wider">
+                              AI Reasoning
+                            </span>
+                            <p className="text-[13px] font-medium text-[#5e5e5e] leading-relaxed bg-[#f6f6f6] rounded-xl px-4 py-3 border border-black/5">
+                              {feedback}
+                            </p>
+                          </div>
+
+                          {/* Teacher comments input */}
+                          <div className="space-y-1.5">
+                            <span className="font-bold text-[10px] text-[#8e8e93] block uppercase tracking-wider">
+                              Teacher's Comments (Optional)
+                            </span>
+                            <textarea
+                              placeholder="Add your feedback to this question..."
+                              value={comment}
+                              onChange={(e) => setComments({ ...comments, [q.questionNumber]: e.target.value })}
+                              className="w-full text-sm font-medium text-[#303030] bg-white border border-black/10 rounded-xl px-4 py-3 focus:outline-none focus:border-[#ff5623] min-h-[70px] leading-relaxed shadow-inner"
+                            />
+                          </div>
+
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Action Buttons Row */}
+              <div className="flex items-center gap-3 mt-4 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => router.push(`/exams/${examId}`)}
+                  className="inline-flex items-center gap-1.5 h-11 px-6 rounded-full border border-black/10 bg-white hover:bg-slate-50 transition-standard cursor-pointer font-bold text-sm text-[#303030]"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  <span>Previous Student</span>
+                </button>
+              </div>
+
+            </div>
+
+            {/* RIGHT PANEL: Answer Sheet PDF/Image Frame */}
+            <div className={cn(
+              "flex flex-col min-h-0 border-[1.25px] border-black/10 bg-white rounded-[28px] overflow-hidden shadow-sm",
+              showAnswerSheet ? "lg:col-span-7" : "hidden"
+            )}>
+              <div className="flex h-14 shrink-0 items-center justify-between gap-3 border-b-[1.25px] border-black/10 bg-[#303030] px-6">
+                <p className="text-[16px] font-bold tracking-[-0.64px] text-white/90">
+                  Answer Sheet
+                </p>
+                
+                {/* Zoom & Page Control Blocks */}
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2.5 rounded-lg bg-white/10 px-3 py-1.5 text-white">
+                    <button
+                      type="button"
+                      onClick={() => setZoomPercent((z) => Math.max(75, z - 25))}
+                      className="flex cursor-pointer items-center border-none bg-transparent p-0 text-white hover:opacity-85"
+                    >
+                      <Minus className="h-4 w-4" />
+                    </button>
+                    <span className="min-w-[44px] text-center text-[13px] font-bold tracking-[-0.56px]">
+                      {zoomPercent}%
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setZoomPercent((z) => Math.min(150, z + 25))}
+                      className="flex cursor-pointer items-center border-none bg-transparent p-0 text-white hover:opacity-85"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </button>
+                  </div>
+                  
+                  <div className="flex items-center gap-2.5 rounded-lg bg-white/10 px-3 py-1.5 text-white">
+                    <button
+                      type="button"
+                      disabled={currentPage <= 1}
+                      onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                      className="flex cursor-pointer items-center border-none bg-transparent p-0 text-white disabled:opacity-35 hover:opacity-85"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </button>
+                    <span className="text-[13px] font-bold tracking-[-0.56px]">
+                      Page {currentPage} of {totalPages}
+                    </span>
+                    <button
+                      type="button"
+                      disabled={currentPage >= totalPages}
+                      onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                      className="flex cursor-pointer items-center border-none bg-transparent p-0 text-white disabled:opacity-35 hover:opacity-85"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Main Document Content Area */}
+              <div className="flex-1 overflow-y-auto bg-[#f6f6f6]/40 px-3 py-4">
+                <div
+                  className="mx-auto origin-top transition-transform"
+                  style={{
+                    width: `${Math.min(100, zoomPercent)}%`,
+                    maxWidth: 660,
+                    transform: zoomPercent > 100 ? `scale(${zoomPercent / 100})` : undefined,
+                  }}
+                >
+                  {Array.from({ length: totalPages }).map((_, idx) => {
+                    const pageNum = idx + 1;
+                    if (pageNum !== currentPage) return null;
 
                     return (
                       <div
-                        key={q.questionNumber}
-                        className="p-4 border border-black/5 rounded-2xl bg-white space-y-3 break-inside-avoid border-l-4 border-l-slate-400"
+                        key={pageNum}
+                        className="relative mx-auto aspect-[1/1.25] w-full overflow-hidden rounded-lg border border-slate-200 bg-white p-6 font-serif shadow-sm select-none md:p-8"
                       >
-                        <div className="flex items-center justify-between border-b border-black/5 pb-2">
-                          <span className="font-extrabold text-xs text-[#303030]">
-                            Question {q.questionNumber}
-                          </span>
-                          <span className="text-xs font-extrabold text-[#ff5623]">
-                            Marks: {scoreObtained} / {q.marks}
-                          </span>
-                        </div>
+                        {/* Green Highlight Box for selected question */}
+                        {activeRegions.map((region, rIdx) => {
+                          if (region.pageNumber !== pageNum) return null;
+                          const { x, y, width, height } = region.boundingBox;
+                          return (
+                            <div
+                              key={rIdx}
+                              className="pointer-events-none absolute rounded-2xl border-2 border-[#3dd218] bg-[rgba(94,255,53,0.1)] z-10"
+                              style={{
+                                left: `${x}%`,
+                                top: `${y}%`,
+                                width: `${width}%`,
+                                height: `${height}%`,
+                              }}
+                            >
+                              <span className="absolute bottom-full left-[-2px] rounded-t-[10px] rounded-b-none bg-[#3dd218] px-3.5 py-0.5 font-serif text-[15px] font-extrabold leading-tight text-white select-none">
+                                Q{selectedQuestionNumber}
+                              </span>
+                            </div>
+                          );
+                        })}
 
-                        <div className="space-y-1">
-                          <p className="text-[11px] font-extrabold text-[#5e5e5e]/80">Question Text</p>
-                          <p className="text-[12px] font-medium text-[#303030] leading-relaxed">
-                            {q.text}
-                          </p>
-                        </div>
-
-                        <div className="space-y-1 bg-slate-50/50 border border-black/5 p-3 rounded-xl">
-                          <p className="text-[11px] font-extrabold text-[#5e5e5e]/80">Extracted Student Answer</p>
-                          <p className="text-[12px] font-medium text-blue-900 font-serif italic leading-relaxed whitespace-pre-wrap">
-                            {!qAnswer?.text || qAnswer.text === "Unanswered"
-                              ? "Question left unanswered by student."
-                              : qAnswer.text}
-                          </p>
-                        </div>
-
-                        <div className="space-y-1">
-                          <p className="text-[11px] font-extrabold text-[#5e5e5e]/80">Teacher Feedback</p>
-                          <p className="text-[12px] font-medium text-[#5e5e5e] leading-relaxed bg-amber-50/10 p-2.5 rounded-xl border border-dashed border-amber-200/50">
-                            {feedback}
-                          </p>
-                        </div>
+                        {/* Visual Document Content */}
+                        {currentExam.studentAnswerSheet?.path ? (
+                          currentExam.studentAnswerSheet.type?.startsWith("image/") ? (
+                            <img
+                              src={`${process.env.NEXT_PUBLIC_API_URL}${currentExam.studentAnswerSheet.path}`}
+                              className="absolute inset-0 h-full w-full object-contain pointer-events-none z-0"
+                              alt="Student Answer Sheet"
+                            />
+                          ) : (
+                            <iframe
+                              src={`${process.env.NEXT_PUBLIC_API_URL}${currentExam.studentAnswerSheet.path}#page=${pageNum}&toolbar=0&navpanes=0&scrollbar=0&messages=0`}
+                              className={cn(
+                                "absolute border-none pointer-events-none z-0",
+                                isFirefox
+                                  ? "-top-[40px] h-[calc(100%+40px)] w-full left-0"
+                                  : "inset-0 h-full w-full"
+                              )}
+                              title="Student Answer Sheet"
+                            />
+                          )
+                        ) : (
+                          <div className="flex h-full items-center justify-center text-[#5e5e5e]/50 font-sans not-italic">
+                            No answer sheet document loaded
+                          </div>
+                        )}
                       </div>
                     );
                   })}
                 </div>
               </div>
 
-              {/* Marked Answer Sheet Pages */}
-              <div className="space-y-6 pt-4 border-t border-black/5 break-before-page print:break-before-page">
-                <h3 className="text-sm font-extrabold text-[#303030] tracking-tight uppercase border-l-3 border-[#ff5623] pl-2 break-inside-avoid">
-                  Marked Answer Sheets
-                </h3>
-
-                <div className="space-y-8">
-                  {Array.from({ length: totalPages }).map((_, idx) => {
-                    const pageNum = idx + 1;
-                    return (
-                      <div key={pageNum} className={cn("space-y-2 break-inside-avoid", pageNum > 1 && "print:break-before-page")}>
-                        <p className="text-xs font-extrabold text-[#303030]">
-                          Answer Sheet Page {pageNum}
-                        </p>
-                        
-                        {/* Interactive Page Container */}
-                        <div
-                          className="relative bg-white border border-slate-200 shadow-sm rounded-lg aspect-[1/1.414] w-full max-w-[500px] p-6 md:p-8 mx-auto text-left font-serif overflow-hidden select-none"
-                        >
-                          <div className="absolute top-3 right-3 text-[10px] font-bold text-[#a9a9a9] bg-slate-50 px-2 py-0.5 rounded border select-none">
-                            Page {pageNum}
-                          </div>
-
-                          {/* Render highlight coordinates rects matching current database state */}
-                          {currentExam.answers?.map((answer: any, aIdx: number) => {
-                            const mapping = currentExam.mappings?.find((m) => m.questionNumber === answer.questionNumber);
-                            return answer.regions?.map((region: any, rIdx: number) => {
-                              if (region.pageNumber === pageNum) {
-                                const { x, y, width, height } = region.boundingBox;
-                                return (
-                                  <div
-                                    key={`${aIdx}-${rIdx}`}
-                                    className="absolute border-[2.5px] border-[#ff5623] bg-[#ff5623]/8 rounded-xl transition-all duration-300 pointer-events-none flex flex-col justify-start overflow-hidden"
-                                    style={{
-                                      left: `${x}%`,
-                                      top: `${y}%`,
-                                      width: `${width}%`,
-                                      height: `${height}%`,
-                                    }}
-                                  >
-                                    <div className="bg-[#ff5623] text-white text-[8px] font-extrabold px-1.5 py-0.5 rounded-br shadow-sm self-start select-none leading-none">
-                                      Q{answer.questionNumber} ({mapping?.score ?? 0} M)
-                                    </div>
-                                  </div>
-                                );
-                              }
-                              return null;
-                            });
-                          })}
-
-                          {/* Simulated Handwriting text */}
-                           <div className="h-full flex flex-col justify-start space-y-8 font-serif italic text-blue-800 text-sm md:text-[15px] pt-8 select-none">
-                            {(() => {
-                              const answersForPage = currentExam.answers?.filter((ans: any) => {
-                                const page = ans.regions?.[0]?.pageNumber || 1;
-                                return page === pageNum;
-                              }) || [];
-
-                              if (answersForPage.length > 0) {
-                                return answersForPage.map((ans: any, aIdx: number) => (
-                                  <div key={aIdx} className="space-y-1 text-left">
-                                    <p className="font-extrabold text-[11px] text-[#FA643C] not-italic">
-                                      Q{ans.questionNumber} answer:
-                                    </p>
-                                    <p className="leading-relaxed whitespace-pre-wrap">
-                                      {ans.text}
-                                    </p>
-                                  </div>
-                                ));
-                              }
-                              return (
-                                <p className="text-[#5e5e5e]/50 font-sans not-italic text-center py-10">
-                                  No answers mapped to Page {pageNum}
-                                </p>
-                              );
-                            })()}
-                          </div>
-
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+              {/* Floating Bottom Action Bar */}
+              <div className="h-16 shrink-0 border-t border-black/10 bg-[#fafafa] flex items-center justify-end px-6">
+                <button
+                  type="button"
+                  onClick={handleSave}
+                  className="inline-flex items-center justify-center gap-1.5 h-11 px-6 rounded-full bg-[#181818] hover:bg-[#2e2e2e] text-white transition-standard cursor-pointer font-bold text-sm shadow-md"
+                >
+                  <span>Save & Next Student</span>
+                  <ChevronRight className="w-4 h-4" />
+                </button>
               </div>
 
-            </article>
+            </div>
 
           </div>
 
-          <Footer />
-          <MobileBottomNav />
         </div>
+
+        <Footer />
+        <MobileBottomNav />
       </div>
     </div>
   );

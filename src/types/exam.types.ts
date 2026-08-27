@@ -36,6 +36,7 @@ export interface ExamMapping {
   extractedAnswerIndex?: number;
   score?: number;
   feedback?: string;
+  teacherComment?: string;
 }
 
 export interface Exam {
