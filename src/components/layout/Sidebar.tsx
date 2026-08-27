@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -206,6 +206,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const ctaLabel = primaryCta === "aiTeacherToolkit" ? "AI Teacher's Toolkit" : "Create Assignment";
 
   const { preferences, loadPreferences, setIsSettingsOpen, isSidebarCollapsed, setIsSidebarCollapsed } = useUserPreferencesStore();
+  const [isLogoHovered, setIsLogoHovered] = useState(false);
 
   useEffect(() => {
     loadPreferences();
@@ -248,16 +249,43 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className={cn("flex flex-col pt-6", isSidebarCollapsed ? "px-[18px] items-center" : "px-[26.5px]")}>
             {/* Figma 2:10590 — 136×40 logo + wordmark. Collapsible. */}
             <div className={cn("flex items-center", isSidebarCollapsed ? "justify-center w-[44px] h-[40px]" : "justify-between w-full")}>
-              <SidebarBrand variant={brandVariant} isCollapsed={isSidebarCollapsed} />
-              {!isSidebarCollapsed && (
+              {isSidebarCollapsed ? (
                 <button
                   type="button"
-                  onClick={() => setIsSidebarCollapsed(true)}
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg hover:bg-black/5 text-[#5e5e5e] cursor-pointer border-none bg-transparent"
-                  aria-label="Collapse sidebar"
+                  onMouseEnter={() => setIsLogoHovered(true)}
+                  onMouseLeave={() => setIsLogoHovered(false)}
+                  onClick={() => {
+                    setIsSidebarCollapsed(false);
+                    setIsLogoHovered(false);
+                  }}
+                  className="group relative flex items-center justify-center w-[44px] h-[40px] rounded-lg hover:bg-black/5 text-[#5e5e5e] cursor-pointer border-none bg-transparent"
+                  aria-label="Expand sidebar"
                 >
-                  <SidebarToggleIcon className="h-5 w-5 text-[#5e5e5e]" />
+                  <div className={cn(
+                    "absolute inset-0 flex items-center justify-center transition-all duration-300",
+                    isLogoHovered ? "opacity-0 scale-90 pointer-events-none" : "opacity-100 scale-100"
+                  )}>
+                    <SidebarBrand variant={brandVariant} isCollapsed={true} />
+                  </div>
+                  <div className={cn(
+                    "absolute inset-0 flex items-center justify-center transition-all duration-300",
+                    isLogoHovered ? "opacity-100 scale-100" : "opacity-0 scale-90 pointer-events-none"
+                  )}>
+                    <SidebarToggleIcon className="h-5 w-5 text-[#5e5e5e]" />
+                  </div>
                 </button>
+              ) : (
+                <>
+                  <SidebarBrand variant={brandVariant} isCollapsed={false} />
+                  <button
+                    type="button"
+                    onClick={() => setIsSidebarCollapsed(true)}
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg hover:bg-black/5 text-[#5e5e5e] cursor-pointer border-none bg-transparent"
+                    aria-label="Collapse sidebar"
+                  >
+                    <SidebarToggleIcon className="h-5 w-5 text-[#5e5e5e]" />
+                  </button>
+                </>
               )}
             </div>
 
@@ -280,16 +308,43 @@ export const Sidebar: React.FC<SidebarProps> = ({
         ) : (
           <div className={cn("flex flex-col pt-6", isSidebarCollapsed ? "px-[18px] items-center" : "px-6")}>
             <div className={cn("flex items-center", isSidebarCollapsed ? "justify-center w-[44px] h-[40px]" : "justify-between w-full")}>
-              <SidebarBrand variant={brandVariant} isCollapsed={isSidebarCollapsed} />
-              {!isSidebarCollapsed && (
+              {isSidebarCollapsed ? (
                 <button
                   type="button"
-                  onClick={() => setIsSidebarCollapsed(true)}
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg hover:bg-black/5 text-[#5e5e5e] cursor-pointer border-none bg-transparent"
-                  aria-label="Collapse sidebar"
+                  onMouseEnter={() => setIsLogoHovered(true)}
+                  onMouseLeave={() => setIsLogoHovered(false)}
+                  onClick={() => {
+                    setIsSidebarCollapsed(false);
+                    setIsLogoHovered(false);
+                  }}
+                  className="group relative flex items-center justify-center w-[44px] h-[40px] rounded-lg hover:bg-black/5 text-[#5e5e5e] cursor-pointer border-none bg-transparent"
+                  aria-label="Expand sidebar"
                 >
-                  <SidebarToggleIcon className="h-5 w-5 text-[#5e5e5e]" />
+                  <div className={cn(
+                    "absolute inset-0 flex items-center justify-center transition-all duration-300",
+                    isLogoHovered ? "opacity-0 scale-90 pointer-events-none" : "opacity-100 scale-100"
+                  )}>
+                    <SidebarBrand variant={brandVariant} isCollapsed={true} />
+                  </div>
+                  <div className={cn(
+                    "absolute inset-0 flex items-center justify-center transition-all duration-300",
+                    isLogoHovered ? "opacity-100 scale-100" : "opacity-0 scale-90 pointer-events-none"
+                  )}>
+                    <SidebarToggleIcon className="h-5 w-5 text-[#5e5e5e]" />
+                  </div>
                 </button>
+              ) : (
+                <>
+                  <SidebarBrand variant={brandVariant} isCollapsed={false} />
+                  <button
+                    type="button"
+                    onClick={() => setIsSidebarCollapsed(true)}
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg hover:bg-black/5 text-[#5e5e5e] cursor-pointer border-none bg-transparent"
+                    aria-label="Collapse sidebar"
+                  >
+                    <SidebarToggleIcon className="h-5 w-5 text-[#5e5e5e]" />
+                  </button>
+                </>
               )}
             </div>
             <div className={cn("mt-6 w-full flex justify-center", isSidebarCollapsed ? "max-w-[44px]" : "")}>
