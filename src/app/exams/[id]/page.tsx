@@ -651,47 +651,31 @@ export default function ExamAssessmentPage() {
                   />
                 )}
 
-                <div className="flex h-full flex-col justify-start space-y-8 pt-6 font-serif text-sm italic text-blue-800 md:text-[15px]">
-                  {pageNum === 1 ? (
-                    <>
-                      <div className="space-y-1">
-                        <p className="text-[11px] font-extrabold not-italic text-[#FA643C]">
-                          Q1 answer:
-                        </p>
-                        <p className="leading-relaxed">
-                          In brine (NaCl solution) electrolysis, chlorine gas is
-                          liberated at the anode, while hydrogen gas is evolved at
-                          the cathode. Sodium hydroxide solution accumulates near
-                          the cathode.
-                        </p>
-                      </div>
-                      <div className="space-y-1">
-                        <p className="text-[11px] font-extrabold not-italic text-[#FA643C]">
-                          Q2 answer:
-                        </p>
-                        <p className="leading-relaxed">
-                          Sodium ions (Na⁺) and hydroxide (OH⁻) ions remain in the
-                          solution and combine to form NaOH because hydrogen ions
-                          (H⁺) are preferentially reduced at the cathode due to
-                          their lower reduction potential.
-                        </p>
-                      </div>
-                    </>
-                  ) : (
-                    <div className="space-y-1">
-                      <p className="text-[11px] font-extrabold not-italic text-[#FA643C]">
-                        Q4 answer:
+                <div className="flex h-full flex-col justify-start space-y-8 pt-6 font-serif text-sm italic text-blue-800 md:text-[15px] select-text">
+                  {(() => {
+                    const answersForPage = currentExam.answers?.filter((ans) => {
+                      const page = ans.regions?.[0]?.pageNumber || 1;
+                      return page === pageNum;
+                    }) || [];
+
+                    if (answersForPage.length > 0) {
+                      return answersForPage.map((ans, aIdx) => (
+                        <div key={aIdx} className="space-y-1">
+                          <p className="text-[11px] font-extrabold not-italic text-[#FA643C]">
+                            Q{ans.questionNumber} answer:
+                          </p>
+                          <p className="leading-relaxed whitespace-pre-wrap">
+                            {ans.text}
+                          </p>
+                        </div>
+                      ));
+                    }
+                    return (
+                      <p className="text-[#5e5e5e]/50 font-sans not-italic text-center py-10">
+                        No answers mapped to Page {pageNum}
                       </p>
-                      <p className="leading-relaxed">
-                        Common name: Baking Soda.
-                        <br />
-                        Chemical formula: NaHCO3.
-                        <br />
-                        Use: Bakery (bread/cakes) to make them fluffy by releasing
-                        CO2 gas on heating.
-                      </p>
-                    </div>
-                  )}
+                    );
+                  })()}
                 </div>
               </div>
             );

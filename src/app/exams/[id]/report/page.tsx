@@ -305,49 +305,31 @@ export default function GradedExamReportPage() {
                           })}
 
                           {/* Simulated Handwriting text */}
-                          <div className="h-full flex flex-col justify-start space-y-8 font-serif italic text-blue-800 text-sm md:text-[15px] pt-8 select-none">
-                            {pageNum === 1 ? (
-                              <>
-                                <div className="space-y-1">
-                                  <p className="font-extrabold text-[11px] text-[#FA643C] not-italic">Q1 answer:</p>
-                                  <p className="leading-relaxed">
-                                    In brine (NaCl solution) electrolysis, chlorine gas is liberated at the anode, while hydrogen gas is evolved at the cathode. Sodium hydroxide solution accumulates near the cathode.
-                                  </p>
-                                  <p className="leading-normal font-mono text-xs md:text-sm text-blue-900 mt-1 pl-4">
-                                    At Anode: 2Cl⁻ → Cl₂ + 2e⁻<br />
-                                    At Cathode: 2H₂O + 2e⁻ → H₂ + 2OH⁻
-                                  </p>
-                                </div>
+                           <div className="h-full flex flex-col justify-start space-y-8 font-serif italic text-blue-800 text-sm md:text-[15px] pt-8 select-none">
+                            {(() => {
+                              const answersForPage = currentExam.answers?.filter((ans: any) => {
+                                const page = ans.regions?.[0]?.pageNumber || 1;
+                                return page === pageNum;
+                              }) || [];
 
-                                <div className="space-y-1">
-                                  <p className="font-extrabold text-[11px] text-[#FA643C] not-italic">Q2 answer:</p>
-                                  <p className="leading-relaxed">
-                                    Sodium ions (Na⁺) and hydroxide (OH⁻) ions remain in the solution and combine to form NaOH because hydrogen ions (H⁺) are preferentially reduced at the cathode due to their lower reduction potential.
-                                  </p>
-                                </div>
-
-                                <div className="space-y-1">
-                                  <p className="font-extrabold text-[11px] text-[#FA643C] not-italic">Q3(a) answer:</p>
-                                  <p className="leading-relaxed">
-                                    Chlorine gas reacts with dry slaked lime [Ca(OH)₂] to form calcium oxychloride (bleaching powder) and water:
-                                  </p>
-                                  <p className="leading-normal font-mono text-xs md:text-sm text-blue-900 mt-1 pl-4">
-                                    Ca(OH)₂ + Cl₂ → CaOCl₂ + H₂O
-                                  </p>
-                                </div>
-                              </>
-                            ) : (
-                              <>
-                                <div className="space-y-1">
-                                  <p className="font-extrabold text-[11px] text-[#FA643C] not-italic">Q4 answer:</p>
-                                  <p className="leading-relaxed">
-                                    Common name: Baking Soda.<br />
-                                    Chemical formula: NaHCO3.<br />
-                                    Use: Bakery (bread/cakes) to make them fluffy by releasing CO2 gas on heating.
-                                  </p>
-                                </div>
-                              </>
-                            )}
+                              if (answersForPage.length > 0) {
+                                return answersForPage.map((ans: any, aIdx: number) => (
+                                  <div key={aIdx} className="space-y-1 text-left">
+                                    <p className="font-extrabold text-[11px] text-[#FA643C] not-italic">
+                                      Q{ans.questionNumber} answer:
+                                    </p>
+                                    <p className="leading-relaxed whitespace-pre-wrap">
+                                      {ans.text}
+                                    </p>
+                                  </div>
+                                ));
+                              }
+                              return (
+                                <p className="text-[#5e5e5e]/50 font-sans not-italic text-center py-10">
+                                  No answers mapped to Page {pageNum}
+                                </p>
+                              );
+                            })()}
                           </div>
 
                         </div>
