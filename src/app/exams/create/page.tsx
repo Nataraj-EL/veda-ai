@@ -240,69 +240,6 @@ export default function CreateExamPage() {
                     height={180}
                     className="h-full w-full object-contain"
                   />
-                  
-                  {/* Revolving Orbit Overlay */}
-                  <div className="absolute inset-0 pointer-events-none z-10 animate-[orbitRotation_25s_linear_infinite]">
-                    {/* 1. Clock Badge (Top-Right, ~295.3deg) */}
-                    <div 
-                      className="absolute left-1/2 top-1/2 w-[18.5px] h-[18.5px] flex items-center justify-center"
-                      style={{
-                        transform: 'translate(-50%, -50%) rotate(295.3deg) translateY(-66.5px) rotate(-295.3deg)'
-                      }}
-                    >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img 
-                        src="/images/badge-clock.png" 
-                        alt="Clock Badge" 
-                        className="w-full h-full object-contain animate-[counterOrbit_25s_linear_infinite]"
-                      />
-                    </div>
-                    
-                    {/* 2. Cloud Badge (Bottom-Right, ~22.7deg) */}
-                    <div 
-                      className="absolute left-1/2 top-1/2 w-[18.5px] h-[18.5px] flex items-center justify-center"
-                      style={{
-                        transform: 'translate(-50%, -50%) rotate(22.7deg) translateY(-66.5px) rotate(-22.7deg)'
-                      }}
-                    >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img 
-                        src="/images/badge-cloud.png" 
-                        alt="Cloud Badge" 
-                        className="w-full h-full object-contain animate-[counterOrbit_25s_linear_infinite]"
-                      />
-                    </div>
-                    
-                    {/* 3. Gear Badge (Bottom-Left, ~111.8deg) */}
-                    <div 
-                      className="absolute left-1/2 top-1/2 w-[18.5px] h-[18.5px] flex items-center justify-center"
-                      style={{
-                        transform: 'translate(-50%, -50%) rotate(111.8deg) translateY(-66.5px) rotate(-111.8deg)'
-                      }}
-                    >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img 
-                        src="/images/badge-gear.png" 
-                        alt="Gear Badge" 
-                        className="w-full h-full object-contain animate-[counterOrbit_25s_linear_infinite]"
-                      />
-                    </div>
-                    
-                    {/* 4. List Badge (Left, ~198deg) */}
-                    <div 
-                      className="absolute left-1/2 top-1/2 w-[18.5px] h-[18.5px] flex items-center justify-center"
-                      style={{
-                        transform: 'translate(-50%, -50%) rotate(198deg) translateY(-66.5px) rotate(-198deg)'
-                      }}
-                    >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img 
-                        src="/images/badge-list.png" 
-                        alt="List Badge" 
-                        className="w-full h-full object-contain animate-[counterOrbit_25s_linear_infinite]"
-                      />
-                    </div>
-                  </div>
                 </div>
 
                 {/* Upload boxes container card — Figma border, radius, spacing and padding */}
