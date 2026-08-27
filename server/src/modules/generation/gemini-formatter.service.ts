@@ -26,9 +26,9 @@ export class GeminiFormatterService {
     if (env.GEMINI_API_KEY) {
       this.provider = new GeminiProvider({
         apiKey: env.GEMINI_API_KEY,
-        model: (env.GEMINI_MODEL && env.GEMINI_MODEL !== "gemini-2.5-flash" && env.GEMINI_MODEL !== "gemini-2.5-flash-lite")
+        model: (env.GEMINI_MODEL && !env.GEMINI_MODEL.startsWith("gemini-2.5") && !env.GEMINI_MODEL.startsWith("gemini-3.5"))
           ? env.GEMINI_MODEL
-          : "gemini-3.5-flash-lite",
+          : "gemini-flash-latest",
         timeoutMs: 60_000,
       });
     } else {

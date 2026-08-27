@@ -27,9 +27,9 @@ function toExamResponse(exam: IExam) {
 
 function resolveAiProvider() {
   if (env.GEMINI_API_KEY) {
-    let modelName = env.GEMINI_MODEL || "gemini-3.5-flash-lite";
-    if (modelName === "gemini-2.5-flash" || modelName === "gemini-2.5-flash-lite") {
-      modelName = "gemini-3.5-flash-lite";
+    let modelName = env.GEMINI_MODEL || "gemini-flash-latest";
+    if (modelName.startsWith("gemini-2.5") || modelName.startsWith("gemini-3.5")) {
+      modelName = "gemini-flash-latest";
     }
 
     return {
