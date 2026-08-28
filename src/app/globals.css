@@ -243,3 +243,46 @@ textarea:focus-visible {
   --dist: -20px;
   animation: burstLine 0.5s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
 }
+
+/* Loading screen text shimmer and sparkles glow animation */
+@keyframes textShimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.shimmer-title {
+  background: linear-gradient(110deg, #303030 35%, #9CA3AF 50%, #303030 65%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: textShimmer 2.5s linear infinite;
+  display: inline-block;
+}
+
+.shimmer-subtitle {
+  background: linear-gradient(110deg, rgba(94, 94, 94, 0.7) 35%, #E5E7EB 50%, rgba(94, 94, 94, 0.7) 65%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: textShimmer 2.5s linear infinite;
+  display: inline-block;
+}
+
+@keyframes subtleGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 4px rgba(250, 100, 60, 0.15)) brightness(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 16px rgba(250, 100, 60, 0.35)) brightness(1.08);
+  }
+}
+
+.animate-subtle-glow {
+  animation: subtleGlow 3s ease-in-out infinite;
+}
