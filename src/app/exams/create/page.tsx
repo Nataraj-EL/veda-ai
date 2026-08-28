@@ -243,7 +243,7 @@ export default function CreateExamPage() {
                 </div>
 
                 {/* Upload boxes container card — Figma border, radius, spacing and padding */}
-                <div className="w-full rounded-[24px] border border-black/[0.08] bg-[#f9f9f9] p-4 md:p-6 mb-8 md:mb-10">
+                <div className="w-full rounded-[32px] md:rounded-[24px] border border-black/[0.08] bg-[#ebebeb] md:bg-[#f9f9f9] p-4 md:p-6 mb-8 md:mb-10">
                   <div className="flex w-full flex-col gap-4 md:flex-row md:gap-5">
                     
                     {/* 1. Question Paper Card */}
@@ -259,20 +259,20 @@ export default function CreateExamPage() {
                         <div
                           onClick={() => document.getElementById("question-paper-input")?.click()}
                           className={cn(
-                            "flex h-44 cursor-pointer flex-col items-center justify-center rounded-[20px] border-2 border-dashed border-black/10 bg-white p-6 text-center transition-standard hover:border-[#ff5623]/50",
+                            "flex h-44 cursor-pointer flex-col items-center justify-center rounded-[24px] md:rounded-[20px] border border-dashed border-[#c5c5c5] bg-white p-6 text-center transition-standard hover:border-[#ff5623]/50",
                             questionPaperError && "border-feedback-error bg-feedback-error/5"
                           )}
                         >
-                          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-white">
+                          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-[#f4f4f5]">
                             <Upload className="h-5 w-5 text-[#303030]" strokeWidth={2} />
                           </div>
-                          <p className="text-sm font-semibold text-[#303030]">
-                            Upload <span className="text-[#ff5623]">Question Paper</span>
+                          <p className="text-[16px] font-bold text-[#303030] tracking-[-0.64px]">
+                            Upload <span className="text-[#ff5623]"><span className="underline decoration-[#ff5623] decoration-[1.5px] underline-offset-[3px]">Question</span> Paper</span>
                           </p>
-                          <p className="mt-1 text-[11px] text-[#5e5e5e]/50">Max 10MB</p>
+                          <p className="mt-1.5 text-[12px] font-medium text-[#a9a9a9]">Max 10MB</p>
                         </div>
                       ) : (
-                        <div className="flex h-44 flex-col items-center justify-center rounded-[20px] border-2 border-dashed border-black/10 bg-white p-4 text-center">
+                        <div className="flex h-44 flex-col items-center justify-center rounded-[24px] md:rounded-[20px] border border-dashed border-[#c5c5c5] bg-white p-4 text-center">
                           <div className="relative flex w-full max-w-[280px] items-center gap-3 rounded-[12px] bg-[#f7f7f7] px-4 py-3 text-left">
                             <button
                               type="button"
@@ -317,20 +317,20 @@ export default function CreateExamPage() {
                         <div
                           onClick={() => document.getElementById("answer-sheet-input")?.click()}
                           className={cn(
-                            "flex h-44 cursor-pointer flex-col items-center justify-center rounded-[20px] border-2 border-dashed border-black/10 bg-white p-6 text-center transition-standard hover:border-[#ff5623]/50",
+                            "flex h-44 cursor-pointer flex-col items-center justify-center rounded-[24px] md:rounded-[20px] border border-dashed border-[#c5c5c5] bg-white p-6 text-center transition-standard hover:border-[#ff5623]/50",
                             answerSheetError && "border-feedback-error bg-feedback-error/5"
                           )}
                         >
-                          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-white">
+                          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-[#f4f4f5]">
                             <Upload className="h-5 w-5 text-[#303030]" strokeWidth={2} />
                           </div>
-                          <p className="text-sm font-semibold text-[#303030]">
+                          <p className="text-[16px] font-bold text-[#303030] tracking-[-0.64px]">
                             Upload <span className="text-[#ff5623]">Answer Sheet</span>
                           </p>
-                          <p className="mt-1 text-[11px] text-[#5e5e5e]/50">Max 10MB</p>
+                          <p className="mt-1.5 text-[12px] font-medium text-[#a9a9a9]">Max 10MB</p>
                         </div>
                       ) : (
-                        <div className="flex h-44 flex-col items-center justify-center rounded-[20px] border-2 border-dashed border-black/10 bg-white p-4 text-center">
+                        <div className="flex h-44 flex-col items-center justify-center rounded-[24px] md:rounded-[20px] border border-dashed border-[#c5c5c5] bg-white p-4 text-center">
                           <div className="relative flex w-full max-w-[280px] items-center gap-3 rounded-[12px] bg-[#f7f7f7] px-4 py-3 text-left">
                             <button
                               type="button"
