@@ -131,6 +131,22 @@ export const useExamStore = create<ExamState>((set, get) => ({
   },
 
   updateExam: async (id: string, userId: string, update: Partial<Exam>) => {
+    const oldExam = get().currentExam;
+    const oldExamsList = get().exams;
+    
+    // Optimistically update local state immediately
+    set((state) => {
+      const current = state.currentExam;
+      let nextCurrent = current;
+      if (current && current.id === id) {
+        nextCurrent = { ...current, ...update };
+      }
+      return {
+        exams: state.exams.map((e) => (e.id === id ? { ...e, ...update } : e)),
+        currentExam: nextCurrent,
+      };
+    });
+
     try {
       const apiBase = process.env.NEXT_PUBLIC_API_URL;
       const res = await fetch(
@@ -154,10 +170,14 @@ export const useExamStore = create<ExamState>((set, get) => ({
         }));
         return updatedExam;
       } else {
+        // Rollback on server error
+        set({ exams: oldExamsList, currentExam: oldExam });
         const errorData = await res.json();
         throw new Error(errorData?.error?.message || "Failed to update exam");
       }
     } catch (error: any) {
+      // Rollback on request failure
+      set({ exams: oldExamsList, currentExam: oldExam });
       console.error("Failed to update exam:", error);
       throw error;
     }

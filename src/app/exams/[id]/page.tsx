@@ -323,10 +323,10 @@ export default function ExamAssessmentPage() {
     if (!currentExam) return;
     const newTotalScore = updatedMappings.reduce((sum, m) => sum + (m.score || 0), 0);
     try {
-      await updateExam(currentExam.id, userId, {
+      updateExam(currentExam.id, userId, {
         mappings: updatedMappings,
         totalScore: newTotalScore,
-      });
+      }).catch((err) => console.error("Failed to auto-save grading changes", err));
     } catch (err) {
       console.error("Failed to auto-save grading changes", err);
     }
@@ -718,7 +718,8 @@ export default function ExamAssessmentPage() {
                       placeholder="Add your feedback to this question..."
                       defaultValue={mapping?.teacherComment || ""}
                       onBlur={(e) => handleCommentBlur(q.questionNumber, e.target.value)}
-                      className="w-full text-sm font-medium text-[#303030] bg-white border border-black/10 focus:border-black/20 rounded-xl px-4 py-3 focus:outline-none min-h-[90px] leading-relaxed shadow-sm transition-all duration-200"
+                      className="w-full text-sm font-medium text-[#303030] bg-white border border-black/10 focus:border-black/20 rounded-xl px-4 py-3 min-h-[90px] leading-relaxed shadow-sm transition-all duration-200 outline-none ring-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
+                      style={{ outline: "none", boxShadow: "none" }}
                     />
                   </div>
 
