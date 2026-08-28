@@ -17,8 +17,9 @@ export interface HeaderProps {
   /** Figma 2:10625 — always show back control in assignments header */
   showAssignmentsBack?: boolean;
   /** Figma 2:10590 gradient vs 2:10644 mono (assignment output only) */
-  brandVariant?: "gradient" | "mono";
   helpIconVariant?: "default" | "lucide";
+  showMobileVLogo?: boolean;
+  brandVariant?: "gradient" | "mono";
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -30,6 +31,7 @@ export const Header: React.FC<HeaderProps> = ({
   showAssignmentsBack = true,
   brandVariant = "gradient",
   helpIconVariant = "default",
+  showMobileVLogo = false,
 }) => {
   const isAssignments = variant === "assignments";
   const router = useRouter();
@@ -293,6 +295,16 @@ export const Header: React.FC<HeaderProps> = ({
                   <polyline points="12 19 5 12 12 5" />
                 </svg>
               </button>
+            )}
+            {showMobileVLogo && (
+              <div className="h-6 w-6 overflow-hidden flex items-center justify-start shrink-0 mr-0.5 select-none pointer-events-none">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/vedaai-logo-mono.png"
+                  alt="VedaAI Logo"
+                  className="h-6 min-w-[82px] object-contain object-left"
+                />
+              </div>
             )}
             <span className="text-[20px] font-bold tracking-[-0.8px] text-[#303030] leading-none">
               VedaAI
