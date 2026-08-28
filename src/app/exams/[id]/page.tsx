@@ -318,13 +318,20 @@ export default function ExamAssessmentPage() {
   const handleDecrementScore = async (qNumber: string) => {
     if (!currentExam) return;
     const mapping = currentExam.mappings?.find((m) => m.questionNumber === qNumber);
-    if (!mapping) return;
-    const currentVal = mapping.score ?? 0;
+    const currentVal = mapping?.score ?? 0;
     const newVal = Math.max(0, currentVal - 1);
 
-    const updatedMappings = currentExam.mappings?.map((m) =>
-      m.questionNumber === qNumber ? { ...m, score: newVal } : m
-    ) || [];
+    let updatedMappings;
+    if (mapping) {
+      updatedMappings = currentExam.mappings?.map((m) =>
+        m.questionNumber === qNumber ? { ...m, score: newVal } : m
+      ) || [];
+    } else {
+      updatedMappings = [
+        ...(currentExam.mappings || []),
+        { questionNumber: qNumber, score: newVal, matched: true }
+      ];
+    }
 
     await handleAutoSaveGrading(updatedMappings);
   };
@@ -332,22 +339,39 @@ export default function ExamAssessmentPage() {
   const handleIncrementScore = async (qNumber: string, maxVal: number) => {
     if (!currentExam) return;
     const mapping = currentExam.mappings?.find((m) => m.questionNumber === qNumber);
-    if (!mapping) return;
-    const currentVal = mapping.score ?? 0;
+    const currentVal = mapping?.score ?? 0;
     const newVal = Math.min(maxVal, currentVal + 1);
 
-    const updatedMappings = currentExam.mappings?.map((m) =>
-      m.questionNumber === qNumber ? { ...m, score: newVal } : m
-    ) || [];
+    let updatedMappings;
+    if (mapping) {
+      updatedMappings = currentExam.mappings?.map((m) =>
+        m.questionNumber === qNumber ? { ...m, score: newVal } : m
+      ) || [];
+    } else {
+      updatedMappings = [
+        ...(currentExam.mappings || []),
+        { questionNumber: qNumber, score: newVal, matched: true }
+      ];
+    }
 
     await handleAutoSaveGrading(updatedMappings);
   };
 
   const handleCommentBlur = async (qNumber: string, val: string) => {
     if (!currentExam) return;
-    const updatedMappings = currentExam.mappings?.map((m) =>
-      m.questionNumber === qNumber ? { ...m, teacherComment: val } : m
-    ) || [];
+    const mapping = currentExam.mappings?.find((m) => m.questionNumber === qNumber);
+    
+    let updatedMappings;
+    if (mapping) {
+      updatedMappings = currentExam.mappings?.map((m) =>
+        m.questionNumber === qNumber ? { ...m, teacherComment: val } : m
+      ) || [];
+    } else {
+      updatedMappings = [
+        ...(currentExam.mappings || []),
+        { questionNumber: qNumber, teacherComment: val, score: 0, matched: true }
+      ];
+    }
 
     await handleAutoSaveGrading(updatedMappings);
   };
@@ -627,7 +651,7 @@ export default function ExamAssessmentPage() {
                 </span>
               </button>
 
-              {isExpanded && (
+               {isExpanded && (
                 <div className="flex flex-col gap-4 border-t border-black/5 bg-[#fafafa]/50 p-5 rounded-b-2xl cursor-default" onClick={(e) => e.stopPropagation()}>
                   
                   {/* Score Adjustment */}
@@ -653,14 +677,14 @@ export default function ExamAssessmentPage() {
                         <Plus className="w-4 h-4" />
                       </button>
                     </div>
-                    <span className="text-xs font-semibold text-[#8e8e93]">
-                      AI Suggested : {mapping?.score ?? 0}
+                    <span className="text-[14px] font-medium text-[#8e8e93]">
+                      AI Suggested: {mapping?.score ?? 0}
                     </span>
                   </div>
 
                   {/* AI Reasoning */}
                   <div className="space-y-1.5">
-                    <span className="font-bold text-[10px] text-[#8e8e93] block uppercase tracking-wider">
+                    <span className="font-bold text-[16px] tracking-[-0.64px] text-[#303030] block">
                       AI Feedback
                     </span>
                     <p className="text-[13.5px] font-medium text-[#5e5e5e] leading-relaxed bg-[#f6f6f6] rounded-xl px-4 py-3 border border-black/5">
@@ -670,14 +694,14 @@ export default function ExamAssessmentPage() {
 
                   {/* Teacher comments input */}
                   <div className="space-y-1.5">
-                    <span className="font-bold text-[10px] text-[#8e8e93] block uppercase tracking-wider">
+                    <span className="font-bold text-[16px] tracking-[-0.64px] text-[#303030] block">
                       Teacher's Comments (Optional)
                     </span>
                     <textarea
                       placeholder="Add your feedback to this question..."
                       defaultValue={mapping?.teacherComment || ""}
                       onBlur={(e) => handleCommentBlur(q.questionNumber, e.target.value)}
-                      className="w-full text-sm font-medium text-[#303030] bg-white border border-black/10 rounded-xl px-4 py-3 focus:outline-none focus:border-[#ff5623] min-h-[70px] leading-relaxed shadow-inner"
+                      className="w-full text-sm font-medium text-[#303030] bg-white border border-black/10 focus:border-black/20 rounded-xl px-4 py-3 focus:outline-none min-h-[90px] leading-relaxed shadow-sm transition-all duration-200"
                     />
                   </div>
 
