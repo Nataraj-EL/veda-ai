@@ -912,7 +912,7 @@ export default function ExamAssessmentPage() {
             </div>
 
             {/* Desktop split — Figma 1:8861 */}
-            <div ref={desktopSplitContainerRef} className="hidden min-h-0 flex-1 lg:flex relative">
+            <div ref={desktopSplitContainerRef} className="hidden min-h-0 flex-1 gap-3 lg:flex relative">
               <div
                 className={cn(
                   "flex shrink-0 flex-col gap-4 overflow-y-auto rounded-[20px] bg-white/50 p-4 lg:min-w-[420px]",
