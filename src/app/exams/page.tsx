@@ -220,18 +220,10 @@ export default function ExamsDashboard() {
                             <span className="font-extrabold text-[#303030] shrink-0">Answer Sheet:</span>
                             <span className="truncate font-medium">{item.studentAnswerSheet?.name}</span>
                           </div>
-                          {/* Score and Grading Status */}
-                          <div className="flex items-center gap-2 mt-2 pt-1 border-t border-dashed border-black/5">
-                            <span className="font-extrabold text-[#303030]">Grading:</span>
-                            <span className={cn(
-                              "text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border",
-                              item.gradingStatus === "completed"
-                                ? "bg-emerald-50 text-emerald-600 border-emerald-200/50"
-                                : "bg-amber-50 text-amber-600 border-amber-200/50"
-                            )}>
-                              {item.gradingStatus === "completed" ? "Graded" : "Pending Review"}
-                            </span>
-                            <span className="text-[12px] font-extrabold text-[#303030] ml-auto">
+                          {/* Score Display */}
+                          <div className="flex items-center justify-between mt-2 pt-1 border-t border-dashed border-black/5">
+                            <span className="font-extrabold text-[#303030]">Score:</span>
+                            <span className="text-[12px] font-extrabold text-[#303030]">
                               {item.totalScore} / {item.questions?.reduce((sum, q) => sum + (q.marks || 0), 0) || 0} Marks
                             </span>
                           </div>
