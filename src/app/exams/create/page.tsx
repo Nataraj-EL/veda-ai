@@ -157,6 +157,7 @@ export default function CreateExamPage() {
           title="Exams"
           variant="assignments"
           backHref="/exams"
+          helpIconVariant={isUploading ? "lucide" : "default"}
         />
 
         {/* Figma Extraction flow — Extracting state inside main layout */}

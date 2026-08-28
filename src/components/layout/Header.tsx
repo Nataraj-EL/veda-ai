@@ -18,6 +18,7 @@ export interface HeaderProps {
   showAssignmentsBack?: boolean;
   /** Figma 2:10590 gradient vs 2:10644 mono (assignment output only) */
   brandVariant?: "gradient" | "mono";
+  helpIconVariant?: "default" | "lucide";
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -28,6 +29,7 @@ export const Header: React.FC<HeaderProps> = ({
   variant = "default",
   showAssignmentsBack = true,
   brandVariant = "gradient",
+  helpIconVariant = "default",
 }) => {
   const isAssignments = variant === "assignments";
   const router = useRouter();
@@ -127,7 +129,7 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         <div className="flex shrink-0 items-center gap-[10px]">
-          {isAssignments ? (
+          {isAssignments && helpIconVariant !== "lucide" ? (
             <button
               type="button"
               className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[#303030] transition-standard cursor-pointer hover:opacity-85 bg-transparent border-none"

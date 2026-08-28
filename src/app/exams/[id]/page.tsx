@@ -317,7 +317,7 @@ export default function ExamAssessmentPage() {
       <div className="flex h-screen bg-page-fill text-neutral-primary font-sans overflow-hidden">
         <Sidebar variant="assignments" assignmentCount={0} />
         <div className="flex min-w-0 flex-1 flex-col min-h-0 overflow-hidden md:px-3 md:pt-3">
-          <Header title="Exams" variant="assignments" backHref="/exams" />
+          <Header title="Exams" variant="assignments" backHref="/exams" helpIconVariant="lucide" />
           <div className="flex-1 min-h-0 flex flex-col p-4 md:p-6 overflow-hidden">
             <div className="flex-1 w-full bg-white rounded-[24px] border border-black/5 shadow-[0_1px_2px_rgba(0,0,0,0.02)] flex flex-col items-center justify-center">
               <div className="flex flex-col items-center justify-center gap-6 px-6 text-center">
@@ -809,7 +809,7 @@ export default function ExamAssessmentPage() {
       />
 
       <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden md:px-3 md:pt-3 relative">
-        <Header title="Exams" variant="assignments" backHref="/exams" />
+        <Header title="Exams" variant="assignments" backHref="/exams" helpIconVariant="lucide" />
 
         <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
           {/* Subheader Banner */}
