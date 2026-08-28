@@ -237,14 +237,18 @@ ${studentAnswerSheetText}`;
         : [],
     }));
 
-    const formattedMappings = mappings.map((m: any) => ({
-      questionNumber: String(m.questionNumber || ""),
-      matched: Boolean(m.matched),
-      extractedAnswerIndex: typeof m.extractedAnswerIndex === "number" ? m.extractedAnswerIndex : undefined,
-      score: typeof m.score === "number" ? m.score : 0,
-      aiScore: typeof m.score === "number" ? m.score : 0,
-      feedback: String(m.feedback || ""),
-    }));
+    const formattedMappings = mappings.map((m: any) => {
+      const isMatched = Boolean(m.matched);
+      const finalScore = isMatched ? (typeof m.score === "number" ? m.score : 0) : 0;
+      return {
+        questionNumber: String(m.questionNumber || ""),
+        matched: isMatched,
+        extractedAnswerIndex: typeof m.extractedAnswerIndex === "number" ? m.extractedAnswerIndex : undefined,
+        score: finalScore,
+        aiScore: finalScore,
+        feedback: String(m.feedback || ""),
+      };
+    });
 
     const totalScore = formattedMappings.reduce((sum: number, m: any) => sum + (m.score || 0), 0);
 
