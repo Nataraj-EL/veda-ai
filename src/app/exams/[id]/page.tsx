@@ -860,9 +860,23 @@ export default function ExamAssessmentPage() {
               <h2 className="text-[28px] font-extrabold tracking-[-1.04px] text-[#303030] leading-tight">
                 Evaluation Report
               </h2>
-              <p className="text-[14px] font-normal leading-normal text-[#5e5e5e]/80 mt-1">
-                {currentExam.studentAnswerSheet?.name?.split("-")?.[0]?.trim() || "Aryan Sharma"} - {currentTotalScore}/{maxMarks} marks
-              </p>
+              <div className="flex flex-wrap items-center gap-2 mt-2">
+                {/* Student Avatar Tag */}
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#f1f1f2] text-[#4b5563] text-xs font-bold select-none leading-none border border-black/[0.03] shadow-[0_1px_2px_rgba(0,0,0,0.01)]">
+                  <svg className="w-3.5 h-3.5 text-[#6b7280]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                  </svg>
+                  <span>{currentExam.studentAnswerSheet?.name?.split("-")?.[0]?.trim() || "Aryan Sharma"}</span>
+                </span>
+
+                {/* Score Medal Tag */}
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#eafaf1] text-[#16a34a] text-xs font-bold select-none leading-none border border-black/[0.03] shadow-[0_1px_2px_rgba(0,0,0,0.01)]">
+                  <svg className="w-3.5 h-3.5 text-[#16a34a]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.746 3.746 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                  </svg>
+                  <span>{currentTotalScore} / {maxMarks} Marks</span>
+                </span>
+              </div>
             </div>
             
             <button
