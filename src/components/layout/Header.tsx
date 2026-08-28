@@ -170,7 +170,7 @@ export const Header: React.FC<HeaderProps> = ({
             {isAssignments ? (
               <>
                 <HeaderBellIcon />
-                <span className="absolute right-[3px] top-[3px] h-2 w-2 rounded-full bg-[#ff5623] border border-white" />
+                <span className="absolute top-[2px] right-[2px] h-2.5 w-2.5 rounded-full bg-[#ff5623]" />
               </>
             ) : (
               <HeaderBellIcon className="h-5 w-5" />
@@ -295,7 +295,7 @@ export const Header: React.FC<HeaderProps> = ({
               aria-label="View notifications"
             >
               <HeaderBellIcon className="h-5 w-5" />
-              <span className="absolute right-2 top-2 h-2 w-2 rounded-full border border-white bg-[#ff5623]" />
+              <span className="absolute top-[2px] right-[2px] h-2.5 w-2.5 rounded-full bg-[#ff5623]" />
             </button>
             <InitialsAvatar
               name={preferences?.teacherName || "John Doe"}
