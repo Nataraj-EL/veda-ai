@@ -225,7 +225,7 @@ export default function CreateExamPage() {
                       Upload Question Paper &amp; Answer Sheets
                     </span>
                   </h2>
-                  <p className="text-[14px] font-semibold tracking-[-0.56px] text-[#5e5e5e]/80 md:text-[16px] mt-2">
+                  <p className="text-[14px] font-medium tracking-[-0.56px] text-[#303030] md:text-[16px] mt-2">
                     Upload both files to get started
                   </p>
                 </div>
@@ -380,7 +380,7 @@ export default function CreateExamPage() {
                     <span>Start Mapping</span>
                     <ArrowRight className="h-4 w-4" strokeWidth={2.2} />
                   </button>
-                  <p className="mt-2.5 max-w-[410px] text-center text-[12px] leading-[18px] tracking-[-0.6px] text-[#5e5e5e]/80">
+                  <p className="mt-2.5 max-w-[450px] text-center text-[14px] leading-[20px] tracking-[-0.56px] text-[#5e5e5e]/70 font-medium">
                     Once both files are uploaded, you&apos;ll able to map answers with questions
                   </p>
                 </div>
