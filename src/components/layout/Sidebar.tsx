@@ -193,6 +193,7 @@ export interface SidebarProps {
   /** Figma 2:10590 gradient logo vs 2:10644 mono logo (output page only) */
   brandVariant?: "gradient" | "mono";
   defaultCollapsed?: boolean;
+  showSettings?: boolean;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -201,6 +202,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   primaryCta,
   brandVariant = "gradient",
   defaultCollapsed = false,
+  showSettings = false,
 }) => {
   const pathname = usePathname();
   const isAssignments = variant === "assignments";
@@ -445,24 +447,26 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 : "px-4"
           )}
         >
-          <button
-            type="button"
-            onClick={() => setIsSettingsOpen(true)}
-            title={isSidebarCollapsed ? "Settings" : undefined}
-            className={cn(
-              "flex h-10 items-center cursor-pointer select-none font-normal text-[16px] leading-[1.4] tracking-[-0.64px] transition-standard bg-transparent border-none text-left w-full",
-              isSidebarCollapsed ? "justify-center rounded-xl p-0" : "gap-2 rounded-lg px-3",
-              isAssignments
-                ? "text-[#5e5e5e]/80 hover:text-[#303030] hover:bg-[#f0f0f0]/50"
-                : "text-sm text-neutral-secondary hover:text-neutral-primary font-medium"
-            )}
-          >
-            <SidebarNavIcon
-              icon={Settings}
-              className={isAssignments ? "text-[#5e5e5e]/80" : "text-neutral-secondary"}
-            />
-            {!isSidebarCollapsed && <span>Settings</span>}
-          </button>
+          {showSettings && (
+            <button
+              type="button"
+              onClick={() => setIsSettingsOpen(true)}
+              title={isSidebarCollapsed ? "Settings" : undefined}
+              className={cn(
+                "flex h-10 items-center cursor-pointer select-none font-normal text-[16px] leading-[1.4] tracking-[-0.64px] transition-standard bg-transparent border-none text-left w-full",
+                isSidebarCollapsed ? "justify-center rounded-xl p-0" : "gap-2 rounded-lg px-3",
+                isAssignments
+                  ? "text-[#5e5e5e]/80 hover:text-[#303030] hover:bg-[#f0f0f0]/50"
+                  : "text-sm text-neutral-secondary hover:text-neutral-primary font-medium"
+              )}
+            >
+              <SidebarNavIcon
+                icon={Settings}
+                className={isAssignments ? "text-[#5e5e5e]/80" : "text-neutral-secondary"}
+              />
+              {!isSidebarCollapsed && <span>Settings</span>}
+            </button>
+          )}
 
           {/* Dynamic high contrast School Info block */}
           <div
