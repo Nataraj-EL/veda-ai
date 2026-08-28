@@ -100,6 +100,8 @@ const ToolkitIcon = ({ className }: { className?: string }) => (
 
 export const MobileBottomNav: React.FC = () => {
   const pathname = usePathname();
+  const isExamsSection = pathname.startsWith("/exams");
+  const plusHref = isExamsSection ? "/exams/create" : "/create";
   
   // Floating white circular + button with thin premium orange accent
   const items = [
@@ -120,45 +122,48 @@ export const MobileBottomNav: React.FC = () => {
       {/* Screen-wide horizontal black/grey separator line above the footer zone */}
       <div className="md:hidden fixed bottom-[90px] left-0 right-0 h-px bg-black/10 z-30 no-print" />
 
-      <div className="md:hidden fixed bottom-5 left-4 right-4 bg-[#181818] border border-white/5 py-3 px-6 flex items-center justify-around z-40 select-none shadow-[0_12px_40px_rgba(0,0,0,0.55)] rounded-[28px] no-print">
-        {/* Floating white circular + button with thin premium orange accent */}
+      <div className="md:hidden fixed bottom-5 left-4 right-4 bg-[#181818] border border-white/5 py-2.5 pl-6 pr-4 flex items-center justify-between z-40 select-none shadow-[0_12px_40px_rgba(0,0,0,0.55)] rounded-[28px] no-print">
+        {/* Navigation items aligned nicely on the left/center */}
+        <div className="flex flex-1 items-center justify-around">
+          {items.map((item) => {
+            // Dynamic tab highlighting matching active route
+            const isCurrent = 
+              (item.label === "Assignments" && pathname === "/" && !pathname.startsWith("/exams")) ||
+              (item.label === "Exams" && (pathname === "/exams" || pathname.startsWith("/exams/"))) ||
+              (item.label === "AI Toolkit" && (pathname === "/create" || pathname === "/output") && !pathname.startsWith("/exams"));
+            
+            return (
+              <Link 
+                key={item.label} 
+                href={item.href} 
+                className="flex flex-col items-center space-y-1 py-1 cursor-pointer select-none"
+              >
+                <item.icon className={cn(
+                  "transition-standard",
+                  isCurrent ? "text-white stroke-[2px]" : "text-[#8E8E93] hover:text-white/80"
+                )} />
+                <span className={cn(
+                  "text-[10px] font-semibold tracking-wide transition-colors duration-150",
+                  isCurrent ? "text-white" : "text-[#8E8E93] hover:text-white/80"
+                )}>
+                  {item.label}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* Plus Action Circle Button - Completely aligned inside footer bar, distinct and neatly gapped */}
         <Link 
-          href="/create" 
-          className="absolute -top-6 right-4 flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-[0_4px_12px_rgba(0,0,0,0.15)] border border-black/5 text-[#ff5623] hover:scale-105 transition-transform duration-150 cursor-pointer z-50"
-          aria-label="Create assignment"
+          href={plusHref} 
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#ff5623] text-white shadow-[0_4px_12px_rgba(255,86,35,0.3)] hover:scale-105 active:scale-95 transition-all duration-150 cursor-pointer z-50 ml-4"
+          aria-label="Create item"
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8">
             <line x1="12" y1="5" x2="12" y2="19" strokeLinecap="round" />
             <line x1="5" y1="12" x2="19" y2="12" strokeLinecap="round" />
           </svg>
         </Link>
-
-        {items.map((item) => {
-          // Dynamic tab highlighting matching active route
-          const isCurrent = 
-            (item.label === "Assignments" && pathname === "/" && !pathname.startsWith("/exams")) ||
-            (item.label === "Exams" && (pathname === "/exams" || pathname.startsWith("/exams/"))) ||
-            (item.label === "AI Toolkit" && (pathname === "/create" || pathname === "/output") && !pathname.startsWith("/exams"));
-          
-          return (
-            <Link 
-              key={item.label} 
-              href={item.href} 
-              className="flex flex-col items-center space-y-1.5 py-1 cursor-pointer select-none"
-            >
-              <item.icon className={cn(
-                "transition-standard",
-                isCurrent ? "text-white stroke-[2px]" : "text-[#8E8E93] hover:text-white/80"
-              )} />
-              <span className={cn(
-                "text-[10px] font-semibold tracking-wide transition-colors duration-150",
-                isCurrent ? "text-white" : "text-[#8E8E93] hover:text-white/80"
-              )}>
-                {item.label}
-              </span>
-            </Link>
-          );
-        })}
       </div>
     </>
   );
