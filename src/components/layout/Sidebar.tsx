@@ -297,12 +297,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <div className={cn("mt-14 flex justify-center w-full", isSidebarCollapsed ? "max-w-[44px]" : "max-w-[251px]")}>
               <Link href={ctaHref} passHref className="w-full">
                 {isSidebarCollapsed ? (
-                  <span className="inline-flex h-[44px] w-[44px] items-center justify-center rounded-full bg-[#303030] border-[3px] border-[#ff5623] hover:bg-[#3d3d3d] text-white cursor-pointer select-none transition-standard shadow-sm">
-                    <CreateAssignmentSparkleIcon className="shrink-0 text-white" />
+                  <span className="inline-flex h-[44px] w-[44px] items-center justify-center rounded-full bg-[#303030] border-[3px] border-[#ff5623] hover:bg-[#3d3d3d] text-white cursor-pointer select-none transition-standard shadow-sm hover:scale-105 hover:brightness-110 group">
+                    <CreateAssignmentSparkleIcon className="shrink-0 text-white animate-sparkles-icon" />
                   </span>
                 ) : (
                   <span className="inline-flex h-[42px] w-full items-center justify-center gap-2 rounded-full px-6 text-[16px] font-medium leading-[28px] tracking-[-0.64px] text-[#E2E8F0] transition-standard shadow-sm cursor-pointer select-none btn-gradient-border group hover:text-white">
-                    <CreateAssignmentSparkleIcon className="shrink-0 text-[#E2E8F0] group-hover:text-white transition-colors" />
+                    <CreateAssignmentSparkleIcon className="shrink-0 text-[#E2E8F0] group-hover:text-white transition-colors animate-sparkles-icon" />
                     <span className="whitespace-nowrap">{ctaLabel}</span>
                   </span>
                 )}
@@ -354,12 +354,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <div className={cn("mt-6 w-full flex justify-center", isSidebarCollapsed ? "max-w-[44px]" : "")}>
               <Link href={ctaHref} passHref className="w-full">
                 {isSidebarCollapsed ? (
-                  <span className="inline-flex h-[44px] w-[44px] items-center justify-center rounded-full bg-[#303030] border-[3px] border-[#ff5623] hover:bg-[#3d3d3d] text-white cursor-pointer select-none transition-standard shadow-sm">
-                    <CreateAssignmentSparkleIcon className="shrink-0 text-white" />
+                  <span className="inline-flex h-[44px] w-[44px] items-center justify-center rounded-full bg-[#303030] border-[3px] border-[#ff5623] hover:bg-[#3d3d3d] text-white cursor-pointer select-none transition-standard shadow-sm hover:scale-105 hover:brightness-110 group">
+                    <CreateAssignmentSparkleIcon className="shrink-0 text-white animate-sparkles-icon" />
                   </span>
                 ) : (
                   <span className="inline-flex w-full items-center justify-center gap-2 rounded-full py-2.5 px-6 text-[16px] font-medium text-[#E2E8F0] transition-standard shadow-sm cursor-pointer select-none btn-gradient-border group hover:text-white">
-                    <CreateAssignmentSparkleIcon className="text-[#E2E8F0] group-hover:text-white transition-colors" />
+                    <CreateAssignmentSparkleIcon className="text-[#E2E8F0] group-hover:text-white transition-colors animate-sparkles-icon" />
                     <span>{ctaLabel}</span>
                   </span>
                 )}
