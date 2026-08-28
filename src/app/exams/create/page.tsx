@@ -380,21 +380,21 @@ export default function CreateExamPage() {
                 </div>
 
                 {/* Start Mapping / Start Grading CTA */}
-                <div className="flex w-full flex-col items-center justify-center pt-2">
+                <div className="sticky bottom-0 w-full flex flex-col items-center justify-center pt-4 pb-6 bg-[#f8f9fa]/90 backdrop-blur-md border-t border-black/[0.03] z-20 mt-6 shrink-0">
                   <button
                     type="submit"
                     disabled={!questionPaper || !answerSheet}
                     className={cn(
                       "inline-flex h-11 cursor-pointer select-none items-center justify-center gap-1.5 rounded-full px-6 text-[14px] font-semibold tracking-[-0.56px] transition-standard border",
                       questionPaper && answerSheet
-                        ? "bg-[#303030] text-white border-white/15 hover:bg-[#3d3d3d]"
+                        ? "bg-[#303030] text-white border-white/15 hover:bg-[#3d3d3d] shadow-[0_4px_12px_rgba(0,0,0,0.1)]"
                         : "cursor-not-allowed bg-[#c5c5c5] text-white/70 border-transparent"
                     )}
                   >
                     <span>Start Mapping</span>
                     <ArrowRight className="h-4 w-4" strokeWidth={2.2} />
                   </button>
-                  <p className="mt-3 max-w-[410px] text-center text-[14px] leading-[22px] tracking-[-0.8px] text-[#5e5e5e]/80">
+                  <p className="mt-2.5 max-w-[410px] text-center text-[12px] leading-[18px] tracking-[-0.6px] text-[#5e5e5e]/80">
                     Once both files are uploaded, you&apos;ll able to map answers with questions
                   </p>
                 </div>
