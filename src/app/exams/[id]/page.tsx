@@ -912,7 +912,7 @@ export default function ExamAssessmentPage() {
             </div>
 
             {/* Desktop split — Figma 1:8861 */}
-            <div ref={desktopSplitContainerRef} className="hidden min-h-0 flex-1 gap-3 lg:flex relative">
+            <div ref={desktopSplitContainerRef} className="hidden min-h-0 flex-1 lg:flex relative">
               <div
                 className={cn(
                   "flex shrink-0 flex-col gap-4 overflow-y-auto rounded-[20px] bg-white/50 p-4 lg:min-w-[420px]",
@@ -938,7 +938,7 @@ export default function ExamAssessmentPage() {
                     style={{ left: `${leftPaneWidth}%` }}
                   >
                     <div className={cn(
-                      "w-3 h-14 bg-white border rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-colors duration-200",
+                      "w-[22px] h-14 bg-white border rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-colors duration-200",
                       isDraggingDivider ? "border-slate-400 bg-slate-50" : "border-slate-200 hover:border-slate-350"
                     )} />
                   </div>
