@@ -399,8 +399,8 @@ export default function CreateExamPage() {
           style={{
             width: "1318px",
             height: "428px",
-            backgroundColor: "#ffffff",
-            opacity: 0.40,
+            backgroundColor: "#000000",
+            opacity: 0.06,
             filter: "blur(100px)",
             transform: "translate(-50%, 50%)",
             zIndex: 0,
