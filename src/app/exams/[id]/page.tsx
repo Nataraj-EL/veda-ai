@@ -872,7 +872,7 @@ export default function ExamAssessmentPage() {
             </div>
 
             {/* Desktop split — Figma 1:8861 */}
-            <div className="hidden min-h-0 flex-1 gap-3 lg:flex">
+            <div className="hidden min-h-0 flex-1 gap-3 lg:flex relative">
               <div className={cn(
                 "flex shrink-0 flex-col gap-4 overflow-y-auto rounded-[20px] bg-white/50 p-4 transition-all duration-300",
                 showAnswerSheet ? "w-[min(672px,48%)]" : "w-full"
@@ -880,9 +880,18 @@ export default function ExamAssessmentPage() {
                 {renderQuestionList()}
               </div>
               {showAnswerSheet && (
-                <div className="flex min-h-[640px] min-w-0 flex-1 flex-col">
-                  {renderAnswerSheet()}
-                </div>
+                <>
+                  {/* Figma-aligned slider handle capsule on the intersection/divider line */}
+                  <div
+                    className="absolute top-1/2 -translate-y-1/2 z-20 pointer-events-none select-none"
+                    style={{ left: "min(672px, 48%)" }}
+                  >
+                    <div className="w-3 h-14 bg-white border border-slate-200 rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.08)]" />
+                  </div>
+                  <div className="flex min-h-[640px] min-w-0 flex-1 flex-col">
+                    {renderAnswerSheet()}
+                  </div>
+                </>
               )}
             </div>
 
