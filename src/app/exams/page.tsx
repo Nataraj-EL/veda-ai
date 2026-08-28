@@ -28,11 +28,17 @@ export default function ExamsDashboard() {
 
   const handleToggleMenu = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
+    if (e.nativeEvent && typeof e.nativeEvent.stopImmediatePropagation === "function") {
+      e.nativeEvent.stopImmediatePropagation();
+    }
     setActiveMenuId((prev) => (prev === id ? null : id));
   };
 
   const handleDelete = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
+    if (e.nativeEvent && typeof e.nativeEvent.stopImmediatePropagation === "function") {
+      e.nativeEvent.stopImmediatePropagation();
+    }
     const confirmDelete = window.confirm("Are you sure you want to delete this exam record?");
     if (!confirmDelete) {
       setActiveMenuId(null);
