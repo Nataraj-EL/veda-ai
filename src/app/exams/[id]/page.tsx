@@ -445,40 +445,43 @@ export default function ExamAssessmentPage() {
   const renderQuestionList = () => (
     <div className="flex w-full flex-col gap-4">
       {/* Summary Performance Card */}
-      <div className="rounded-[28px] border border-black/5 bg-white p-6 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
+      <div 
+        className="rounded-[28px] border border-black/5 bg-white p-6 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm"
+        style={{ fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif' }}
+      >
         
         {/* Profile info & count badges */}
         <div className="flex flex-col gap-4 min-w-0 flex-1">
           <div>
-            <h3 className="text-[20px] font-extrabold text-[#303030] leading-tight mt-0.5 truncate">
+            <h3 className="text-[13px] font-semibold text-[#8e8e93] leading-none tracking-tight">
               {currentExam.studentAnswerSheet?.name?.split("-")?.[0]?.trim() || "Aryan Sharma"}
             </h3>
-            <p className="text-[13px] font-medium text-[#5e5e5e]/80 mt-1 truncate">
+            <p className="text-[18px] md:text-[20px] font-extrabold text-[#303030] leading-snug tracking-[-0.6px] mt-1.5 truncate">
               {currentExam.title}
             </p>
           </div>
           
-          <div className="flex flex-wrap gap-2 mt-2">
-            <span className="bg-[#eafaf1] text-[#16a34a] rounded-full px-3.5 py-1.5 flex items-center gap-2 font-bold text-xs leading-none shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
-              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#16a34a]/10 text-[#16a34a]">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+          <div className="flex flex-wrap gap-x-3 gap-y-2.5 mt-2">
+            <span className="bg-[#eafaf1] text-[#16a34a] rounded-full p-1 pr-3.5 flex items-center gap-2 font-bold text-[13px] leading-none shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#dbf3e5] text-[#16a34a]">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
               </span>
               <span>{correctCount} Correct</span>
             </span>
-            <span className="bg-[#fffde8] text-[#ca8a04] rounded-full px-3.5 py-1.5 flex items-center gap-2 font-bold text-xs leading-none shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
-              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#ca8a04]/10 text-[#ca8a04]">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+            <span className="bg-[#fffbeb] text-[#a16207] rounded-full p-1 pr-3.5 flex items-center gap-2 font-bold text-[13px] leading-none shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#fef3c7] text-[#a16207]">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="18" y1="6" x2="6" y2="18" />
                   <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
               </span>
               <span>{partialCount} Partial</span>
             </span>
-            <span className="bg-[#fef2f2] text-[#b91c1c] rounded-full px-3.5 py-1.5 flex items-center gap-2 font-bold text-xs leading-none shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
-              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#b91c1c]/10 text-[#b91c1c]">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+            <span className="bg-[#fdf2f2] text-[#b91c1c] rounded-full p-1 pr-3.5 flex items-center gap-2 font-bold text-[13px] leading-none shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#fde8e8] text-[#b91c1c]">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="18" y1="6" x2="6" y2="18" />
                   <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
@@ -487,7 +490,7 @@ export default function ExamAssessmentPage() {
             </span>
           </div>
         </div>
-
+ 
         {/* Score donut circle & Grade banner (enclosed in light gray card container) */}
         <div className="bg-[#f8f8f9] rounded-[24px] border border-black/[0.03] p-5 flex items-center gap-6 shrink-0">
           {/* Circular Donut Ring */}
@@ -520,30 +523,30 @@ export default function ExamAssessmentPage() {
               </span>
             </div>
           </div>
-
+ 
           {/* Grade Badge details */}
           <div className="flex flex-col items-center justify-center gap-1 min-w-[90px]">
             <span className={cn(
-              "px-3 py-1 rounded-full font-bold text-[10px] uppercase tracking-wider border-none leading-none shadow-[0_1px_2px_rgba(0,0,0,0.02)]",
+              "px-3.5 py-1.5 rounded-full font-bold text-[12px] border-none leading-none shadow-[0_1px_2px_rgba(0,0,0,0.02)]",
               percent >= 85
                 ? "bg-[#eafaf1] text-[#16a34a]"
                 : percent >= 70
-                ? "bg-blue-50 text-blue-600"
+                ? "bg-[#eff6ff] text-[#1d4ed8]"
                 : percent >= 50
-                ? "bg-[#fffde8] text-[#ca8a04]"
-                : "bg-red-50 text-red-600"
+                ? "bg-[#fffbeb] text-[#a16207]"
+                : "bg-[#fdf2f2] text-[#b91c1c]"
             )}>
               {performanceLabel}
             </span>
             <span className={cn(
-              "text-[48px] font-black leading-none mt-1.5",
+              "text-[42px] font-black leading-none mt-1.5",
               percent >= 85
                 ? "text-[#16a34a]"
                 : percent >= 70
-                ? "text-blue-600"
+                ? "text-[#1d4ed8]"
                 : percent >= 50
-                ? "text-[#ca8a04]"
-                : "text-red-600"
+                ? "text-[#a16207]"
+                : "text-[#b91c1c]"
             )}>
               {gradeLetter}
             </span>
