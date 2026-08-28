@@ -321,6 +321,7 @@ function DashboardContent() {
                     type="text"
                     placeholder="Search Assignment"
                     className="h-full w-full bg-transparent text-[14px] font-normal tracking-[-0.56px] text-[#303030] placeholder:text-[#a9a9a9] focus:outline-none"
+                    style={{ outline: "none", border: "none", boxShadow: "none" }}
                   />
                 </div>
               </div>
@@ -353,6 +354,7 @@ function DashboardContent() {
                     type="text"
                     placeholder="Search Name"
                     className="h-full w-full bg-transparent text-[13px] font-normal tracking-[-0.56px] text-[#303030] placeholder:text-[#a9a9a9] focus:outline-none"
+                    style={{ outline: "none", border: "none", boxShadow: "none" }}
                   />
                 </div>
               </div>

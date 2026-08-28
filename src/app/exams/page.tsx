@@ -151,7 +151,8 @@ export default function ExamsDashboard() {
                     placeholder="Search exams..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full bg-transparent border-0 font-normal outline-none ring-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 text-[14px] text-neutral-primary placeholder-[#8E8E93]"
+                    className="w-full bg-transparent border-none font-normal text-[14px] text-neutral-primary placeholder-[#8E8E93]"
+                    style={{ outline: "none", border: "none", boxShadow: "none" }}
                   />
                 </div>
 
