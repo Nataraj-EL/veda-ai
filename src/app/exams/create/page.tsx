@@ -161,8 +161,8 @@ export default function CreateExamPage() {
 
         {/* Figma Extraction flow — Extracting state inside main layout */}
         {isUploading ? (
-          <div className="flex-1 min-h-0 flex flex-col p-4 md:p-6 overflow-hidden">
-            <div className="flex-1 w-full bg-white rounded-[24px] border border-black/5 shadow-[0_1px_2px_rgba(0,0,0,0.02)] flex flex-col items-center justify-center">
+          <div className="flex-1 min-h-0 flex flex-col p-4 md:p-6 overflow-hidden relative">
+            <div className="flex-1 w-full bg-white rounded-[24px] border border-black/5 shadow-[0_1px_2px_rgba(0,0,0,0.02)] flex flex-col items-center justify-center z-10">
               <div className="flex flex-col items-center justify-center gap-6 px-6 text-center">
                 {/* Figma sparkles loading illustration */}
                 <div className="relative flex h-24 w-24 items-center justify-center">
@@ -185,6 +185,20 @@ export default function CreateExamPage() {
                 </div>
               </div>
             </div>
+
+            {/* Figma bottom Ellipse background glow */}
+            <div
+              className="absolute bottom-0 left-1/2 pointer-events-none rounded-full"
+              style={{
+                width: "1318px",
+                height: "428px",
+                backgroundColor: "#FA643C",
+                opacity: 0.04,
+                filter: "blur(100px)",
+                transform: "translate(-50%, 50%)",
+                zIndex: 0,
+              }}
+            />
           </div>
         ) : (
           <div className="min-h-0 flex-1 overflow-y-auto flex flex-col relative overflow-hidden">

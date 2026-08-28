@@ -811,7 +811,7 @@ export default function ExamAssessmentPage() {
       <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden md:px-3 md:pt-3">
         <Header title="Exams" variant="assignments" backHref="/exams" />
 
-        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto relative overflow-hidden">
           {/* Subheader Banner */}
           <div className="mx-auto w-full max-w-[1343px] px-3 md:px-0 pt-4 pb-2 flex items-center justify-between shrink-0">
             <div>
@@ -893,6 +893,20 @@ export default function ExamAssessmentPage() {
               )}
             </div>
           </div>
+
+          {/* Figma bottom Ellipse background glow */}
+          <div
+            className="absolute bottom-0 left-1/2 pointer-events-none rounded-full"
+            style={{
+              width: "1318px",
+              height: "428px",
+              backgroundColor: "#FA643C",
+              opacity: 0.04,
+              filter: "blur(100px)",
+              transform: "translate(-50%, 50%)",
+              zIndex: 0,
+            }}
+          />
 
           <Footer />
           <MobileBottomNav />
