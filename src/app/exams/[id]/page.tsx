@@ -315,7 +315,7 @@ export default function ExamAssessmentPage() {
   if (isLoading || !currentExam) {
     return (
       <div className="flex h-screen bg-page-fill text-neutral-primary font-sans overflow-hidden">
-        <Sidebar variant="assignments" assignmentCount={0} />
+        <Sidebar variant="assignments" assignmentCount={0} defaultCollapsed={true} />
         <div className="flex min-w-0 flex-1 flex-col min-h-0 overflow-hidden md:px-3 md:pt-3">
           <Header title="Exams" variant="assignments" backHref="/exams" helpIconVariant="lucide" showMobileVLogo={true} />
           <div className="flex-1 min-h-0 flex flex-col p-4 md:p-6 overflow-hidden">
@@ -807,6 +807,7 @@ export default function ExamAssessmentPage() {
         variant="assignments"
         assignmentCount={0}
         primaryCta="aiTeacherToolkit"
+        defaultCollapsed={true}
       />
 
       <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden md:px-3 md:pt-3 relative">

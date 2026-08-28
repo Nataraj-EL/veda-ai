@@ -192,6 +192,7 @@ export interface SidebarProps {
   primaryCta?: "create" | "aiTeacherToolkit";
   /** Figma 2:10590 gradient logo vs 2:10644 mono logo (output page only) */
   brandVariant?: "gradient" | "mono";
+  defaultCollapsed?: boolean;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -199,6 +200,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   assignmentCount = 0,
   primaryCta,
   brandVariant = "gradient",
+  defaultCollapsed = false,
 }) => {
   const pathname = usePathname();
   const isAssignments = variant === "assignments";
@@ -215,6 +217,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
   useEffect(() => {
     loadPreferences();
   }, [loadPreferences]);
+
+  useEffect(() => {
+    setIsSidebarCollapsed(!!defaultCollapsed);
+  }, [defaultCollapsed, setIsSidebarCollapsed]);
 
   // Highlight navigation options mimicking Figma's vertical lists
   const navItems: Array<{

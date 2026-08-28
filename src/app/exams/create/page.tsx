@@ -149,7 +149,7 @@ export default function CreateExamPage() {
   return (
     <div className="flex h-screen bg-page-fill text-neutral-primary font-sans overflow-hidden">
       {/* Sidebar navigation */}
-      <Sidebar variant="assignments" assignmentCount={0} primaryCta="aiTeacherToolkit" />
+      <Sidebar variant="assignments" assignmentCount={0} primaryCta="aiTeacherToolkit" defaultCollapsed={isUploading} />
 
       {/* Main Container */}
       <div className="flex min-w-0 flex-1 flex-col min-h-0 overflow-hidden md:px-3 md:pt-3 relative">
