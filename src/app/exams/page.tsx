@@ -144,14 +144,14 @@ export default function ExamsDashboard() {
                 </div>
 
                 {/* Search Bar */}
-                <div className="relative flex items-center bg-white rounded-[24px] border border-black/10 px-4 h-[46px] w-full max-w-[360px] no-print">
+                <div className="relative flex items-center bg-white rounded-[24px] border border-black/10 focus-within:border-[#FA643C]/40 focus-within:shadow-[0_0_0_2px_rgba(250,100,60,0.08)] px-4 h-[46px] w-full max-w-[360px] no-print transition-all duration-200">
                   <Search className="h-4 w-4 text-[#8E8E93] mr-2" strokeWidth={1.5} />
                   <input
                     type="text"
                     placeholder="Search exams..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full bg-transparent border-0 font-normal focus:outline-none text-[14px] text-neutral-primary placeholder-[#8E8E93]"
+                    className="w-full bg-transparent border-0 font-normal outline-none ring-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 text-[14px] text-neutral-primary placeholder-[#8E8E93]"
                   />
                 </div>
 
