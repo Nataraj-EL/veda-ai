@@ -187,8 +187,8 @@ export default function CreateExamPage() {
             </div>
           </div>
         ) : (
-          <div className="min-h-0 flex-1 overflow-y-auto flex flex-col">
-            <div className="mx-auto w-full px-4 pt-4 pb-36 md:px-2 md:pb-6 flex-grow flex flex-col items-center justify-center">
+          <div className="min-h-0 flex-1 overflow-y-auto flex flex-col relative overflow-hidden">
+            <div className="mx-auto w-full px-4 pt-4 pb-36 md:px-2 md:pb-6 flex-grow flex flex-col items-center justify-center z-10">
               
               {/* Error block if backend fails */}
               {uploadError && (
@@ -387,6 +387,20 @@ export default function CreateExamPage() {
 
               </form>
             </div>
+
+            {/* Figma bottom Ellipse background glow */}
+            <div
+              className="absolute bottom-0 left-1/2 pointer-events-none rounded-full"
+              style={{
+                width: "1318px",
+                height: "428px",
+                backgroundColor: "#FA643C",
+                opacity: 0.04,
+                filter: "blur(100px)",
+                transform: "translate(-50%, 50%)",
+                zIndex: 0,
+              }}
+            />
 
             <Footer />
             <MobileBottomNav />
