@@ -166,7 +166,7 @@ export default function CreateExamPage() {
             <div className="flex-1 w-full bg-white rounded-[24px] border border-black/5 shadow-[0_1px_2px_rgba(0,0,0,0.02)] flex flex-col items-center justify-center z-10">
               <div className="flex flex-col items-center justify-center gap-6 px-6 text-center">
                 {/* Figma sparkles loading illustration */}
-                <div className="relative flex h-24 w-24 items-center justify-center animate-subtle-glow">
+                <div className="relative flex h-24 w-24 items-center justify-center">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src="/images/loading-sparkles.png"
@@ -177,10 +177,10 @@ export default function CreateExamPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <h3 className="text-[28px] md:text-[32px] font-extrabold tracking-[-1.04px] text-[#303030] leading-tight shimmer-title">
+                  <h3 className="text-[28px] md:text-[32px] font-extrabold tracking-[-1.04px] text-[#303030] leading-tight">
                     Extracting...
                   </h3>
-                  <p className="text-[14px] md:text-[16px] font-normal tracking-[-0.56px] text-[#5e5e5e]/70 shimmer-subtitle">
+                  <p className="text-[14px] md:text-[16px] font-normal tracking-[-0.56px] text-[#5e5e5e]/70">
                     This may take a while
                   </p>
                 </div>
