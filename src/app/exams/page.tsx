@@ -127,11 +127,11 @@ export default function ExamsDashboard() {
               <div className="flex flex-col gap-4">
                 {/* Dashboard headers */}
                 <div className="flex items-center justify-between px-2">
-                  <div>
+                  <div className="hidden md:block">
                     <h2 className="text-[20px] font-bold leading-normal tracking-[-0.8px] text-[#303030]">
                       Exams
                     </h2>
-                    <p className="hidden md:block mt-0.5 text-[14px] font-normal leading-normal tracking-[-0.56px] text-[#5e5e5e]/55">
+                    <p className="mt-0.5 text-[14px] font-normal leading-normal tracking-[-0.56px] text-[#5e5e5e]/55">
                       Extract assessments, evaluate handwriting, and verify mapped student answers.
                     </p>
                   </div>
