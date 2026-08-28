@@ -308,6 +308,22 @@ ${studentAnswerSheetText}`;
     if (!exam) {
       throw new NotFoundError("Exam not found or access denied");
     }
+
+    // Auto-migrate legacy exams to populate aiScore if missing
+    let hasChanges = false;
+    if (exam.mappings && exam.mappings.length > 0) {
+      exam.mappings.forEach((m) => {
+        if (m.aiScore === undefined || m.aiScore === null) {
+          m.aiScore = m.score ?? 0;
+          hasChanges = true;
+        }
+      });
+    }
+
+    if (hasChanges) {
+      await exam.save();
+    }
+
     return toExamResponse(exam);
   }
 
