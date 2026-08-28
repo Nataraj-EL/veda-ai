@@ -22,10 +22,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${bricolage.variable} h-full`}>
-      <body className="min-h-full flex flex-col font-sans antialiased relative">
+      <body className="min-h-full flex flex-col font-sans antialiased">
         <ClickBurstProvider>{children}</ClickBurstProvider>
-        {/* iOS-style bottom gesture line indicator for mobile layouts */}
-        <div className="fixed bottom-2 left-1/2 -translate-x-1/2 z-50 w-[134px] h-[5px] rounded-full bg-[#9c9c9c] pointer-events-none md:hidden" />
       </body>
     </html>
   );
