@@ -267,7 +267,7 @@ export default function CreateExamPage() {
                             <Upload className="h-5 w-5 text-[#303030]" strokeWidth={2} />
                           </div>
                           <p className="text-[16px] font-bold text-[#303030] tracking-[-0.64px]">
-                            Upload <span className="text-[#ff5623]"><span className="underline decoration-[#ff5623] decoration-[1.5px] underline-offset-[3px]">Question</span> Paper</span>
+                            Upload <span className="text-[#ff5623]">Question Paper</span>
                           </p>
                           <p className="mt-1.5 text-[12px] font-medium text-[#a9a9a9]">Max 10MB</p>
                         </div>
