@@ -445,10 +445,7 @@ export default function ExamAssessmentPage() {
   const renderQuestionList = () => (
     <div className="flex w-full flex-col gap-4">
       {/* Summary Performance Card */}
-      <div 
-        className="rounded-[28px] border border-black/5 bg-white p-6 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm"
-        style={{ fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif' }}
-      >
+      <div className="rounded-[28px] border border-black/5 bg-white p-6 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
         
         {/* Profile info & count badges */}
         <div className="flex flex-col gap-4 min-w-0 flex-1">
