@@ -132,7 +132,7 @@ export const Header: React.FC<HeaderProps> = ({
           {isAssignments && helpIconVariant !== "lucide" ? (
             <button
               type="button"
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[#303030] transition-standard cursor-pointer hover:opacity-85 bg-transparent border-none"
+              className="hidden lg:flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[#303030] hover:bg-[#eaeaea] transition-standard cursor-pointer hover:opacity-85 bg-transparent border-none"
               aria-label="Help"
             >
               {/* Figma Help SVG */}
@@ -152,7 +152,7 @@ export const Header: React.FC<HeaderProps> = ({
           ) : (
             <button
               type="button"
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[#303030] hover:bg-[#eaeaea] transition-standard bg-transparent border-none cursor-pointer"
+              className="hidden lg:flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[#303030] hover:bg-[#eaeaea] transition-standard bg-transparent border-none cursor-pointer"
               aria-label="Help"
             >
               <svg
