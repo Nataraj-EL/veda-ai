@@ -421,7 +421,7 @@ export default function CreateAssignmentPage() {
         )}
 
         <div className="min-h-0 flex-1 overflow-y-auto flex flex-col">
-        <div className="mx-auto w-full px-4 pt-2 pb-36 md:px-2 md:pb-6 flex-1 flex flex-col">
+        <div className="mx-auto w-full px-4 pt-2 pb-10 md:px-2 md:pb-6 flex-1 flex flex-col">
           {/* Header block container aligned to match form max-width (810px) */}
           <div className="mx-auto max-w-[810px] w-full">
             {/* Figma 2:9439 — dot vertically centered to title + subtitle (50px block) */}

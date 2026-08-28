@@ -188,7 +188,7 @@ export default function CreateExamPage() {
           </div>
         ) : (
           <div className="min-h-0 flex-1 overflow-y-auto flex flex-col">
-            <div className="mx-auto w-full px-4 pt-4 pb-36 md:px-2 md:pb-6 flex-grow flex flex-col items-center justify-center z-10">
+            <div className="mx-auto w-full px-4 pt-4 pb-10 md:px-2 md:pb-6 flex-grow flex flex-col items-center justify-center z-10">
               
               {/* Error block if backend fails */}
               {uploadError && (
