@@ -69,9 +69,9 @@ export default function ExamAssessmentPage() {
       const containerRect = desktopSplitContainerRef.current.getBoundingClientRect();
       let newPercent = ((e.clientX - containerRect.left) / containerRect.width) * 100;
       
-      // Enforce split boundaries (min 25%, max 70%)
-      if (newPercent < 25) newPercent = 25;
-      if (newPercent > 70) newPercent = 70;
+      // Enforce split boundaries (min 33%, max 67%)
+      if (newPercent < 33) newPercent = 33;
+      if (newPercent > 67) newPercent = 67;
       
       setLeftPaneWidth(newPercent);
     };
@@ -915,7 +915,7 @@ export default function ExamAssessmentPage() {
             <div ref={desktopSplitContainerRef} className="hidden min-h-0 flex-1 gap-3 lg:flex relative">
               <div
                 className={cn(
-                  "flex shrink-0 flex-col gap-4 overflow-y-auto rounded-[20px] bg-white/50 p-4",
+                  "flex shrink-0 flex-col gap-4 overflow-y-auto rounded-[20px] bg-white/50 p-4 lg:min-w-[420px]",
                   isDraggingDivider ? "" : "transition-all duration-300"
                 )}
                 style={showAnswerSheet ? { width: `${leftPaneWidth}%` } : { width: "100%" }}
@@ -927,6 +927,13 @@ export default function ExamAssessmentPage() {
                   {/* Figma-aligned slider handle capsule on the intersection/divider line */}
                   <div
                     onMouseDown={() => setIsDraggingDivider(true)}
+                    onWheel={(e) => {
+                      // Forward wheel scroll to the left scrollable panel
+                      const leftPane = desktopSplitContainerRef.current?.querySelector(".overflow-y-auto");
+                      if (leftPane) {
+                        leftPane.scrollTop += e.deltaY;
+                      }
+                    }}
                     className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 z-20 cursor-col-resize select-none py-4 px-2"
                     style={{ left: `${leftPaneWidth}%` }}
                   >
@@ -935,7 +942,7 @@ export default function ExamAssessmentPage() {
                       isDraggingDivider ? "border-slate-400 bg-slate-50" : "border-slate-200 hover:border-slate-350"
                     )} />
                   </div>
-                  <div className="flex min-h-[640px] min-w-0 flex-1 flex-col">
+                  <div className="flex min-h-[640px] min-w-0 flex-1 flex-col lg:min-w-[400px]">
                     {renderAnswerSheet()}
                   </div>
                 </>
