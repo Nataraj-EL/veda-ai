@@ -854,28 +854,30 @@ export default function ExamAssessmentPage() {
         <Header title="Exams" variant="assignments" backHref="/exams" helpIconVariant="lucide" showMobileVLogo={true} />
 
         <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
-          {/* Subheader Banner Card */}
-          <div className="mx-auto w-full max-w-[1343px] bg-white border border-black/5 rounded-[24px] shadow-sm px-6 py-5 flex items-center justify-between shrink-0 mt-4">
-            <div>
-              <h2 className="text-[24px] md:text-[28px] font-extrabold tracking-[-1.04px] text-[#303030] leading-tight">
-                Evaluation Report
-              </h2>
-              <p className="text-[14px] font-normal leading-normal text-[#5e5e5e]/80 mt-1">
-                {currentExam.studentAnswerSheet?.name?.split("-")?.[0]?.trim() || "Aryan Sharma"} - {currentTotalScore}/{maxMarks} marks
-              </p>
+          {/* Subheader Banner Card Wrapper */}
+          <div className="w-full px-3 md:px-0 shrink-0">
+            <div className="mx-auto w-full max-w-[1343px] bg-white border border-black/5 rounded-[24px] shadow-sm px-6 py-5 flex items-center justify-between mt-4">
+              <div>
+                <h2 className="text-[24px] md:text-[28px] font-extrabold tracking-[-1.04px] text-[#303030] leading-tight">
+                  Evaluation Report
+                </h2>
+                <p className="text-[14px] font-normal leading-normal text-[#5e5e5e]/80 mt-1">
+                  {currentExam.studentAnswerSheet?.name?.split("-")?.[0]?.trim() || "Aryan Sharma"} - {currentTotalScore}/{maxMarks} marks
+                </p>
+              </div>
+              
+              <button
+                type="button"
+                onClick={() => setShowAnswerSheet(!showAnswerSheet)}
+                className="hidden lg:inline-flex items-center gap-2 h-11 px-5 rounded-full bg-[#f4f4f5] hover:bg-[#e4e4e7] transition-standard cursor-pointer font-bold text-sm text-[#303030] select-none"
+              >
+                <svg className="w-4 h-4 text-[#303030]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <line x1="12" y1="3" x2="12" y2="21" />
+                </svg>
+                <span>{showAnswerSheet ? "Hide Answer Sheets" : "Show Answer Sheets"}</span>
+              </button>
             </div>
-            
-            <button
-              type="button"
-              onClick={() => setShowAnswerSheet(!showAnswerSheet)}
-              className="hidden lg:inline-flex items-center gap-2 h-11 px-5 rounded-full bg-[#f4f4f5] hover:bg-[#e4e4e7] transition-standard cursor-pointer font-bold text-sm text-[#303030] select-none"
-            >
-              <svg className="w-4 h-4 text-[#303030]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="3" width="18" height="18" rx="2" />
-                <line x1="12" y1="3" x2="12" y2="21" />
-              </svg>
-              <span>{showAnswerSheet ? "Hide Answer Sheets" : "Show Answer Sheets"}</span>
-            </button>
           </div>
 
           <div className="mx-auto flex w-full max-w-[1343px] flex-1 flex-col px-3 pb-24 pt-3 md:px-0 md:pb-10">
