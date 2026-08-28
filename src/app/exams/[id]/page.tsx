@@ -779,10 +779,11 @@ export default function ExamAssessmentPage() {
                     <iframe
                       src={`${process.env.NEXT_PUBLIC_API_URL}${currentExam.studentAnswerSheet.path}#page=${pageNum}&toolbar=0&navpanes=0&scrollbar=0&messages=0`}
                       className={cn(
-                        "absolute border-none pointer-events-none z-0",
+                        "absolute border-none pointer-events-none z-0 left-0 w-full",
+                        "-top-[56px] h-[calc(100%+56px)]",
                         isFirefox
-                          ? "-top-[40px] h-[calc(100%+40px)] w-full left-0"
-                          : "inset-0 h-full w-full"
+                          ? "md:-top-[40px] md:h-[calc(100%+40px)]"
+                          : "md:top-0 md:h-full"
                       )}
                       title="Student Answer Sheet"
                     />
