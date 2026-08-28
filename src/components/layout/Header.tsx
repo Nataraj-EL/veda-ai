@@ -258,10 +258,33 @@ export const Header: React.FC<HeaderProps> = ({
       <header className="flex md:hidden shrink-0 z-40 w-full flex-col bg-transparent select-none no-print px-4 pt-3 gap-1">
         <div className="flex h-14 w-full items-center justify-between rounded-[20px] border border-black/10 bg-white px-4 shadow-sm">
           <div className="flex items-center gap-2">
-            <SidebarBrand
-              variant={isAssignments ? "mono" : brandVariant}
-              className="origin-left"
-            />
+            {showBackButton && (
+              <button
+                type="button"
+                onClick={handleBackClick}
+                className="flex items-center justify-center p-1 text-[#303030] hover:opacity-80 transition-standard cursor-pointer"
+                aria-label="Navigate back"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-5 w-5"
+                >
+                  <line x1="19" y1="12" x2="5" y2="12" />
+                  <polyline points="12 19 5 12 12 5" />
+                </svg>
+              </button>
+            )}
+            <span className="text-[20px] font-bold tracking-[-0.8px] text-[#303030] leading-none">
+              VedaAI
+            </span>
           </div>
 
           <div className="flex items-center gap-3">
@@ -318,26 +341,6 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </button>
           </div>
-        </div>
-
-        {/* Figma-aligned breadcrumb row — Transparent on mobile viewports, title center-aligned on grey background */}
-        <div className="relative flex h-14 w-full items-center justify-center bg-transparent px-1">
-          {showBackButton && (
-            <button
-              type="button"
-              onClick={handleBackClick}
-              className="absolute left-1 z-10 flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#E5E7EB] hover:bg-[#D1D5DB] transition-standard"
-              aria-label="Navigate back"
-            >
-              <svg width="24" height="24" viewBox="9 9 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-6 w-6">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M18.7071 12.2929C19.0976 12.6834 19.0976 13.3166 18.7071 13.7071L13.4142 19H29C29.5523 19 30 19.4477 30 20C30 20.5523 29.5523 21 29 21H13.4142L18.7071 26.2929C19.0976 26.6834 19.0976 27.3166 18.7071 27.7071C18.3166 28.0976 17.6834 28.0976 17.2929 27.7071L10.2929 20.7071C9.90237 20.3166 9.90237 19.6834 10.2929 19.2929L17.2929 12.2929C17.6834 11.9024 18.3166 11.9024 18.7071 12.2929Z" fill="#303030"/>
-              </svg>
-            </button>
-          )}
-
-          <span className="min-w-0 text-[20px] font-bold tracking-[-0.8px] text-[#303030] leading-normal font-sans text-center">
-            {title === "Assignment" ? "Assignments" : title}
-          </span>
         </div>
 
         {showMobileProgress && (
