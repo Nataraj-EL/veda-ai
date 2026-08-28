@@ -18,6 +18,8 @@ interface ExamState {
   clearUploadError: () => void;
 }
 
+let updateSeq = 0;
+
 export const useExamStore = create<ExamState>((set, get) => ({
   exams: [],
   currentExam: null,
@@ -131,6 +133,9 @@ export const useExamStore = create<ExamState>((set, get) => ({
   },
 
   updateExam: async (id: string, userId: string, update: Partial<Exam>) => {
+    updateSeq++;
+    const mySeq = updateSeq;
+
     const oldExam = get().currentExam;
     const oldExamsList = get().exams;
     
@@ -164,20 +169,27 @@ export const useExamStore = create<ExamState>((set, get) => ({
       if (res.ok) {
         const result = await res.json();
         const updatedExam = result.data?.exam || result.exam;
-        set((state) => ({
-          exams: state.exams.map((e) => (e.id === id ? updatedExam : e)),
-          currentExam: state.currentExam?.id === id ? updatedExam : state.currentExam,
-        }));
+        
+        if (mySeq === updateSeq) {
+          set((state) => ({
+            exams: state.exams.map((e) => (e.id === id ? updatedExam : e)),
+            currentExam: state.currentExam?.id === id ? updatedExam : state.currentExam,
+          }));
+        }
         return updatedExam;
       } else {
-        // Rollback on server error
-        set({ exams: oldExamsList, currentExam: oldExam });
+        // Rollback on server error only if no newer request is in-flight
+        if (mySeq === updateSeq) {
+          set({ exams: oldExamsList, currentExam: oldExam });
+        }
         const errorData = await res.json();
         throw new Error(errorData?.error?.message || "Failed to update exam");
       }
     } catch (error: any) {
-      // Rollback on request failure
-      set({ exams: oldExamsList, currentExam: oldExam });
+      // Rollback on request failure only if no newer request is in-flight
+      if (mySeq === updateSeq) {
+        set({ exams: oldExamsList, currentExam: oldExam });
+      }
       console.error("Failed to update exam:", error);
       throw error;
     }
