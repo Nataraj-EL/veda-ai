@@ -808,10 +808,10 @@ export default function ExamAssessmentPage() {
         primaryCta="aiTeacherToolkit"
       />
 
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden md:px-3 md:pt-3">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden md:px-3 md:pt-3 relative">
         <Header title="Exams" variant="assignments" backHref="/exams" />
 
-        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto relative overflow-hidden">
+        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
           {/* Subheader Banner */}
           <div className="mx-auto w-full max-w-[1343px] px-3 md:px-0 pt-4 pb-2 flex items-center justify-between shrink-0">
             <div>
@@ -894,23 +894,23 @@ export default function ExamAssessmentPage() {
             </div>
           </div>
 
-          {/* Figma bottom Ellipse background glow */}
-          <div
-            className="absolute bottom-0 left-1/2 pointer-events-none rounded-full"
-            style={{
-              width: "1318px",
-              height: "428px",
-              backgroundColor: "#FA643C",
-              opacity: 0.04,
-              filter: "blur(100px)",
-              transform: "translate(-50%, 50%)",
-              zIndex: 0,
-            }}
-          />
-
           <Footer />
           <MobileBottomNav />
         </div>
+
+        {/* Figma bottom Ellipse background glow - centered and globally fixed behind everything */}
+        <div
+          className="absolute bottom-0 left-1/2 pointer-events-none rounded-full"
+          style={{
+            width: "1318px",
+            height: "428px",
+            backgroundColor: "#ffffff",
+            opacity: 0.40,
+            filter: "blur(100px)",
+            transform: "translate(-50%, 50%)",
+            zIndex: 0,
+          }}
+        />
       </div>
     </div>
   );

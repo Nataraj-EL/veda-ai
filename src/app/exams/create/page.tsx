@@ -152,7 +152,7 @@ export default function CreateExamPage() {
       <Sidebar variant="assignments" assignmentCount={0} primaryCta="aiTeacherToolkit" />
 
       {/* Main Container */}
-      <div className="flex min-w-0 flex-1 flex-col min-h-0 overflow-hidden md:px-3 md:pt-3">
+      <div className="flex min-w-0 flex-1 flex-col min-h-0 overflow-hidden md:px-3 md:pt-3 relative">
         <Header
           title="Exams"
           variant="assignments"
@@ -161,7 +161,7 @@ export default function CreateExamPage() {
 
         {/* Figma Extraction flow — Extracting state inside main layout */}
         {isUploading ? (
-          <div className="flex-1 min-h-0 flex flex-col p-4 md:p-6 overflow-hidden relative">
+          <div className="flex-1 min-h-0 flex flex-col p-4 md:p-6 overflow-hidden">
             <div className="flex-1 w-full bg-white rounded-[24px] border border-black/5 shadow-[0_1px_2px_rgba(0,0,0,0.02)] flex flex-col items-center justify-center z-10">
               <div className="flex flex-col items-center justify-center gap-6 px-6 text-center">
                 {/* Figma sparkles loading illustration */}
@@ -185,23 +185,9 @@ export default function CreateExamPage() {
                 </div>
               </div>
             </div>
-
-            {/* Figma bottom Ellipse background glow */}
-            <div
-              className="absolute bottom-0 left-1/2 pointer-events-none rounded-full"
-              style={{
-                width: "1318px",
-                height: "428px",
-                backgroundColor: "#FA643C",
-                opacity: 0.04,
-                filter: "blur(100px)",
-                transform: "translate(-50%, 50%)",
-                zIndex: 0,
-              }}
-            />
           </div>
         ) : (
-          <div className="min-h-0 flex-1 overflow-y-auto flex flex-col relative overflow-hidden">
+          <div className="min-h-0 flex-1 overflow-y-auto flex flex-col">
             <div className="mx-auto w-full px-4 pt-4 pb-36 md:px-2 md:pb-6 flex-grow flex flex-col items-center justify-center z-10">
               
               {/* Error block if backend fails */}
@@ -380,7 +366,7 @@ export default function CreateExamPage() {
                 </div>
 
                 {/* Start Mapping / Start Grading CTA */}
-                <div className="sticky bottom-0 w-full flex flex-col items-center justify-center pt-4 pb-6 bg-[#f8f9fa]/90 backdrop-blur-md border-t border-black/[0.03] z-20 mt-6 shrink-0">
+                <div className="w-full flex flex-col items-center justify-center pt-4 pb-6 mt-6 shrink-0">
                   <button
                     type="submit"
                     disabled={!questionPaper || !answerSheet}
@@ -402,24 +388,24 @@ export default function CreateExamPage() {
               </form>
             </div>
 
-            {/* Figma bottom Ellipse background glow */}
-            <div
-              className="absolute bottom-0 left-1/2 pointer-events-none rounded-full"
-              style={{
-                width: "1318px",
-                height: "428px",
-                backgroundColor: "#FA643C",
-                opacity: 0.04,
-                filter: "blur(100px)",
-                transform: "translate(-50%, 50%)",
-                zIndex: 0,
-              }}
-            />
-
             <Footer />
             <MobileBottomNav />
           </div>
         )}
+
+        {/* Figma bottom Ellipse background glow - centered and globally fixed behind everything */}
+        <div
+          className="absolute bottom-0 left-1/2 pointer-events-none rounded-full"
+          style={{
+            width: "1318px",
+            height: "428px",
+            backgroundColor: "#ffffff",
+            opacity: 0.40,
+            filter: "blur(100px)",
+            transform: "translate(-50%, 50%)",
+            zIndex: 0,
+          }}
+        />
       </div>
     </div>
   );
