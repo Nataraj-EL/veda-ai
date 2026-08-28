@@ -106,8 +106,8 @@ const CreateAssignmentSparkleIcon: SidebarIconComponent = ({ className }) => (
     xmlns="http://www.w3.org/2000/svg"
     aria-hidden
   >
-    <path fillRule="evenodd" clipRule="evenodd" d="M4.63783 8.63783L6.18377 4H7.13246L8.6784 8.63783L13.3162 10.1838V11.1325L8.6784 12.6784L7.13246 17.3162H6.18377L4.63783 12.6784L0 11.1325V10.1838L4.63783 8.63783Z" fill="currentColor"/>
-    <path fillRule="evenodd" clipRule="evenodd" d="M13.3878 2.38783L14.1838 0H15.1325L15.9284 2.38783L18.3162 3.18377V4.13246L15.9284 4.9284L15.1325 7.31623H14.1838L13.3878 4.9284L11 4.13246V3.18377L13.3878 2.38783Z" fill="currentColor"/>
+    <path className="sparkle-1" fillRule="evenodd" clipRule="evenodd" d="M4.63783 8.63783L6.18377 4H7.13246L8.6784 8.63783L13.3162 10.1838V11.1325L8.6784 12.6784L7.13246 17.3162H6.18377L4.63783 12.6784L0 11.1325V10.1838L4.63783 8.63783Z" fill="currentColor"/>
+    <path className="sparkle-2" fillRule="evenodd" clipRule="evenodd" d="M13.3878 2.38783L14.1838 0H15.1325L15.9284 2.38783L18.3162 3.18377V4.13246L15.9284 4.9284L15.1325 7.31623H14.1838L13.3878 4.9284L11 4.13246V3.18377L13.3878 2.38783Z" fill="currentColor"/>
   </svg>
 );
 
@@ -197,13 +197,17 @@ export interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({
   variant = "default",
   assignmentCount = 0,
-  primaryCta = "create",
+  primaryCta,
   brandVariant = "gradient",
 }) => {
   const pathname = usePathname();
   const isAssignments = variant === "assignments";
-  const ctaHref = primaryCta === "aiTeacherToolkit" ? "#" : "/create";
-  const ctaLabel = primaryCta === "aiTeacherToolkit" ? "AI Teacher's Toolkit" : "Create Assignment";
+  
+  const isExamsPath = pathname === "/exams" || pathname.startsWith("/exams/");
+  const resolvedCta = primaryCta || (isExamsPath ? "aiTeacherToolkit" : "create");
+  
+  const ctaHref = resolvedCta === "aiTeacherToolkit" ? "/exams/create" : "/create";
+  const ctaLabel = resolvedCta === "aiTeacherToolkit" ? "AI Teacher's Toolkit" : "Create Assignment";
 
   const { preferences, loadPreferences, setIsSettingsOpen, isSidebarCollapsed, setIsSidebarCollapsed } = useUserPreferencesStore();
   const [isLogoHovered, setIsLogoHovered] = useState(false);
