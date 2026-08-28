@@ -374,10 +374,10 @@ export default function ExamAssessmentPage() {
                 </div>
                 <div className="space-y-2">
                   <h3 className="text-[28px] md:text-[32px] font-extrabold tracking-[-1.04px] text-[#303030] leading-tight">
-                    Loading exam...
+                    Extracting
                   </h3>
                   <p className="text-[14px] md:text-[16px] font-normal tracking-[-0.56px] text-[#5e5e5e]/70">
-                    Retrieving grading details
+                    Processing question paper & answer sheets
                   </p>
                 </div>
               </div>
