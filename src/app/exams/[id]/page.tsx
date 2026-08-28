@@ -938,7 +938,7 @@ export default function ExamAssessmentPage() {
                     style={{ left: `${leftPaneWidth}%` }}
                   >
                     <div className={cn(
-                      "w-[22px] h-14 bg-white border rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-colors duration-200",
+                      "w-[18px] h-[71px] bg-white border rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-colors duration-200",
                       isDraggingDivider ? "border-slate-400 bg-slate-50" : "border-slate-200 hover:border-slate-350"
                     )} />
                   </div>
