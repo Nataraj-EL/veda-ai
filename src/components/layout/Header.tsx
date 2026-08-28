@@ -20,6 +20,7 @@ export interface HeaderProps {
   helpIconVariant?: "default" | "lucide";
   showMobileVLogo?: boolean;
   brandVariant?: "gradient" | "mono";
+  imageUrl?: string;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -32,6 +33,7 @@ export const Header: React.FC<HeaderProps> = ({
   brandVariant = "gradient",
   helpIconVariant = "default",
   showMobileVLogo = false,
+  imageUrl,
 }) => {
   const isAssignments = variant === "assignments";
   const router = useRouter();
@@ -296,19 +298,25 @@ export const Header: React.FC<HeaderProps> = ({
                 </svg>
               </button>
             )}
-            {showMobileVLogo && (
-              <div className="h-6 w-6 overflow-hidden flex items-center justify-start shrink-0 mr-0.5 select-none pointer-events-none">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/images/vedaai-logo-mono.png"
-                  alt="VedaAI Logo"
-                  className="h-6 min-w-[82px] object-contain object-left"
-                />
-              </div>
+            {showMobileVLogo ? (
+              <>
+                <div className="h-6 w-6 overflow-hidden flex items-center justify-start shrink-0 mr-0.5 select-none pointer-events-none">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/images/vedaai-logo-mono.png"
+                    alt="VedaAI Logo"
+                    className="h-6 min-w-[82px] object-contain object-left"
+                  />
+                </div>
+                <span className="text-[20px] font-bold tracking-[-0.8px] text-[#303030] leading-none">
+                  VedaAI
+                </span>
+              </>
+            ) : (
+              <span className="text-[20px] font-bold tracking-[-0.8px] text-[#303030] leading-none">
+                {title}
+              </span>
             )}
-            <span className="text-[20px] font-bold tracking-[-0.8px] text-[#303030] leading-none">
-              VedaAI
-            </span>
           </div>
 
           <div className="flex items-center gap-3">
@@ -323,7 +331,7 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
             <InitialsAvatar
               name={preferences?.teacherName || "John Doe"}
-              imageUrl="/images/user-avatar.png"
+              imageUrl={imageUrl || "/images/user-avatar.png"}
               onClick={() => setIsSettingsOpen(true)}
               className="h-8 w-8 border border-slate-200 cursor-pointer hover:opacity-85"
             />

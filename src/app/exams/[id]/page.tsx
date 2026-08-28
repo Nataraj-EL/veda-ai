@@ -851,7 +851,7 @@ export default function ExamAssessmentPage() {
       />
 
       <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden md:px-3 md:pt-3 relative">
-        <Header title="Exams" variant="assignments" backHref="/exams" helpIconVariant="lucide" showMobileVLogo={true} />
+        <Header title="Exams" variant="assignments" backHref="/exams" helpIconVariant="lucide" showMobileVLogo={true} imageUrl="/images/student-avatar.png" />
 
         <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
           {/* Subheader Banner Card Wrapper */}
