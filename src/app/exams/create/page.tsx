@@ -273,27 +273,34 @@ export default function CreateExamPage() {
                         </div>
                       ) : (
                         <div className="flex h-44 flex-col items-center justify-center rounded-[24px] md:rounded-[20px] border border-dashed border-[#c5c5c5] bg-white p-4 text-center">
-                          <div className="relative flex w-full max-w-[280px] items-center gap-3 rounded-[12px] bg-[#f7f7f7] px-4 py-3 text-left">
+                          <div className="relative flex w-full max-w-[280px] items-center gap-4.5 rounded-[12px] bg-[#f4f4f6] px-4 py-3 text-left">
                             <button
                               type="button"
                               onClick={() => setQuestionPaper(null)}
-                              className="absolute -right-2 -top-2 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full bg-[#303030] text-white hover:bg-black border-none"
+                              className="absolute -right-2.5 -top-2.5 flex h-[22px] w-[22px] cursor-pointer items-center justify-center rounded-full bg-[#4a4a4b] text-white hover:bg-black border-none shadow-[0_1px_3px_rgba(0,0,0,0.1)] transition-transform duration-100 active:scale-95"
                               aria-label="Remove question paper"
                             >
                               <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M1 1L7 7M7 1L1 7" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                <path d="M1 1L7 7M7 1L1 7" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                               </svg>
                             </button>
-                            {/* Figma red PDF badge */}
-                            <div className="flex h-10 w-[34px] shrink-0 flex-col items-center justify-center rounded-[6px] bg-[#e53935] text-[10px] font-extrabold text-white leading-none tracking-normal">
-                              PDF
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <p className="truncate text-[14px] font-semibold tracking-[-0.56px] text-[#303030]">
+                            
+                            {/* Figma folded PDF document icon */}
+                            <svg width="34" height="40" viewBox="0 0 34 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+                              <path d="M2 0H22L32 10V38C32 39.1046 31.1046 40 30 40H2C0.895431 40 0 39.1046 0 38V2C0 0.895431 0.895431 0 2 0Z" fill="#E53935" />
+                              <path d="M22 0V10H32L22 0Z" fill="#B71C1C" opacity="0.35" />
+                              <path d="M22 10H32L22 0V10Z" fill="#C62828" />
+                              <text x="17" y="30" fill="white" fontSize="9" fontWeight="900" fontFamily="sans-serif" textAnchor="middle" letterSpacing="-0.2">PDF</text>
+                            </svg>
+
+                            <div className="min-w-0 flex-1 flex flex-col items-center text-center">
+                              <p className="truncate w-full text-[14px] font-semibold tracking-[-0.56px] text-[#303030] leading-snug">
                                 {questionPaper.name}
                               </p>
-                              <p className="mt-0.5 text-[11px] text-[#5e5e5e]/70">
-                                {(questionPaper.size / 1024 / 1024).toFixed(0)}MB <span className="mx-1">•</span> 2 Pages
+                              <p className="mt-1 text-[12px] font-semibold text-[#707070] flex items-center justify-center gap-1.5 leading-none">
+                                <span>{Math.max(1, Math.round(questionPaper.size / 1024 / 1024))}MB</span>
+                                <span className="text-[#303030] font-black text-[14px] select-none">•</span>
+                                <span>2 Pages</span>
                               </p>
                             </div>
                           </div>
@@ -331,27 +338,34 @@ export default function CreateExamPage() {
                         </div>
                       ) : (
                         <div className="flex h-44 flex-col items-center justify-center rounded-[24px] md:rounded-[20px] border border-dashed border-[#c5c5c5] bg-white p-4 text-center">
-                          <div className="relative flex w-full max-w-[280px] items-center gap-3 rounded-[12px] bg-[#f7f7f7] px-4 py-3 text-left">
+                          <div className="relative flex w-full max-w-[280px] items-center gap-4.5 rounded-[12px] bg-[#f4f4f6] px-4 py-3 text-left">
                             <button
                               type="button"
                               onClick={() => setAnswerSheet(null)}
-                              className="absolute -right-2 -top-2 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full bg-[#303030] text-white hover:bg-black border-none"
+                              className="absolute -right-2.5 -top-2.5 flex h-[22px] w-[22px] cursor-pointer items-center justify-center rounded-full bg-[#4a4a4b] text-white hover:bg-black border-none shadow-[0_1px_3px_rgba(0,0,0,0.1)] transition-transform duration-100 active:scale-95"
                               aria-label="Remove answer sheet"
                             >
                               <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M1 1L7 7M7 1L1 7" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                <path d="M1 1L7 7M7 1L1 7" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                               </svg>
                             </button>
-                            {/* Figma red PDF badge */}
-                            <div className="flex h-10 w-[34px] shrink-0 flex-col items-center justify-center rounded-[6px] bg-[#e53935] text-[10px] font-extrabold text-white leading-none tracking-normal">
-                              PDF
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <p className="truncate text-[14px] font-semibold tracking-[-0.56px] text-[#303030]">
+                            
+                            {/* Figma folded PDF document icon */}
+                            <svg width="34" height="40" viewBox="0 0 34 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+                              <path d="M2 0H22L32 10V38C32 39.1046 31.1046 40 30 40H2C0.895431 40 0 39.1046 0 38V2C0 0.895431 0.895431 0 2 0Z" fill="#E53935" />
+                              <path d="M22 0V10H32L22 0Z" fill="#B71C1C" opacity="0.35" />
+                              <path d="M22 10H32L22 0V10Z" fill="#C62828" />
+                              <text x="17" y="30" fill="white" fontSize="9" fontWeight="900" fontFamily="sans-serif" textAnchor="middle" letterSpacing="-0.2">PDF</text>
+                            </svg>
+
+                            <div className="min-w-0 flex-1 flex flex-col items-center text-center">
+                              <p className="truncate w-full text-[14px] font-semibold tracking-[-0.56px] text-[#303030] leading-snug">
                                 {answerSheet.name}
                               </p>
-                              <p className="mt-0.5 text-[11px] text-[#5e5e5e]/70">
-                                {(answerSheet.size / 1024 / 1024).toFixed(0)}MB <span className="mx-1">•</span> 6 Pages
+                              <p className="mt-1 text-[12px] font-semibold text-[#707070] flex items-center justify-center gap-1.5 leading-none">
+                                <span>{Math.max(1, Math.round(answerSheet.size / 1024 / 1024))}MB</span>
+                                <span className="text-[#303030] font-black text-[14px] select-none">•</span>
+                                <span>6 Pages</span>
                               </p>
                             </div>
                           </div>
