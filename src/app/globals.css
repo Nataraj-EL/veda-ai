@@ -246,7 +246,7 @@ textarea:focus-visible {
 
 /* Static text gradient highlight centered on 'a' and 'c' of Extracting... */
 .static-text-spotlight {
-  background: linear-gradient(90deg, #303030 0%, #303030 28%, #858585 36%, #ffffff 42%, #858585 48%, #303030 58%, #303030 100%);
+  background: linear-gradient(90deg, #303030 0%, #303030 28%, #525252 36%, #7c7c7c 43%, #525252 50%, #303030 58%, #303030 100%);
   -webkit-background-clip: text !important;
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
