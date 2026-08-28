@@ -286,11 +286,10 @@ export default function CreateExamPage() {
                             </button>
                             
                             {/* Figma folded PDF document icon */}
-                            <svg width="34" height="40" viewBox="0 0 34 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
-                              <path d="M2 0H22L32 10V38C32 39.1046 31.1046 40 30 40H2C0.895431 40 0 39.1046 0 38V2C0 0.895431 0.895431 0 2 0Z" fill="#E53935" />
-                              <path d="M22 0V10H32L22 0Z" fill="#B71C1C" opacity="0.35" />
-                              <path d="M22 10H32L22 0V10Z" fill="#C62828" />
-                              <text x="17" y="30" fill="white" fontSize="9" fontWeight="900" fontFamily="sans-serif" textAnchor="middle" letterSpacing="-0.2">PDF</text>
+                            <svg width="34" height="42" viewBox="0 0 34 42" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+                              <path d="M4 0H22C22 5 29 12 34 12V38C34 40.2 32.2 42 30 42H4C1.8 42 0 40.2 0 38V4C0 1.8 1.8 0 4 0Z" fill="#E55353" />
+                              <path d="M22 0C22 6.6 27.4 12 34 12H22V0Z" fill="#C62828" />
+                              <text x="17" y="27" fill="white" fontSize="10" fontWeight="900" fontFamily="system-ui, -apple-system, sans-serif" textAnchor="middle" letterSpacing="-0.2">PDF</text>
                             </svg>
 
                             <div className="min-w-0 flex-1 flex flex-col items-center text-center">
@@ -351,11 +350,10 @@ export default function CreateExamPage() {
                             </button>
                             
                             {/* Figma folded PDF document icon */}
-                            <svg width="34" height="40" viewBox="0 0 34 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
-                              <path d="M2 0H22L32 10V38C32 39.1046 31.1046 40 30 40H2C0.895431 40 0 39.1046 0 38V2C0 0.895431 0.895431 0 2 0Z" fill="#E53935" />
-                              <path d="M22 0V10H32L22 0Z" fill="#B71C1C" opacity="0.35" />
-                              <path d="M22 10H32L22 0V10Z" fill="#C62828" />
-                              <text x="17" y="30" fill="white" fontSize="9" fontWeight="900" fontFamily="sans-serif" textAnchor="middle" letterSpacing="-0.2">PDF</text>
+                            <svg width="34" height="42" viewBox="0 0 34 42" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+                              <path d="M4 0H22C22 5 29 12 34 12V38C34 40.2 32.2 42 30 42H4C1.8 42 0 40.2 0 38V4C0 1.8 1.8 0 4 0Z" fill="#E55353" />
+                              <path d="M22 0C22 6.6 27.4 12 34 12H22V0Z" fill="#C62828" />
+                              <text x="17" y="27" fill="white" fontSize="10" fontWeight="900" fontFamily="system-ui, -apple-system, sans-serif" textAnchor="middle" letterSpacing="-0.2">PDF</text>
                             </svg>
 
                             <div className="min-w-0 flex-1 flex flex-col items-center text-center">
