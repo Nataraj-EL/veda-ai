@@ -218,12 +218,14 @@ export default function CreateExamPage() {
                         Question Paper &amp; Answer Sheets
                       </span>
                     </span>
-                    {/* Mobile layout: Plain centered text wrapping naturally */}
-                    <span className="block sm:hidden text-[22px] font-extrabold tracking-[-0.88px] leading-tight px-4 text-[#303030]">
-                      Upload Question Paper &amp; Answer Sheets
+                    {/* Mobile layout: Centered two-line title matching Figma */}
+                    <span className="block sm:hidden text-[24px] font-extrabold tracking-[-0.88px] leading-[30px] px-4 text-[#303030]">
+                      Upload Question Paper
+                      <br />
+                      &amp; Answer Sheets
                     </span>
                   </h2>
-                  <p className="text-[14px] font-medium tracking-[-0.56px] text-[#303030] md:text-[16px] mt-2">
+                  <p className="hidden sm:block text-[14px] font-medium tracking-[-0.56px] text-[#303030] md:text-[16px] mt-2">
                     Upload both files to get started
                   </p>
                 </div>
