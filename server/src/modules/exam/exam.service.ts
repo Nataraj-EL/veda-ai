@@ -242,6 +242,7 @@ ${studentAnswerSheetText}`;
       matched: Boolean(m.matched),
       extractedAnswerIndex: typeof m.extractedAnswerIndex === "number" ? m.extractedAnswerIndex : undefined,
       score: typeof m.score === "number" ? m.score : 0,
+      aiScore: typeof m.score === "number" ? m.score : 0,
       feedback: String(m.feedback || ""),
     }));
 

@@ -678,7 +678,7 @@ export default function ExamAssessmentPage() {
                       </button>
                     </div>
                     <span className="text-[14px] font-medium text-[#8e8e93]">
-                      AI Suggested: {mapping?.score ?? 0}
+                      AI Suggested: {mapping?.aiScore ?? mapping?.score ?? 0}
                     </span>
                   </div>
 

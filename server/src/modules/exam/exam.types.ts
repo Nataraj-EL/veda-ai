@@ -30,6 +30,7 @@ export interface ExamMapping {
   matched: boolean;
   extractedAnswerIndex?: number;
   score?: number;
+  aiScore?: number;
   feedback?: string;
   teacherComment?: string;
 }

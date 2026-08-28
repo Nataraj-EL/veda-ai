@@ -76,6 +76,7 @@ const examMappingSchema = new Schema(
     matched: { type: Boolean, required: true },
     extractedAnswerIndex: { type: Number },
     score: { type: Number },
+    aiScore: { type: Number },
     feedback: { type: String },
     teacherComment: { type: String },
   },
