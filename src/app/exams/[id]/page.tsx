@@ -96,6 +96,23 @@ export default function ExamAssessmentPage() {
     };
   }, [isDraggingDivider]);
 
+  const [initialAiScores, setInitialAiScores] = useState<Record<string, number>>({});
+  const loadedExamIdRef = useRef<string | null>(null);
+
+  // Lock initial AI suggested scores on page load to prevent counter deviation
+  useEffect(() => {
+    if (currentExam?.id && currentExam.mappings && currentExam.mappings.length > 0) {
+      if (loadedExamIdRef.current !== currentExam.id) {
+        const scores: Record<string, number> = {};
+        currentExam.mappings.forEach((m) => {
+          scores[m.questionNumber] = m.aiScore ?? m.score ?? 0;
+        });
+        setInitialAiScores(scores);
+        loadedExamIdRef.current = currentExam.id;
+      }
+    }
+  }, [currentExam?.id, currentExam?.mappings]);
+
   const [editedAnswerText, setEditedAnswerText] = useState("");
   const [editedScore, setEditedScore] = useState(0);
   const [editedFeedback, setEditedFeedback] = useState("");
@@ -678,7 +695,7 @@ export default function ExamAssessmentPage() {
                       </button>
                     </div>
                     <span className="text-[14px] font-medium text-[#8e8e93]">
-                      AI Suggested: {mapping?.aiScore ?? mapping?.score ?? 0}
+                      AI Suggested: {initialAiScores[q.questionNumber] ?? mapping?.aiScore ?? mapping?.score ?? 0}
                     </span>
                   </div>
 
